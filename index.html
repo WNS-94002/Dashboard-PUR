@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Procurement Dashboard — Mining Equipment & Services</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f5f5f3;
+      --bg-tertiary: #eeecea;
+      --text-primary: #1a1a18;
+      --text-secondary: #5f5e5a;
+      --text-tertiary: #888780;
+      --border: rgba(0,0,0,0.1);
+      --border-md: rgba(0,0,0,0.18);
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --blue: #378ADD;
+      --green: #1D9E75;
+      --amber: #BA7517;
+      --red: #A32D2D;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #1e1e1c;
+        --bg-secondary: #262624;
+        --bg-tertiary: #2e2e2c;
+        --text-primary: #f0efea;
+        --text-secondary: #b4b2a9;
+        --text-tertiary: #888780;
+        --border: rgba(255,255,255,0.1);
+        --border-md: rgba(255,255,255,0.18);
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .topbar {
+      background: var(--bg-primary);
+      border-bottom: 0.5px solid var(--border);
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      gap: 12px;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .topbar-icon {
+      width: 32px; height: 32px;
+      background: var(--text-primary);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .topbar-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+    .topbar-sub { font-size: 12px; color: var(--text-secondary); }
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+    .badge {
+      font-size: 11px; padding: 3px 10px;
+      border-radius: 99px;
+      background: #E6F1FB; color: #185FA5;
+      font-weight: 500; border: 0.5px solid #B5D4F4;
+    }
+    .badge.green { background: #EAF3DE; color: #3B6D11; border-color: #C0DD97; }
+    .badge.red   { background: #FCEBEB; color: #A32D2D; border-color: #F7C1C1; }
+
+    .btn {
+      font-size: 12px; padding: 6px 14px; cursor: pointer;
+      border-radius: var(--radius-md);
+      border: 0.5px solid var(--border-md);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-family: inherit;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn:hover { background: var(--bg-tertiary); }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: var(--text-primary); color: var(--bg-primary);
+      border-color: transparent;
+    }
+    .btn-primary:hover { opacity: 0.85; background: var(--text-primary); }
+
+    .main { max-width: 1400px; margin: 0 auto; padding: 24px 20px 48px; }
+
+    .loading-section { margin-bottom: 20px; }
+    .loading-bar-wrap {
+      background: var(--bg-secondary); border-radius: 99px;
+      height: 3px; overflow: hidden; margin-bottom: 8px;
+    }
+    .loading-bar-fill {
+      height: 100%; border-radius: 99px; background: var(--blue);
+      animation: loadpulse 1.6s ease-in-out infinite;
+    }
+    @keyframes loadpulse {
+      0%,100%{width:20%;opacity:.4} 50%{width:75%;opacity:1}
+    }
+    .load-status { font-size: 12px; color: var(--text-tertiary); }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px; margin-bottom: 20px;
+    }
+    .metric {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+    .metric-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .metric-value { font-size: 24px; font-weight: 600; color: var(--text-primary); line-height: 1.1; }
+    .metric-value.green { color: var(--green); }
+    .metric-value.amber { color: var(--amber); }
+    .metric-value.red   { color: var(--red); }
+    .metric-value.blue  { color: var(--blue); }
+    .metric-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 4px; }
+
+    .tabs-wrap {
+      background: var(--bg-primary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px 16px;
+      margin-bottom: 20px;
+    }
+    .tabs-label { font-size: 11px; color: var(--text-tertiary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+    .tab {
+      display: inline-block; padding: 4px 12px;
+      border-radius: var(--radius-md);
+      font-size: 12px; cursor: pointer;
+      border: 0.5px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      transition: all 0.12s;
+      user-select: none;
+    }
+    .tab:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+    .tab.active {
+      background: #E6F1FB; color: #185FA5;
+      border-color: #B5D4F4; font-weight: 500;
+    }
+
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+    .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+    @media(max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
+    @media(max-width: 700px) { .grid3 { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--bg-primary);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+    }
+    .card-title {
+      font-size: 11px; font-weight: 600; color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px;
+    }
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 14px;
+      margin-bottom: 10px; font-size: 12px; color: var(--text-secondary);
+    }
+    .legend span { display: flex; align-items: center; gap: 5px; }
+    .legend-box { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+    .filter-row {
+      display: flex; align-items: center; gap: 10px;
+      flex-wrap: wrap; margin-bottom: 12px;
+    }
+    .filter-row label { font-size: 12px; color: var(--text-secondary); }
+    .filter-row select {
+      font-size: 12px; padding: 6px 10px;
+      border-radius: var(--radius-md);
+      border: 0.5px solid var(--border-md);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      cursor: pointer; font-family: inherit;
+    }
+    .row-count { font-size: 11px; color: var(--text-tertiary); margin-left: auto; }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th {
+      text-align: left; padding: 8px 10px;
+      font-weight: 500; color: var(--text-secondary);
+      border-bottom: 0.5px solid var(--border);
+      font-size: 11px; white-space: nowrap;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    tbody td {
+      padding: 8px 10px; color: var(--text-primary);
+      border-bottom: 0.5px solid var(--border);
+      white-space: nowrap;
+    }
+    tbody tr:hover { background: var(--bg-secondary); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .pill {
+      display: inline-block; padding: 2px 8px;
+      border-radius: 99px; font-size: 11px; font-weight: 500;
+    }
+    .pill-green { background: #EAF3DE; color: #3B6D11; }
+    .pill-amber { background: #FAEEDA; color: #854F0B; }
+    .pill-red   { background: #FCEBEB; color: #A32D2D; }
+    .pill-blue  { background: #E6F1FB; color: #185FA5; }
+    .pill-gray  { background: #F1EFE8; color: #5F5E5A; }
+
+    .prog-row { margin-bottom: 12px; }
+    .prog-row:last-child { margin-bottom: 0; }
+    .prog-meta { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+    .prog-label { color: var(--text-primary); }
+    .prog-stat  { color: var(--text-secondary); }
+    .prog-bar   { height: 5px; border-radius: 99px; background: var(--bg-secondary); overflow: hidden; }
+    .prog-fill  { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+
+    .table-note { font-size: 11px; color: var(--text-tertiary); padding: 8px 0 0; }
+    .empty-state { text-align: center; padding: 36px 16px; color: var(--text-tertiary); font-size: 13px; }
+
+    .error-banner {
+      background: #FCEBEB; border: 0.5px solid #F7C1C1;
+      border-radius: var(--radius-md);
+      padding: 10px 14px; font-size: 13px; color: #A32D2D;
+      margin-bottom: 16px; display: none; line-height: 1.6;
+    }
+
+    .footer {
+      text-align: center; font-size: 11px;
+      color: var(--text-tertiary); padding: 24px 0 12px;
+      border-top: 0.5px solid var(--border); margin-top: 32px;
+    }
+
+    @media(max-width: 600px) {
+      .topbar-sub { display: none; }
+      .main { padding: 16px 12px 40px; }
+      .metrics { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-icon">📋</div>
+    <div>
+      <div class="topbar-title">Procurement Dashboard</div>
+      <div class="topbar-sub">Mining Equipment &amp; Services · 2026</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span class="badge" id="sync-badge">กำลังโหลด...</span>
+    <button class="btn btn-primary" onclick="loadAllData()">↻ Refresh</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- Loading -->
+  <div class="loading-section" id="loading-section">
+    <div class="loading-bar-wrap"><div class="loading-bar-fill"></div></div>
+    <div class="load-status" id="load-status">กำลังดึงข้อมูลจาก Google Sheets...</div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-banner" id="error-banner"></div>
+
+  <!-- Metrics -->
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-label">รายการทั้งหมด</div>
+      <div class="metric-value" id="m-total">—</div>
+      <div class="metric-sub">ทุก Sheet รวมกัน</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">มูลค่าประมาณการ</div>
+      <div class="metric-value amber" id="m-value">—</div>
+      <div class="metric-sub">บาท (Estimate)</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">อนุมัติแล้ว</div>
+      <div class="metric-value green" id="m-approved">—</div>
+      <div class="metric-sub">รายการ</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">รอดำเนินการ</div>
+      <div class="metric-value amber" id="m-pending">—</div>
+      <div class="metric-sub">รายการ</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">ระหว่างดำเนินการ</div>
+      <div class="metric-value blue" id="m-inprog">—</div>
+      <div class="metric-sub">รายการ</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">จำนวน Sheet</div>
+      <div class="metric-value" id="m-sheets">15</div>
+      <div class="metric-sub">หมวดหมู่</div>
+    </div>
+  </div>
+
+  <!-- Sheet Tabs -->
+  <div class="tabs-wrap">
+    <div class="tabs-label">เลือก Sheet / หมวดหมู่</div>
+    <div class="tabs" id="tab-container">
+      <span class="tab active" onclick="selectSheet('all',this)">ทั้งหมด</span>
+      <span class="tab" onclick="selectSheet('0',this)">0-101 Conveyor Equip.</span>
+      <span class="tab" onclick="selectSheet('696948322',this)">4-501 Lubricant</span>
+      <span class="tab" onclick="selectSheet('1216432940',this)">6-101 Spreader</span>
+      <span class="tab" onclick="selectSheet('594703843',this)">6-102 BWE</span>
+      <span class="tab" onclick="selectSheet('1309658412',this)">6-103 Crusher</span>
+      <span class="tab" onclick="selectSheet('188899962',this)">6-104 CV System</span>
+      <span class="tab" onclick="selectSheet('1019106348',this)">6-105 Aux. CV</span>
+      <span class="tab" onclick="selectSheet('1624105960',this)">6-106 Service CV</span>
+      <span class="tab" onclick="selectSheet('1225728737',this)">6-111 General CV</span>
+      <span class="tab" onclick="selectSheet('1177087368',this)">6-227 Hydraulic Hose</span>
+      <span class="tab" onclick="selectSheet('1566400890',this)">7-101 Svc Spreader</span>
+      <span class="tab" onclick="selectSheet('1228114688',this)">7-102 Svc BWE</span>
+      <span class="tab" onclick="selectSheet('1252174840',this)">7-103 Svc Crusher</span>
+      <span class="tab" onclick="selectSheet('287824465',this)">7-104 Svc CV System</span>
+      <span class="tab" onclick="selectSheet('1562418173',this)">9-111 General Expense</span>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">รายการตาม Sheet</div>
+      <div class="legend">
+        <span><span class="legend-box" style="background:#378ADD"></span>จำนวนทั้งหมด</span>
+        <span><span class="legend-box" style="background:#1D9E75"></span>อนุมัติแล้ว</span>
+      </div>
+      <div style="position:relative;width:100%;height:260px;">
+        <canvas id="chart-by-sheet"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">สัดส่วนตามประเภทงาน</div>
+      <div class="legend" id="pie-legend"></div>
+      <div style="position:relative;width:100%;height:260px;">
+        <canvas id="chart-pie"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">รายการสั่งซื้อทั้งหมด</div>
+    <div class="filter-row">
+      <label>Sheet:</label>
+      <select id="filter-sheet" onchange="renderTable()">
+        <option value="">ทั้งหมด</option>
+        <option value="0">0-101 Conveyor Equipment</option>
+        <option value="696948322">4-501 Lubricant</option>
+        <option value="1216432940">6-101 Spreader</option>
+        <option value="594703843">6-102 Bucket Wheel Excavator</option>
+        <option value="1309658412">6-103 Crusher</option>
+        <option value="188899962">6-104 Conveyor System</option>
+        <option value="1019106348">6-105 Aux. CV Equipment</option>
+        <option value="1624105960">6-106 Service CV Equipment</option>
+        <option value="1225728737">6-111 General Consume CV</option>
+        <option value="1177087368">6-227 Hydraulic Hose and Fitting</option>
+        <option value="1566400890">7-101 Service Spreader</option>
+        <option value="1228114688">7-102 Service BWE</option>
+        <option value="1252174840">7-103 Service Crusher</option>
+        <option value="287824465">7-104 Service Conveyor System</option>
+        <option value="1562418173">9-111 General Expense CV</option>
+      </select>
+      <label>สถานะ:</label>
+      <select id="filter-status" onchange="renderTable()">
+        <option value="">ทั้งหมด</option>
+        <option value="อนุมัติ">อนุมัติ</option>
+        <option value="รอดำเนินการ">รอดำเนินการ</option>
+        <option value="ระหว่างดำเนินการ">ระหว่างดำเนินการ</option>
+        <option value="ยกเลิก">ยกเลิก</option>
+      </select>
+      <span class="row-count" id="row-count"></span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Sheet</th>
+            <th>รหัสสินค้า</th>
+            <th>ชื่อรายการ</th>
+            <th style="text-align:right">จำนวน</th>
+            <th>หน่วย</th>
+            <th style="text-align:right">ราคา/หน่วย</th>
+            <th style="text-align:right">มูลค่ารวม</th>
+            <th>สถานะ</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <tr><td colspan="9" class="empty-state">กำลังโหลดข้อมูล...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-note" id="table-note"></div>
+  </div>
+
+  <!-- Progress -->
+  <div class="grid3">
+    <div class="card">
+      <div class="card-title">ความคืบหน้า — Equipment</div>
+      <div id="progress-equip"><div class="empty-state">กำลังโหลด...</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">ความคืบหน้า — Services</div>
+      <div id="progress-svc"><div class="empty-state">กำลังโหลด...</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">ความคืบหน้า — General</div>
+      <div id="progress-gen"><div class="empty-state">กำลังโหลด...</div></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Procurement Dashboard · ข้อมูลดึงจาก Google Sheets โดยตรง ·
+    ต้องเปิดในเว็บเบราว์เซอร์ปกติ (ไม่ใช่ file://) และ Google Sheet ต้องมีสิทธิ์ "Anyone with the link can view"
+  </div>
+</div>
+
+<script>
+const SHEET_ID = '1x8nzBNv4RGV-x6AtMIqm8HWJt5k0a-aVuEV8Zezess4';
+const SHEETS = [
+  { gid: '0',          name: '0-101', label: 'Conveyor Equip.',  group: 'equipment' },
+  { gid: '696948322',  name: '4-501', label: 'Lubricant',        group: 'equipment' },
+  { gid: '1216432940', name: '6-101', label: 'Spreader',         group: 'equipment' },
+  { gid: '594703843',  name: '6-102', label: 'BWE',              group: 'equipment' },
+  { gid: '1309658412', name: '6-103', label: 'Crusher',          group: 'equipment' },
+  { gid: '188899962',  name: '6-104', label: 'CV System',        group: 'equipment' },
+  { gid: '1019106348', name: '6-105', label: 'Aux. CV',          group: 'equipment' },
+  { gid: '1624105960', name: '6-106', label: 'Svc CV Equip.',    group: 'service'   },
+  { gid: '1225728737', name: '6-111', label: 'General CV',       group: 'general'   },
+  { gid: '1177087368', name: '6-227', label: 'Hydraulic Hose',   group: 'equipment' },
+  { gid: '1566400890', name: '7-101', label: 'Svc Spreader',     group: 'service'   },
+  { gid: '1228114688', name: '7-102', label: 'Svc BWE',          group: 'service'   },
+  { gid: '1252174840', name: '7-103', label: 'Svc Crusher',      group: 'service'   },
+  { gid: '287824465',  name: '7-104', label: 'Svc CV System',    group: 'service'   },
+  { gid: '1562418173', name: '9-111', label: 'General Expense',  group: 'general'   },
+];
+
+let allData = [];
+let sheetStats = {};
+let chartSheet = null, chartPie = null;
+
+function splitCSVLine(line) {
+  const vals = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') { inQ = !inQ; continue; }
+    if (c === ',' && !inQ) { vals.push(cur); cur = ''; continue; }
+    cur += c;
+  }
+  vals.push(cur);
+  return vals.map(v => v.trim());
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const headers = splitCSVLine(lines[0]);
+  return lines.slice(1).map(line => {
+    const vals = splitCSVLine(line);
+    const obj = {};
+    headers.forEach((h, i) => obj[h] = (vals[i] || '').trim());
+    return obj;
+  }).filter(r => Object.values(r).some(v => v !== ''));
+}
+
+function inferStatus(row) {
+  const v = Object.values(row).join(' ').toLowerCase();
+  if (/cancel|ยกเลิก/.test(v))                           return 'ยกเลิก';
+  if (/complete|เสร็จ|อนุมัติ|approv/.test(v))           return 'อนุมัติ';
+  if (/progress|ดำเนินการ|ordering|ordered/.test(v))     return 'ระหว่างดำเนินการ';
+  return 'รอดำเนินการ';
+}
+
+function getNum(row, kws) {
+  for (const k of Object.keys(row)) {
+    if (kws.some(w => k.toLowerCase().includes(w))) {
+      const v = parseFloat((row[k] || '').replace(/,/g, ''));
+      if (!isNaN(v) && v > 0) return v;
+    }
+  }
+  return 0;
+}
+function getStr(row, kws) {
+  for (const k of Object.keys(row)) {
+    if (kws.some(w => k.toLowerCase().includes(w))) {
+      if (row[k] && row[k].trim()) return row[k].trim();
+    }
+  }
+  return '';
+}
+
+async function fetchSheet(gid, name, label, group) {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    return parseCSV(text).map(r => {
+      const qty   = getNum(r, ['qty','จำนวน','quantity','amount','volume']);
+      const price = getNum(r, ['price','ราคา','unit price','rate']);
+      let   total = getNum(r, ['total','รวม','มูลค่า','sum']);
+      if (!total && qty && price) total = qty * price;
+      return {
+        ...r,
+        _gid: gid, _sheet: name, _label: label, _group: group,
+        _status: inferStatus(r),
+        _qty:   qty, _unit: getStr(r, ['unit','หน่วย']),
+        _price: price, _total: total,
+        _name:  getStr(r, ['description','name','ชื่อ','รายการ','item','desc','part name','material']),
+        _code:  getStr(r, ['code','part no','รหัส','id','no','number','part number']),
+      };
+    });
+  } catch (e) {
+    console.warn('Sheet error', name, e.message);
+    return [];
+  }
+}
+
+async function loadAllData() {
+  document.getElementById('loading-section').style.display = 'block';
+  document.getElementById('error-banner').style.display   = 'none';
+  document.getElementById('sync-badge').textContent       = 'กำลังโหลด...';
+  document.getElementById('sync-badge').className         = 'badge';
+  allData = []; sheetStats = {};
+
+  for (let i = 0; i < SHEETS.length; i++) {
+    const s = SHEETS[i];
+    document.getElementById('load-status').textContent =
+      `กำลังโหลด ${s.name} — ${s.label} (${i+1}/${SHEETS.length})...`;
+    const rows = await fetchSheet(s.gid, s.name, s.label, s.group);
+    allData.push(...rows);
+    sheetStats[s.gid] = {
+      name: s.name, label: s.label, group: s.group,
+      total:    rows.length,
+      approved: rows.filter(r => r._status === 'อนุมัติ').length,
+      pending:  rows.filter(r => r._status === 'รอดำเนินการ').length,
+      inprog:   rows.filter(r => r._status === 'ระหว่างดำเนินการ').length,
+      value:    rows.reduce((a, r) => a + (r._total || 0), 0),
+    };
+  }
+
+  document.getElementById('loading-section').style.display = 'none';
+  if (!allData.length) {
+    const eb = document.getElementById('error-banner');
+    eb.style.display = 'block';
+    eb.innerHTML = `<strong>⚠ ไม่สามารถดึงข้อมูลได้</strong><br>
+      กรุณาตรวจสอบ:<br>
+      1. เปิดไฟล์นี้ผ่าน Web Server (ไม่ใช่ double-click file:///)<br>
+      2. Google Sheet ต้องตั้งค่า <strong>"Anyone with the link can view"</strong>`;
+    document.getElementById('sync-badge').textContent = 'ข้อมูลไม่พร้อม';
+    document.getElementById('sync-badge').className   = 'badge red';
+  } else {
+    const t = new Date().toLocaleTimeString('th-TH');
+    document.getElementById('sync-badge').textContent = `✓ อัพเดท ${t}`;
+    document.getElementById('sync-badge').className   = 'badge green';
+  }
+
+  updateMetrics(); renderCharts(); renderTable(); renderProgress();
+}
+
+function updateMetrics() {
+  const fn = n => n.toLocaleString('th-TH');
+  document.getElementById('m-total').textContent    = fn(allData.length);
+  const val = allData.reduce((a, r) => a + (r._total || 0), 0);
+  document.getElementById('m-value').textContent    = val > 0 ? '฿' + fn(Math.round(val)) : '—';
+  document.getElementById('m-approved').textContent = fn(allData.filter(r => r._status === 'อนุมัติ').length);
+  document.getElementById('m-pending').textContent  = fn(allData.filter(r => r._status === 'รอดำเนินการ').length);
+  document.getElementById('m-inprog').textContent   = fn(allData.filter(r => r._status === 'ระหว่างดำเนินการ').length);
+}
+
+function renderCharts() {
+  const labels   = SHEETS.map(s => s.name);
+  const counts   = SHEETS.map(s => (sheetStats[s.gid] || {}).total    || 0);
+  const approved = SHEETS.map(s => (sheetStats[s.gid] || {}).approved || 0);
+
+  if (chartSheet) chartSheet.destroy();
+  chartSheet = new Chart(document.getElementById('chart-by-sheet'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'ทั้งหมด',   data: counts,   backgroundColor: '#378ADD', borderRadius: 3 },
+        { label: 'อนุมัติ',  data: approved, backgroundColor: '#1D9E75', borderRadius: 3 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { font: { size: 10 }, maxRotation: 55, autoSkip: false }, grid: { display: false } },
+        y: { beginAtZero: true, ticks: { font: { size: 11 } }, grid: { color: 'rgba(128,128,128,0.1)' } }
+      }
+    }
+  });
+
+  const groups = { equipment: 0, service: 0, general: 0 };
+  allData.forEach(r => { if (r._group in groups) groups[r._group]++; });
+  const pieLabels = ['Equipment', 'Service', 'General'];
+  const pieData   = [groups.equipment, groups.service, groups.general];
+  const pieColors = ['#378ADD', '#1D9E75', '#BA7517'];
+
+  document.getElementById('pie-legend').innerHTML = pieLabels.map((l, i) =>
+    `<span><span class="legend-box" style="background:${pieColors[i]}"></span>${l} (${pieData[i]})</span>`
+  ).join('');
+
+  if (chartPie) chartPie.destroy();
+  chartPie = new Chart(document.getElementById('chart-pie'), {
+    type: 'doughnut',
+    data: { labels: pieLabels, datasets: [{ data: pieData, backgroundColor: pieColors, borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '62%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} รายการ` } }
+      }
+    }
+  });
+}
+
+function statusPill(s) {
+  const map = { 'อนุมัติ': 'green', 'รอดำเนินการ': 'amber', 'ระหว่างดำเนินการ': 'blue', 'ยกเลิก': 'red' };
+  return `<span class="pill pill-${map[s] || 'gray'}">${s}</span>`;
+}
+
+function renderTable() {
+  const sf = document.getElementById('filter-sheet').value;
+  const st = document.getElementById('filter-status').value;
+  let rows = allData;
+  if (sf) rows = rows.filter(r => r._gid === sf);
+  if (st) rows = rows.filter(r => r._status === st);
+  const show = rows.slice(0, 300);
+  const fn = n => n.toLocaleString('th-TH');
+  document.getElementById('row-count').textContent = `${fn(show.length)} รายการ (จาก ${fn(rows.length)})`;
+  const tbody = document.getElementById('table-body');
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="9" class="empty-state">ไม่พบข้อมูลที่ตรงกับเงื่อนไข</td></tr>`;
+    document.getElementById('table-note').textContent = '';
+    return;
+  }
+  tbody.innerHTML = show.map((r, i) => `
+    <tr>
+      <td style="color:var(--text-tertiary);font-size:11px">${i+1}</td>
+      <td><span class="pill pill-gray" style="font-size:10px">${r._sheet}</span></td>
+      <td style="font-family:monospace;font-size:11px;color:var(--text-secondary)">${r._code || '—'}</td>
+      <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;" title="${(r._name||'').replace(/"/g,'&quot;')}">${r._name || '—'}</td>
+      <td style="text-align:right">${r._qty ? fn(r._qty) : '—'}</td>
+      <td style="color:var(--text-secondary)">${r._unit || '—'}</td>
+      <td style="text-align:right;font-size:12px">${r._price ? '฿'+fn(Math.round(r._price)) : '—'}</td>
+      <td style="text-align:right;font-weight:500">${r._total ? '฿'+fn(Math.round(r._total)) : '—'}</td>
+      <td>${statusPill(r._status)}</td>
+    </tr>
+  `).join('');
+  document.getElementById('table-note').textContent =
+    rows.length > 300 ? `แสดง 300 รายการแรก จากทั้งหมด ${fn(rows.length)} รายการ` : '';
+}
+
+function renderProgress() {
+  const groups = { equipment: [], service: [], general: [] };
+  SHEETS.forEach(s => {
+    const st = sheetStats[s.gid] || { total: 0, approved: 0 };
+    if (s.group in groups) groups[s.group].push({ ...st, label: s.label });
+  });
+
+  function make(items, id) {
+    const el = document.getElementById(id);
+    if (!items.length) { el.innerHTML = '<div class="empty-state">ไม่มีข้อมูล</div>'; return; }
+    el.innerHTML = items.map(it => {
+      const pct = it.total > 0 ? Math.round((it.approved / it.total) * 100) : 0;
+      const color = pct >= 75 ? '#1D9E75' : pct >= 40 ? '#378ADD' : '#BA7517';
+      return `<div class="prog-row">
+        <div class="prog-meta">
+          <span class="prog-label">${it.label}</span>
+          <span class="prog-stat">${it.approved}/${it.total} · ${pct}%</span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${color}"></div></div>
+      </div>`;
+    }).join('');
+  }
+  make(groups.equipment, 'progress-equip');
+  make(groups.service,   'progress-svc');
+  make(groups.general,   'progress-gen');
+}
+
+function selectSheet(gid, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('filter-sheet').value = gid === 'all' ? '' : gid;
+  renderTable();
+}
+
+loadAllData();
+</script>
+</body>
+</html>
