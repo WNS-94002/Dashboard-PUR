@@ -1,367 +1,225 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Procurement Dashboard — Mining Equipment & Services</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Procurement Dashboard — Mining Equipment & Services</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg-primary: #ffffff; --bg-secondary: #f5f5f3; --bg-tertiary: #eeede8;
+    --text-primary: #1a1a18; --text-secondary: #5f5e5a; --text-tertiary: #888780;
+    --border: rgba(0,0,0,0.12); --border-md: rgba(0,0,0,0.22);
+    --radius-md: 8px; --radius-lg: 12px;
+    --blue: #378ADD; --green: #1D9E75; --amber: #BA7517; --red: #A32D2D;
+    --info-bg: #E6F1FB; --info-text: #185FA5;
+  }
+  @media (prefers-color-scheme: dark) {
     :root {
-      --bg-primary: #ffffff;
-      --bg-secondary: #f5f5f3;
-      --bg-tertiary: #eeecea;
-      --text-primary: #1a1a18;
-      --text-secondary: #5f5e5a;
-      --text-tertiary: #888780;
-      --border: rgba(0,0,0,0.1);
-      --border-md: rgba(0,0,0,0.18);
-      --radius-md: 8px;
-      --radius-lg: 12px;
-      --blue: #378ADD;
-      --green: #1D9E75;
-      --amber: #BA7517;
-      --red: #A32D2D;
+      --bg-primary:#1e1e1c; --bg-secondary:#2a2a28; --bg-tertiary:#242422;
+      --text-primary:#f0ede8; --text-secondary:#b4b2a9; --text-tertiary:#888780;
+      --border:rgba(255,255,255,0.12); --border-md:rgba(255,255,255,0.22);
+      --info-bg:#0c447c; --info-text:#b5d4f4;
     }
+  }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans Thai',sans-serif; background:var(--bg-tertiary); color:var(--text-primary); font-size:14px; line-height:1.5; }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg-primary: #1e1e1c;
-        --bg-secondary: #262624;
-        --bg-tertiary: #2e2e2c;
-        --text-primary: #f0efea;
-        --text-secondary: #b4b2a9;
-        --text-tertiary: #888780;
-        --border: rgba(255,255,255,0.1);
-        --border-md: rgba(255,255,255,0.18);
-      }
-    }
+  .topbar { background:var(--bg-primary); border-bottom:0.5px solid var(--border); padding:14px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; position:sticky; top:0; z-index:100; }
+  .topbar h1 { font-size:17px; font-weight:600; }
+  .topbar p  { font-size:12px; color:var(--text-secondary); margin-top:1px; }
+  .topbar-right { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .badge { font-size:11px; padding:4px 10px; border-radius:var(--radius-md); background:var(--info-bg); color:var(--info-text); font-weight:500; }
+  .btn { font-size:13px; padding:6px 14px; cursor:pointer; border-radius:var(--radius-md); border:0.5px solid var(--border-md); background:var(--bg-primary); color:var(--text-primary); transition:background .15s; }
+  .btn:hover { background:var(--bg-secondary); }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-      min-height: 100vh;
-      font-size: 14px;
-      line-height: 1.6;
-    }
+  .main { padding:20px 24px; max-width:1400px; margin:0 auto; }
 
-    .topbar {
-      background: var(--bg-primary);
-      border-bottom: 0.5px solid var(--border);
-      padding: 0 24px;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      gap: 12px;
-    }
-    .topbar-left { display: flex; align-items: center; gap: 14px; }
-    .topbar-icon {
-      width: 32px; height: 32px;
-      background: var(--text-primary);
-      border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px;
-    }
-    .topbar-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
-    .topbar-sub { font-size: 12px; color: var(--text-secondary); }
-    .topbar-right { display: flex; align-items: center; gap: 10px; }
+  .loading-wrap { margin-bottom:14px; }
+  .loading-bar { height:3px; border-radius:99px; background:var(--bg-secondary); overflow:hidden; }
+  .loading-fill { height:100%; width:30%; border-radius:99px; background:var(--blue); animation:pulse 1.5s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:.3;width:20%} 50%{opacity:1;width:80%} }
+  .load-status { font-size:12px; color:var(--text-tertiary); margin-top:5px; font-style:italic; }
 
-    .badge {
-      font-size: 11px; padding: 3px 10px;
-      border-radius: 99px;
-      background: #E6F1FB; color: #185FA5;
-      font-weight: 500; border: 0.5px solid #B5D4F4;
-    }
-    .badge.green { background: #EAF3DE; color: #3B6D11; border-color: #C0DD97; }
-    .badge.red   { background: #FCEBEB; color: #A32D2D; border-color: #F7C1C1; }
+  .metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:10px; margin-bottom:18px; }
+  .metric { background:var(--bg-secondary); border-radius:var(--radius-md); padding:14px 16px; }
+  .metric-label { font-size:11px; color:var(--text-secondary); margin-bottom:5px; text-transform:uppercase; letter-spacing:.04em; }
+  .metric-value { font-size:24px; font-weight:600; }
+  .metric-sub   { font-size:11px; color:var(--text-tertiary); margin-top:3px; }
+  .c-green{color:var(--green)} .c-amber{color:var(--amber)} .c-blue{color:var(--blue)} .c-red{color:var(--red)}
 
-    .btn {
-      font-size: 12px; padding: 6px 14px; cursor: pointer;
-      border-radius: var(--radius-md);
-      border: 0.5px solid var(--border-md);
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      font-family: inherit;
-      transition: background 0.15s, transform 0.1s;
-    }
-    .btn:hover { background: var(--bg-tertiary); }
-    .btn:active { transform: scale(0.98); }
-    .btn-primary {
-      background: var(--text-primary); color: var(--bg-primary);
-      border-color: transparent;
-    }
-    .btn-primary:hover { opacity: 0.85; background: var(--text-primary); }
+  .section-label { font-size:11px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase; letter-spacing:.05em; }
+  .tabs-wrap { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:18px; }
+  .tab { display:inline-block; padding:5px 12px; border-radius:var(--radius-md); font-size:12px; cursor:pointer; border:0.5px solid var(--border); background:var(--bg-secondary); color:var(--text-secondary); transition:all .15s; user-select:none; }
+  .tab:hover { background:var(--bg-primary); color:var(--text-primary); }
+  .tab.active { background:var(--info-bg); color:var(--info-text); border-color:transparent; font-weight:500; }
 
-    .main { max-width: 1400px; margin: 0 auto; padding: 24px 20px 48px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px; }
+  .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:18px; }
+  @media(max-width:900px){.grid2{grid-template-columns:1fr}}
+  @media(max-width:700px){.grid3{grid-template-columns:1fr}}
+  .card { background:var(--bg-primary); border:0.5px solid var(--border); border-radius:var(--radius-lg); padding:16px 18px; }
+  .card-title { font-size:11px; font-weight:600; color:var(--text-secondary); margin-bottom:12px; text-transform:uppercase; letter-spacing:.05em; }
 
-    .loading-section { margin-bottom: 20px; }
-    .loading-bar-wrap {
-      background: var(--bg-secondary); border-radius: 99px;
-      height: 3px; overflow: hidden; margin-bottom: 8px;
-    }
-    .loading-bar-fill {
-      height: 100%; border-radius: 99px; background: var(--blue);
-      animation: loadpulse 1.6s ease-in-out infinite;
-    }
-    @keyframes loadpulse {
-      0%,100%{width:20%;opacity:.4} 50%{width:75%;opacity:1}
-    }
-    .load-status { font-size: 12px; color: var(--text-tertiary); }
+  .legend { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:10px; font-size:12px; color:var(--text-secondary); }
+  .legend span { display:flex; align-items:center; gap:5px; }
+  .lbox { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
 
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 10px; margin-bottom: 20px;
-    }
-    .metric {
-      background: var(--bg-secondary);
-      border-radius: var(--radius-md);
-      padding: 14px 16px;
-    }
-    .metric-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
-    .metric-value { font-size: 24px; font-weight: 600; color: var(--text-primary); line-height: 1.1; }
-    .metric-value.green { color: var(--green); }
-    .metric-value.amber { color: var(--amber); }
-    .metric-value.red   { color: var(--red); }
-    .metric-value.blue  { color: var(--blue); }
-    .metric-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 4px; }
+  .info-box { background:var(--info-bg); border-radius:var(--radius-md); padding:10px 14px; font-size:12px; color:var(--info-text); margin-bottom:14px; line-height:1.7; }
+  .mono { font-family:'SF Mono','Fira Mono',Consolas,monospace; font-size:12px; }
 
-    .tabs-wrap {
-      background: var(--bg-primary);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 12px 16px;
-      margin-bottom: 20px;
-    }
-    .tabs-label { font-size: 11px; color: var(--text-tertiary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
-    .tabs { display: flex; flex-wrap: wrap; gap: 4px; }
-    .tab {
-      display: inline-block; padding: 4px 12px;
-      border-radius: var(--radius-md);
-      font-size: 12px; cursor: pointer;
-      border: 0.5px solid var(--border);
-      background: var(--bg-secondary);
-      color: var(--text-secondary);
-      transition: all 0.12s;
-      user-select: none;
-    }
-    .tab:hover { background: var(--bg-tertiary); color: var(--text-primary); }
-    .tab.active {
-      background: #E6F1FB; color: #185FA5;
-      border-color: #B5D4F4; font-weight: 500;
-    }
+  /* Toggle switch */
+  .toggle-row { display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+  .toggle-label { font-size:13px; color:var(--text-secondary); }
+  .toggle-switch { position:relative; display:inline-block; width:40px; height:22px; cursor:pointer; flex-shrink:0; }
+  .toggle-switch input { opacity:0; width:0; height:0; position:absolute; }
+  .slider-track { position:absolute; inset:0; background:var(--bg-secondary); border:0.5px solid var(--border-md); border-radius:99px; transition:background .2s; }
+  .toggle-switch input:checked + .slider-track { background:var(--blue); border-color:var(--blue); }
+  .slider-thumb { position:absolute; top:3px; left:3px; width:14px; height:14px; background:white; border-radius:50%; transition:transform .2s; box-shadow:0 1px 3px rgba(0,0,0,.25); pointer-events:none; }
+  .toggle-switch input:checked ~ .slider-thumb { transform:translateX(18px); }
 
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
-    .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 20px; }
-    @media(max-width: 900px) { .grid2 { grid-template-columns: 1fr; } }
-    @media(max-width: 700px) { .grid3 { grid-template-columns: 1fr; } }
+  .filter-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; align-items:center; }
+  .filter-row label { font-size:12px; color:var(--text-secondary); }
+  .filter-row select,.filter-row input[type=text] { font-size:13px; padding:6px 10px; border-radius:var(--radius-md); border:0.5px solid var(--border-md); background:var(--bg-primary); color:var(--text-primary); }
+  .filter-row select { cursor:pointer; }
+  .filter-row input[type=text] { width:200px; }
+  .row-count { font-size:12px; color:var(--text-tertiary); margin-left:auto; }
 
-    .card {
-      background: var(--bg-primary);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 16px 18px;
-    }
-    .card-title {
-      font-size: 11px; font-weight: 600; color: var(--text-secondary);
-      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px;
-    }
-    .legend {
-      display: flex; flex-wrap: wrap; gap: 14px;
-      margin-bottom: 10px; font-size: 12px; color: var(--text-secondary);
-    }
-    .legend span { display: flex; align-items: center; gap: 5px; }
-    .legend-box { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .table-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  thead th { text-align:left; padding:8px 10px; font-weight:500; color:var(--text-secondary); border-bottom:0.5px solid var(--border); font-size:11px; white-space:nowrap; text-transform:uppercase; letter-spacing:.03em; background:var(--bg-secondary); }
+  tbody td { padding:8px 10px; border-bottom:0.5px solid var(--border); color:var(--text-primary); vertical-align:middle; }
+  tbody tr:hover td { background:var(--bg-secondary); }
 
-    .filter-row {
-      display: flex; align-items: center; gap: 10px;
-      flex-wrap: wrap; margin-bottom: 12px;
-    }
-    .filter-row label { font-size: 12px; color: var(--text-secondary); }
-    .filter-row select {
-      font-size: 12px; padding: 6px 10px;
-      border-radius: var(--radius-md);
-      border: 0.5px solid var(--border-md);
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      cursor: pointer; font-family: inherit;
-    }
-    .row-count { font-size: 11px; color: var(--text-tertiary); margin-left: auto; }
+  /* RO group rows */
+  tr.ro-group td { background:color-mix(in srgb,var(--blue) 6%,var(--bg-primary)); border-bottom:0.5px solid var(--border-md); }
+  tr.ro-group:hover td { background:color-mix(in srgb,var(--blue) 12%,var(--bg-primary)); }
+  tr.ro-sub td { background:color-mix(in srgb,var(--bg-secondary) 55%,var(--bg-primary)); font-size:12px; color:var(--text-secondary); }
+  tr.ro-sub:hover td { background:var(--bg-secondary); }
+  tr.ro-sub td:nth-child(3) { padding-left:28px; }
 
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    thead th {
-      text-align: left; padding: 8px 10px;
-      font-weight: 500; color: var(--text-secondary);
-      border-bottom: 0.5px solid var(--border);
-      font-size: 11px; white-space: nowrap;
-      text-transform: uppercase; letter-spacing: 0.04em;
-    }
-    tbody td {
-      padding: 8px 10px; color: var(--text-primary);
-      border-bottom: 0.5px solid var(--border);
-      white-space: nowrap;
-    }
-    tbody tr:hover { background: var(--bg-secondary); }
-    tbody tr:last-child td { border-bottom: none; }
+  .expand-btn { cursor:pointer; font-size:11px; color:var(--info-text); background:var(--info-bg); border:none; border-radius:4px; padding:2px 7px; line-height:1.4; transition:background .1s; }
+  .expand-btn:hover { background:color-mix(in srgb,var(--blue) 20%,var(--info-bg)); }
 
-    .pill {
-      display: inline-block; padding: 2px 8px;
-      border-radius: 99px; font-size: 11px; font-weight: 500;
-    }
-    .pill-green { background: #EAF3DE; color: #3B6D11; }
-    .pill-amber { background: #FAEEDA; color: #854F0B; }
-    .pill-red   { background: #FCEBEB; color: #A32D2D; }
-    .pill-blue  { background: #E6F1FB; color: #185FA5; }
-    .pill-gray  { background: #F1EFE8; color: #5F5E5A; }
+  .pill { display:inline-block; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:500; white-space:nowrap; }
+  .pill-green{background:#EAF3DE;color:#3B6D11} .pill-amber{background:#FAEEDA;color:#854F0B}
+  .pill-red  {background:#FCEBEB;color:#A32D2D} .pill-blue {background:#E6F1FB;color:#185FA5}
+  .pill-gray {background:#F1EFE8;color:#5F5E5A}
+  @media(prefers-color-scheme:dark){
+    .pill-green{background:#173404;color:#C0DD97} .pill-amber{background:#412402;color:#FAC775}
+    .pill-red  {background:#501313;color:#F7C1C1} .pill-blue {background:#042C53;color:#B5D4F4}
+    .pill-gray {background:#2C2C2A;color:#D3D1C7}
+  }
+  .badge-count { display:inline-block; background:var(--bg-tertiary); color:var(--text-secondary); font-size:11px; border-radius:99px; padding:1px 7px; margin-left:5px; }
+  .table-note { font-size:12px; color:var(--text-tertiary); font-style:italic; margin-top:8px; }
 
-    .prog-row { margin-bottom: 12px; }
-    .prog-row:last-child { margin-bottom: 0; }
-    .prog-meta { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
-    .prog-label { color: var(--text-primary); }
-    .prog-stat  { color: var(--text-secondary); }
-    .prog-bar   { height: 5px; border-radius: 99px; background: var(--bg-secondary); overflow: hidden; }
-    .prog-fill  { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+  .prog-item { margin-bottom:14px; }
+  .prog-header { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
+  .prog-label { color:var(--text-primary); font-weight:500; }
+  .prog-stat  { color:var(--text-secondary); }
+  .prog-bar   { height:6px; border-radius:99px; background:var(--bg-secondary); overflow:hidden; }
+  .prog-fill  { height:100%; border-radius:99px; transition:width .8s ease; }
 
-    .table-note { font-size: 11px; color: var(--text-tertiary); padding: 8px 0 0; }
-    .empty-state { text-align: center; padding: 36px 16px; color: var(--text-tertiary); font-size: 13px; }
+  .debug-panel { background:var(--bg-secondary); border-radius:var(--radius-md); padding:10px 14px; font-size:12px; color:var(--text-tertiary); margin-bottom:14px; display:none; }
+  .debug-panel.show { display:block; }
 
-    .error-banner {
-      background: #FCEBEB; border: 0.5px solid #F7C1C1;
-      border-radius: var(--radius-md);
-      padding: 10px 14px; font-size: 13px; color: #A32D2D;
-      margin-bottom: 16px; display: none; line-height: 1.6;
-    }
-
-    .footer {
-      text-align: center; font-size: 11px;
-      color: var(--text-tertiary); padding: 24px 0 12px;
-      border-top: 0.5px solid var(--border); margin-top: 32px;
-    }
-
-    @media(max-width: 600px) {
-      .topbar-sub { display: none; }
-      .main { padding: 16px 12px 40px; }
-      .metrics { grid-template-columns: repeat(2, 1fr); }
-    }
-  </style>
+  .footer { text-align:center; padding:20px; font-size:11px; color:var(--text-tertiary); margin-top:10px; }
+</style>
 </head>
 <body>
 
-<!-- TOP BAR -->
 <div class="topbar">
-  <div class="topbar-left">
-    <div class="topbar-icon">📋</div>
-    <div>
-      <div class="topbar-title">Procurement Dashboard</div>
-      <div class="topbar-sub">Mining Equipment &amp; Services · 2026</div>
-    </div>
+  <div>
+    <h1>Procurement Dashboard</h1>
+    <p>Mining Equipment &amp; Services · สรุปตาม RO Number</p>
   </div>
   <div class="topbar-right">
-    <span class="badge" id="sync-badge">กำลังโหลด...</span>
-    <button class="btn btn-primary" onclick="loadAllData()">↻ Refresh</button>
+    <span class="badge" id="status-badge">กำลังโหลด...</span>
+    <button class="btn" onclick="loadAllData()">↻ Refresh</button>
+    <button class="btn" onclick="exportCSV()">⬇ Export CSV</button>
+    <button class="btn" onclick="toggleDebug()" id="debug-btn">🔍 Debug</button>
   </div>
 </div>
 
-<!-- MAIN -->
 <div class="main">
 
-  <!-- Loading -->
-  <div class="loading-section" id="loading-section">
-    <div class="loading-bar-wrap"><div class="loading-bar-fill"></div></div>
-    <div class="load-status" id="load-status">กำลังดึงข้อมูลจาก Google Sheets...</div>
+  <div class="info-box">
+    <strong>การรวม RO:</strong> ระบบตรวจหา column ที่เก็บหมายเลข RO อัตโนมัติ — RO เดียวกันใน Sheet เดียวกันจะถูก <strong>รวมมูลค่าทั้งหมด</strong>
+    คลิก <strong>▶</strong> เพื่อดูรายการย่อยภายใน RO นั้น &nbsp;|&nbsp;
+    ปิด Toggle "รวมตาม RO" เพื่อดูทุกบรรทัดแยกกัน &nbsp;|&nbsp;
+    Google Sheet ต้องตั้งเป็น <strong>"Anyone with the link can view"</strong>
   </div>
 
-  <!-- Error -->
-  <div class="error-banner" id="error-banner"></div>
+  <div class="debug-panel" id="debug-panel">
+    <strong>Debug — Column Headers ที่พบในแต่ละ Sheet:</strong>
+    <div id="debug-content" style="margin-top:8px;font-family:monospace;white-space:pre-wrap;max-height:240px;overflow-y:auto;line-height:1.8;"></div>
+  </div>
 
-  <!-- Metrics -->
+  <div class="loading-wrap" id="loading-section">
+    <div class="loading-bar"><div class="loading-fill"></div></div>
+    <p class="load-status" id="load-status">กำลังเริ่มต้นโหลดข้อมูล...</p>
+  </div>
+
   <div class="metrics">
-    <div class="metric">
-      <div class="metric-label">รายการทั้งหมด</div>
-      <div class="metric-value" id="m-total">—</div>
-      <div class="metric-sub">ทุก Sheet รวมกัน</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">มูลค่าประมาณการ</div>
-      <div class="metric-value amber" id="m-value">—</div>
-      <div class="metric-sub">บาท (Estimate)</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">อนุมัติแล้ว</div>
-      <div class="metric-value green" id="m-approved">—</div>
-      <div class="metric-sub">รายการ</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">รอดำเนินการ</div>
-      <div class="metric-value amber" id="m-pending">—</div>
-      <div class="metric-sub">รายการ</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">ระหว่างดำเนินการ</div>
-      <div class="metric-value blue" id="m-inprog">—</div>
-      <div class="metric-sub">รายการ</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">จำนวน Sheet</div>
-      <div class="metric-value" id="m-sheets">15</div>
-      <div class="metric-sub">หมวดหมู่</div>
-    </div>
+    <div class="metric"><div class="metric-label">RO ทั้งหมด</div><div class="metric-value" id="m-ro">—</div><div class="metric-sub">หมายเลข RO ไม่ซ้ำ</div></div>
+    <div class="metric"><div class="metric-label">รายการย่อยรวม</div><div class="metric-value c-blue" id="m-total">—</div><div class="metric-sub">ทุกบรรทัด</div></div>
+    <div class="metric"><div class="metric-label">มูลค่ารวม (บาท)</div><div class="metric-value c-amber" id="m-value">—</div><div class="metric-sub">Sum ของทุก RO</div></div>
+    <div class="metric"><div class="metric-label">อนุมัติแล้ว</div><div class="metric-value c-green" id="m-approved">—</div><div class="metric-sub">RO</div></div>
+    <div class="metric"><div class="metric-label">รอดำเนินการ</div><div class="metric-value c-amber" id="m-pending">—</div><div class="metric-sub">RO</div></div>
+    <div class="metric"><div class="metric-label">ระหว่างดำเนินการ</div><div class="metric-value c-blue" id="m-inprog">—</div><div class="metric-sub">RO</div></div>
   </div>
 
-  <!-- Sheet Tabs -->
+  <div class="section-label">เลือก Sheet / หมวดหมู่</div>
   <div class="tabs-wrap">
-    <div class="tabs-label">เลือก Sheet / หมวดหมู่</div>
-    <div class="tabs" id="tab-container">
-      <span class="tab active" onclick="selectSheet('all',this)">ทั้งหมด</span>
-      <span class="tab" onclick="selectSheet('0',this)">0-101 Conveyor Equip.</span>
-      <span class="tab" onclick="selectSheet('696948322',this)">4-501 Lubricant</span>
-      <span class="tab" onclick="selectSheet('1216432940',this)">6-101 Spreader</span>
-      <span class="tab" onclick="selectSheet('594703843',this)">6-102 BWE</span>
-      <span class="tab" onclick="selectSheet('1309658412',this)">6-103 Crusher</span>
-      <span class="tab" onclick="selectSheet('188899962',this)">6-104 CV System</span>
-      <span class="tab" onclick="selectSheet('1019106348',this)">6-105 Aux. CV</span>
-      <span class="tab" onclick="selectSheet('1624105960',this)">6-106 Service CV</span>
-      <span class="tab" onclick="selectSheet('1225728737',this)">6-111 General CV</span>
-      <span class="tab" onclick="selectSheet('1177087368',this)">6-227 Hydraulic Hose</span>
-      <span class="tab" onclick="selectSheet('1566400890',this)">7-101 Svc Spreader</span>
-      <span class="tab" onclick="selectSheet('1228114688',this)">7-102 Svc BWE</span>
-      <span class="tab" onclick="selectSheet('1252174840',this)">7-103 Svc Crusher</span>
-      <span class="tab" onclick="selectSheet('287824465',this)">7-104 Svc CV System</span>
-      <span class="tab" onclick="selectSheet('1562418173',this)">9-111 General Expense</span>
-    </div>
+    <span class="tab active" data-gid="all" onclick="selectTab(this)">ทั้งหมด</span>
+    <span class="tab" data-gid="0"          onclick="selectTab(this)">0-101 Conveyor Equip.</span>
+    <span class="tab" data-gid="696948322"  onclick="selectTab(this)">4-501 Lubricant</span>
+    <span class="tab" data-gid="1216432940" onclick="selectTab(this)">6-101 Spreader</span>
+    <span class="tab" data-gid="594703843"  onclick="selectTab(this)">6-102 BWE</span>
+    <span class="tab" data-gid="1309658412" onclick="selectTab(this)">6-103 Crusher</span>
+    <span class="tab" data-gid="188899962"  onclick="selectTab(this)">6-104 CV System</span>
+    <span class="tab" data-gid="1019106348" onclick="selectTab(this)">6-105 Aux. CV</span>
+    <span class="tab" data-gid="1624105960" onclick="selectTab(this)">6-106 Svc CV</span>
+    <span class="tab" data-gid="1225728737" onclick="selectTab(this)">6-111 General CV</span>
+    <span class="tab" data-gid="1177087368" onclick="selectTab(this)">6-227 Hydraulic</span>
+    <span class="tab" data-gid="1566400890" onclick="selectTab(this)">7-101 Svc Spreader</span>
+    <span class="tab" data-gid="1228114688" onclick="selectTab(this)">7-102 Svc BWE</span>
+    <span class="tab" data-gid="1252174840" onclick="selectTab(this)">7-103 Svc Crusher</span>
+    <span class="tab" data-gid="287824465"  onclick="selectTab(this)">7-104 Svc CV Sys.</span>
+    <span class="tab" data-gid="1562418173" onclick="selectTab(this)">9-111 General Exp.</span>
   </div>
 
-  <!-- Charts -->
   <div class="grid2">
     <div class="card">
-      <div class="card-title">รายการตาม Sheet</div>
+      <div class="card-title">จำนวน RO ตาม Sheet</div>
       <div class="legend">
-        <span><span class="legend-box" style="background:#378ADD"></span>จำนวนทั้งหมด</span>
-        <span><span class="legend-box" style="background:#1D9E75"></span>อนุมัติแล้ว</span>
+        <span><span class="lbox" style="background:#378ADD"></span>RO ทั้งหมด</span>
+        <span><span class="lbox" style="background:#1D9E75"></span>อนุมัติแล้ว</span>
       </div>
-      <div style="position:relative;width:100%;height:260px;">
-        <canvas id="chart-by-sheet"></canvas>
-      </div>
+      <div style="position:relative;width:100%;height:280px;"><canvas id="chart-sheet"></canvas></div>
     </div>
     <div class="card">
-      <div class="card-title">สัดส่วนตามประเภทงาน</div>
+      <div class="card-title">สัดส่วนตามกลุ่มงาน (RO)</div>
       <div class="legend" id="pie-legend"></div>
-      <div style="position:relative;width:100%;height:260px;">
-        <canvas id="chart-pie"></canvas>
-      </div>
+      <div style="position:relative;width:100%;height:280px;"><canvas id="chart-pie"></canvas></div>
     </div>
   </div>
 
-  <!-- Table -->
-  <div class="card" style="margin-bottom:20px;">
-    <div class="card-title">รายการสั่งซื้อทั้งหมด</div>
+  <div class="card" style="margin-bottom:18px;">
+    <div class="card-title">รายการสั่งซื้อ — สรุปตาม RO Number</div>
+
+    <div class="toggle-row">
+      <span class="toggle-label">รวมตาม RO:</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="toggle-group" checked onchange="renderTable()">
+        <div class="slider-track"></div>
+        <div class="slider-thumb"></div>
+      </label>
+      <span id="toggle-desc" style="font-size:12px;color:var(--text-secondary)">
+        เปิด — RO เดียวกันรวมเป็นบรรทัดเดียว (คลิก ▶ เพื่อดูรายการย่อย)
+      </span>
+    </div>
+
     <div class="filter-row">
       <label>Sheet:</label>
       <select id="filter-sheet" onchange="renderTable()">
@@ -390,327 +248,535 @@
         <option value="ระหว่างดำเนินการ">ระหว่างดำเนินการ</option>
         <option value="ยกเลิก">ยกเลิก</option>
       </select>
+      <label>ค้นหา:</label>
+      <input type="text" id="filter-search" placeholder="RO / รายการ / รหัส..." oninput="renderTable()">
       <span class="row-count" id="row-count"></span>
     </div>
+
     <div class="table-wrap">
       <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Sheet</th>
-            <th>รหัสสินค้า</th>
-            <th>ชื่อรายการ</th>
-            <th style="text-align:right">จำนวน</th>
-            <th>หน่วย</th>
-            <th style="text-align:right">ราคา/หน่วย</th>
-            <th style="text-align:right">มูลค่ารวม</th>
-            <th>สถานะ</th>
-          </tr>
-        </thead>
+        <thead id="thead-row"></thead>
         <tbody id="table-body">
-          <tr><td colspan="9" class="empty-state">กำลังโหลดข้อมูล...</td></tr>
+          <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-tertiary)">กำลังโหลดข้อมูล...</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="table-note" id="table-note"></div>
+    <p class="table-note" id="table-note"></p>
   </div>
 
-  <!-- Progress -->
   <div class="grid3">
-    <div class="card">
-      <div class="card-title">ความคืบหน้า — Equipment</div>
-      <div id="progress-equip"><div class="empty-state">กำลังโหลด...</div></div>
-    </div>
-    <div class="card">
-      <div class="card-title">ความคืบหน้า — Services</div>
-      <div id="progress-svc"><div class="empty-state">กำลังโหลด...</div></div>
-    </div>
-    <div class="card">
-      <div class="card-title">ความคืบหน้า — General</div>
-      <div id="progress-gen"><div class="empty-state">กำลังโหลด...</div></div>
-    </div>
+    <div class="card"><div class="card-title">Equipment — ความคืบหน้า</div><div id="progress-equip"></div></div>
+    <div class="card"><div class="card-title">Services — ความคืบหน้า</div><div id="progress-svc"></div></div>
+    <div class="card"><div class="card-title">General — ความคืบหน้า</div><div id="progress-gen"></div></div>
   </div>
 
-  <div class="footer">
-    Procurement Dashboard · ข้อมูลดึงจาก Google Sheets โดยตรง ·
-    ต้องเปิดในเว็บเบราว์เซอร์ปกติ (ไม่ใช่ file://) และ Google Sheet ต้องมีสิทธิ์ "Anyone with the link can view"
-  </div>
+  <div class="footer">Procurement Dashboard · ข้อมูลจาก Google Sheets · รวมตาม RO Number อัตโนมัติ</div>
 </div>
 
 <script>
+// ============================================================
+//  CONFIG — แก้ไข SHEET_ID ให้ตรงกับ Google Sheets ของคุณ
+// ============================================================
 const SHEET_ID = '1x8nzBNv4RGV-x6AtMIqm8HWJt5k0a-aVuEV8Zezess4';
+
 const SHEETS = [
-  { gid: '0',          name: '0-101', label: 'Conveyor Equip.',  group: 'equipment' },
-  { gid: '696948322',  name: '4-501', label: 'Lubricant',        group: 'equipment' },
-  { gid: '1216432940', name: '6-101', label: 'Spreader',         group: 'equipment' },
-  { gid: '594703843',  name: '6-102', label: 'BWE',              group: 'equipment' },
-  { gid: '1309658412', name: '6-103', label: 'Crusher',          group: 'equipment' },
-  { gid: '188899962',  name: '6-104', label: 'CV System',        group: 'equipment' },
-  { gid: '1019106348', name: '6-105', label: 'Aux. CV',          group: 'equipment' },
-  { gid: '1624105960', name: '6-106', label: 'Svc CV Equip.',    group: 'service'   },
-  { gid: '1225728737', name: '6-111', label: 'General CV',       group: 'general'   },
-  { gid: '1177087368', name: '6-227', label: 'Hydraulic Hose',   group: 'equipment' },
-  { gid: '1566400890', name: '7-101', label: 'Svc Spreader',     group: 'service'   },
-  { gid: '1228114688', name: '7-102', label: 'Svc BWE',          group: 'service'   },
-  { gid: '1252174840', name: '7-103', label: 'Svc Crusher',      group: 'service'   },
-  { gid: '287824465',  name: '7-104', label: 'Svc CV System',    group: 'service'   },
-  { gid: '1562418173', name: '9-111', label: 'General Expense',  group: 'general'   },
+  { gid:'0',          name:'0-101', label:'Conveyor Equipment',       group:'equipment' },
+  { gid:'696948322',  name:'4-501', label:'Lubricant',                group:'equipment' },
+  { gid:'1216432940', name:'6-101', label:'Spreader',                 group:'equipment' },
+  { gid:'594703843',  name:'6-102', label:'Bucket Wheel Excavator',   group:'equipment' },
+  { gid:'1309658412', name:'6-103', label:'Crusher',                  group:'equipment' },
+  { gid:'188899962',  name:'6-104', label:'Conveyor System',          group:'equipment' },
+  { gid:'1019106348', name:'6-105', label:'Aux. CV Equipment',        group:'equipment' },
+  { gid:'1624105960', name:'6-106', label:'Service CV Equipment',     group:'service'   },
+  { gid:'1225728737', name:'6-111', label:'General Consume CV',       group:'general'   },
+  { gid:'1177087368', name:'6-227', label:'Hydraulic Hose & Fitting', group:'equipment' },
+  { gid:'1566400890', name:'7-101', label:'Service Spreader',         group:'service'   },
+  { gid:'1228114688', name:'7-102', label:'Service BWE',              group:'service'   },
+  { gid:'1252174840', name:'7-103', label:'Service Crusher',          group:'service'   },
+  { gid:'287824465',  name:'7-104', label:'Service Conveyor System',  group:'service'   },
+  { gid:'1562418173', name:'9-111', label:'General Expense CV',       group:'general'   },
 ];
 
-let allData = [];
-let sheetStats = {};
-let chartSheet = null, chartPie = null;
+// ============================================================
+//  RO COLUMN DETECTION — ตรวจหา column RO อัตโนมัติ
+// ============================================================
+const RO_KEYWORDS = [
+  'ro no','ro number','ro#','r.o. no','repair order','ro_no','ro_number',
+  'rono','หมายเลข ro','เลข ro','ro เลขที่','เลขที่ ro',
+  'work order no','wo no','wo number','wo_no',
+  'po no','po number','po_no',
+  'order no','order number','order_no',
+  'request no','req no','req. no','requisition no',
+  'job no','job number','job order',
+  'ro' /* fallback — ตรวจ exact match สุดท้าย */
+];
 
-function splitCSVLine(line) {
-  const vals = [];
-  let cur = '', inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    const c = line[i];
-    if (c === '"') { inQ = !inQ; continue; }
-    if (c === ',' && !inQ) { vals.push(cur); cur = ''; continue; }
-    cur += c;
+function detectROColumn(headers) {
+  const lc = headers.map(h => h.toLowerCase().trim());
+  // pass 1: exact match (ยกเว้น 'ro' อย่างเดียว ไว้ทีหลัง)
+  for (let i=0; i<lc.length; i++) {
+    const h = lc[i];
+    if (RO_KEYWORDS.slice(0,-1).some(kw => h === kw)) return headers[i];
   }
-  vals.push(cur);
-  return vals.map(v => v.trim());
+  // pass 2: starts with
+  for (let i=0; i<lc.length; i++) {
+    const h = lc[i];
+    if (RO_KEYWORDS.some(kw => h.startsWith(kw+' ')||h.startsWith(kw+'.')||h.startsWith(kw+'_'))) return headers[i];
+  }
+  // pass 3: contains any keyword (longer ones first to avoid 'ro' matching 'process')
+  const sorted = [...RO_KEYWORDS].sort((a,b)=>b.length-a.length);
+  for (let i=0; i<lc.length; i++) {
+    const h = lc[i];
+    if (sorted.some(kw => kw.length >= 3 && h.includes(kw))) return headers[i];
+  }
+  // pass 4: exact 'ro'
+  for (let i=0; i<lc.length; i++) {
+    if (lc[i] === 'ro') return headers[i];
+  }
+  return null;
 }
 
-function parseCSV(text) {
-  const lines = text.trim().split(/\r?\n/);
-  if (lines.length < 2) return [];
-  const headers = splitCSVLine(lines[0]);
-  return lines.slice(1).map(line => {
-    const vals = splitCSVLine(line);
-    const obj = {};
-    headers.forEach((h, i) => obj[h] = (vals[i] || '').trim());
-    return obj;
-  }).filter(r => Object.values(r).some(v => v !== ''));
-}
-
-function inferStatus(row) {
-  const v = Object.values(row).join(' ').toLowerCase();
-  if (/cancel|ยกเลิก/.test(v))                           return 'ยกเลิก';
-  if (/complete|เสร็จ|อนุมัติ|approv/.test(v))           return 'อนุมัติ';
-  if (/progress|ดำเนินการ|ordering|ordered/.test(v))     return 'ระหว่างดำเนินการ';
-  return 'รอดำเนินการ';
-}
-
+// ============================================================
+//  FIELD HELPERS
+// ============================================================
 function getNum(row, kws) {
-  for (const k of Object.keys(row)) {
-    if (kws.some(w => k.toLowerCase().includes(w))) {
-      const v = parseFloat((row[k] || '').replace(/,/g, ''));
+  for (const key of Object.keys(row)) {
+    if (kws.some(kw => key.toLowerCase().includes(kw))) {
+      const v = parseFloat((row[key]||'').replace(/,/g,''));
       if (!isNaN(v) && v > 0) return v;
     }
   }
   return 0;
 }
 function getStr(row, kws) {
-  for (const k of Object.keys(row)) {
-    if (kws.some(w => k.toLowerCase().includes(w))) {
-      if (row[k] && row[k].trim()) return row[k].trim();
+  for (const key of Object.keys(row)) {
+    if (kws.some(kw => key.toLowerCase().includes(kw))) {
+      if (row[key]&&row[key].trim()) return row[key].trim();
     }
   }
   return '';
 }
+function inferStatus(row) {
+  const all = Object.values(row).join(' ').toLowerCase();
+  if (all.includes('cancel')||all.includes('ยกเลิก')) return 'ยกเลิก';
+  if (all.includes('complete')||all.includes('เสร็จ')||all.includes('อนุมัติ')||all.includes('approve')) return 'อนุมัติ';
+  if (all.includes('progress')||all.includes('ดำเนินการ')||all.includes('ordered')||all.includes('order')) return 'ระหว่างดำเนินการ';
+  return 'รอดำเนินการ';
+}
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
+// ============================================================
+//  CSV PARSER
+// ============================================================
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return { headers:[], rows:[] };
+  const headers = parseLine(lines[0]);
+  const rows = lines.slice(1).map(line => {
+    const vals = parseLine(line);
+    const obj = {};
+    headers.forEach((h,i) => obj[h] = (vals[i]||'').trim());
+    return obj;
+  }).filter(r => Object.values(r).some(v=>v!==''));
+  return { headers, rows };
+}
+function parseLine(line) {
+  const vals=[]; let cur='',inQ=false;
+  for (let i=0;i<line.length;i++){
+    const c=line[i];
+    if(c==='"'){inQ=!inQ;}
+    else if(c===','&&!inQ){vals.push(cur.replace(/^"|"$/g,''));cur='';}
+    else cur+=c;
+  }
+  vals.push(cur.replace(/^"|"$/g,''));
+  return vals;
+}
+
+// ============================================================
+//  GROUP BY RO
+// ============================================================
+function groupByRO(rows) {
+  const map = new Map();
+  const STATUS_RANK = {'อนุมัติ':3,'ระหว่างดำเนินการ':2,'รอดำเนินการ':1,'ยกเลิก':0};
+  for (const r of rows) {
+    // key = gid + RO เพื่อให้ group เฉพาะใน Sheet เดียวกัน
+    const key = `${r._gid}||${r._ro}`;
+    if (!map.has(key)) {
+      map.set(key, {
+        _key:   key,
+        _ro:    r._ro,
+        _hasRO: r._hasRO,
+        _gid:   r._gid,
+        _sheet: r._sheet,
+        _label: r._label,
+        _group: r._group,
+        _status:r._status,
+        _total: 0,
+        _items: [],
+      });
+    }
+    const g = map.get(key);
+    g._total += (r._total||0);
+    g._items.push(r);
+    // สถานะ = ค่าที่ priority สูงสุดในกลุ่ม
+    if ((STATUS_RANK[r._status]||0) > (STATUS_RANK[g._status]||0)) g._status = r._status;
+  }
+  return [...map.values()];
+}
+
+// ============================================================
+//  GLOBAL STATE
+// ============================================================
+let allData    = [];
+let sheetStats = {};
+let roGroups   = [];
+let expandedROs= new Set();
+let chartSheet = null, chartPie = null;
+let debugInfo  = [];
+
+// ============================================================
+//  FETCH SHEET
+// ============================================================
 async function fetchSheet(gid, name, label, group) {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
   try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const res  = await fetch(url);
+    if (!res.ok) throw new Error('HTTP '+res.status);
     const text = await res.text();
-    return parseCSV(text).map(r => {
-      const qty   = getNum(r, ['qty','จำนวน','quantity','amount','volume']);
-      const price = getNum(r, ['price','ราคา','unit price','rate']);
-      let   total = getNum(r, ['total','รวม','มูลค่า','sum']);
-      if (!total && qty && price) total = qty * price;
+    const { headers, rows } = parseCSV(text);
+    const roCol = detectROColumn(headers);
+    debugInfo.push({ sheet:name, headers, roCol });
+
+    return rows.map((r,i) => {
+      const roVal  = roCol ? (r[roCol]||'').trim() : '';
+      const qty    = getNum(r,['qty','จำนวน','quantity','amount','count']);
+      const price  = getNum(r,['unit price','unit_price','price/unit','ราคา/หน่วย','ราคาต่อหน่วย','price','ราคา','rate']);
+      const total  = getNum(r,['total amount','grand total','total price','มูลค่ารวม','ยอดรวม','total','รวม','มูลค่า','sum','value'])
+                     || (qty*price);
       return {
         ...r,
-        _gid: gid, _sheet: name, _label: label, _group: group,
+        _gid:    gid,
+        _sheet:  name,
+        _label:  label,
+        _group:  group,
         _status: inferStatus(r),
-        _qty:   qty, _unit: getStr(r, ['unit','หน่วย']),
-        _price: price, _total: total,
-        _name:  getStr(r, ['description','name','ชื่อ','รายการ','item','desc','part name','material']),
-        _code:  getStr(r, ['code','part no','รหัส','id','no','number','part number']),
+        _ro:     roVal || `${name}-row${i+1}`,
+        _hasRO:  !!roVal,
+        _roCol:  roCol,
+        _code:   getStr(r,['part no','part_no','partno','material code','mat.code','item code','รหัส','code','id','no.']),
+        _name:   getStr(r,['description','item description','part name','material name','รายการ','ชื่อรายการ','ชื่อ','name','detail','desc']),
+        _qty:    qty,
+        _unit:   getStr(r,['unit','หน่วย','uom']),
+        _price:  price,
+        _total:  total,
       };
     });
-  } catch (e) {
-    console.warn('Sheet error', name, e.message);
+  } catch(e) {
+    console.warn(`Sheet ${name} failed:`,e.message);
+    debugInfo.push({ sheet:name, headers:[], roCol:null, error:e.message });
     return [];
   }
 }
 
+// ============================================================
+//  LOAD ALL
+// ============================================================
 async function loadAllData() {
-  document.getElementById('loading-section').style.display = 'block';
-  document.getElementById('error-banner').style.display   = 'none';
-  document.getElementById('sync-badge').textContent       = 'กำลังโหลด...';
-  document.getElementById('sync-badge').className         = 'badge';
-  allData = []; sheetStats = {};
+  document.getElementById('loading-section').style.display='block';
+  document.getElementById('status-badge').textContent='กำลังโหลด...';
+  allData=[]; sheetStats={}; debugInfo=[]; expandedROs.clear();
 
-  for (let i = 0; i < SHEETS.length; i++) {
-    const s = SHEETS[i];
-    document.getElementById('load-status').textContent =
-      `กำลังโหลด ${s.name} — ${s.label} (${i+1}/${SHEETS.length})...`;
-    const rows = await fetchSheet(s.gid, s.name, s.label, s.group);
+  for (let i=0;i<SHEETS.length;i++) {
+    const s=SHEETS[i];
+    setStatus(`โหลด ${s.name} — ${s.label} (${i+1}/${SHEETS.length})`);
+    const rows = await fetchSheet(s.gid,s.name,s.label,s.group);
     allData.push(...rows);
+    const grp = groupByRO(rows);
     sheetStats[s.gid] = {
-      name: s.name, label: s.label, group: s.group,
-      total:    rows.length,
-      approved: rows.filter(r => r._status === 'อนุมัติ').length,
-      pending:  rows.filter(r => r._status === 'รอดำเนินการ').length,
-      inprog:   rows.filter(r => r._status === 'ระหว่างดำเนินการ').length,
-      value:    rows.reduce((a, r) => a + (r._total || 0), 0),
+      name:s.name, label:s.label, group:s.group,
+      totalRO:   grp.length,
+      totalRows: rows.length,
+      approved:  grp.filter(r=>r._status==='อนุมัติ').length,
+      pending:   grp.filter(r=>r._status==='รอดำเนินการ').length,
+      inprog:    grp.filter(r=>r._status==='ระหว่างดำเนินการ').length,
+      value:     rows.reduce((a,r)=>a+(r._total||0),0),
     };
   }
 
-  document.getElementById('loading-section').style.display = 'none';
-  if (!allData.length) {
-    const eb = document.getElementById('error-banner');
-    eb.style.display = 'block';
-    eb.innerHTML = `<strong>⚠ ไม่สามารถดึงข้อมูลได้</strong><br>
-      กรุณาตรวจสอบ:<br>
-      1. เปิดไฟล์นี้ผ่าน Web Server (ไม่ใช่ double-click file:///)<br>
-      2. Google Sheet ต้องตั้งค่า <strong>"Anyone with the link can view"</strong>`;
-    document.getElementById('sync-badge').textContent = 'ข้อมูลไม่พร้อม';
-    document.getElementById('sync-badge').className   = 'badge red';
-  } else {
-    const t = new Date().toLocaleTimeString('th-TH');
-    document.getElementById('sync-badge').textContent = `✓ อัพเดท ${t}`;
-    document.getElementById('sync-badge').className   = 'badge green';
-  }
+  roGroups = groupByRO(allData);
 
-  updateMetrics(); renderCharts(); renderTable(); renderProgress();
+  // debug output
+  document.getElementById('debug-content').textContent = debugInfo.map(d =>
+    `[${d.sheet}] RO column: ${d.roCol ? `"${d.roCol}"` : '❌ ไม่พบ (ใช้ index แทน)'}${d.error?` | ERROR: ${d.error}`:''}\n         Headers: ${(d.headers||[]).join(', ')}`
+  ).join('\n\n');
+
+  const loaded = Object.values(sheetStats).filter(s=>s.totalRows>0).length;
+  setStatus(`โหลดเสร็จ · ${roGroups.length.toLocaleString()} RO (${allData.length.toLocaleString()} บรรทัด) จาก ${loaded}/${SHEETS.length} sheets`);
+  document.getElementById('status-badge').textContent = `✓ ${roGroups.length.toLocaleString()} RO`;
+  if (allData.length>0) document.getElementById('loading-section').style.display='none';
+
+  updateMetrics();
+  renderCharts();
+  renderTable();
+  renderProgress();
 }
 
+function setStatus(msg){ document.getElementById('load-status').textContent=msg; }
+
+// ============================================================
+//  METRICS
+// ============================================================
 function updateMetrics() {
-  const fn = n => n.toLocaleString('th-TH');
-  document.getElementById('m-total').textContent    = fn(allData.length);
-  const val = allData.reduce((a, r) => a + (r._total || 0), 0);
-  document.getElementById('m-value').textContent    = val > 0 ? '฿' + fn(Math.round(val)) : '—';
-  document.getElementById('m-approved').textContent = fn(allData.filter(r => r._status === 'อนุมัติ').length);
-  document.getElementById('m-pending').textContent  = fn(allData.filter(r => r._status === 'รอดำเนินการ').length);
-  document.getElementById('m-inprog').textContent   = fn(allData.filter(r => r._status === 'ระหว่างดำเนินการ').length);
+  const value = roGroups.reduce((a,r)=>a+(r._total||0),0);
+  document.getElementById('m-ro').textContent       = roGroups.length.toLocaleString();
+  document.getElementById('m-total').textContent    = allData.length.toLocaleString();
+  document.getElementById('m-value').textContent    = value>0 ? '฿'+Math.round(value).toLocaleString() : '—';
+  document.getElementById('m-approved').textContent = roGroups.filter(r=>r._status==='อนุมัติ').length.toLocaleString();
+  document.getElementById('m-pending').textContent  = roGroups.filter(r=>r._status==='รอดำเนินการ').length.toLocaleString();
+  document.getElementById('m-inprog').textContent   = roGroups.filter(r=>r._status==='ระหว่างดำเนินการ').length.toLocaleString();
 }
 
+// ============================================================
+//  CHARTS
+// ============================================================
 function renderCharts() {
-  const labels   = SHEETS.map(s => s.name);
-  const counts   = SHEETS.map(s => (sheetStats[s.gid] || {}).total    || 0);
-  const approved = SHEETS.map(s => (sheetStats[s.gid] || {}).approved || 0);
+  const labels   = SHEETS.map(s=>s.name);
+  const roCount  = SHEETS.map(s=>(sheetStats[s.gid]||{}).totalRO  ||0);
+  const approved = SHEETS.map(s=>(sheetStats[s.gid]||{}).approved ||0);
 
   if (chartSheet) chartSheet.destroy();
-  chartSheet = new Chart(document.getElementById('chart-by-sheet'), {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { label: 'ทั้งหมด',   data: counts,   backgroundColor: '#378ADD', borderRadius: 3 },
-        { label: 'อนุมัติ',  data: approved, backgroundColor: '#1D9E75', borderRadius: 3 }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { ticks: { font: { size: 10 }, maxRotation: 55, autoSkip: false }, grid: { display: false } },
-        y: { beginAtZero: true, ticks: { font: { size: 11 } }, grid: { color: 'rgba(128,128,128,0.1)' } }
-      }
-    }
+  chartSheet = new Chart(document.getElementById('chart-sheet'),{
+    type:'bar',
+    data:{ labels, datasets:[
+      {label:'RO ทั้งหมด', data:roCount,  backgroundColor:'#378ADD', borderRadius:4},
+      {label:'อนุมัติแล้ว',data:approved, backgroundColor:'#1D9E75', borderRadius:4},
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{ x:{ticks:{font:{size:10},maxRotation:45,autoSkip:false},grid:{display:false}},
+               y:{beginAtZero:true,ticks:{font:{size:11}}} } }
   });
 
-  const groups = { equipment: 0, service: 0, general: 0 };
-  allData.forEach(r => { if (r._group in groups) groups[r._group]++; });
-  const pieLabels = ['Equipment', 'Service', 'General'];
-  const pieData   = [groups.equipment, groups.service, groups.general];
-  const pieColors = ['#378ADD', '#1D9E75', '#BA7517'];
-
-  document.getElementById('pie-legend').innerHTML = pieLabels.map((l, i) =>
-    `<span><span class="legend-box" style="background:${pieColors[i]}"></span>${l} (${pieData[i]})</span>`
-  ).join('');
-
+  const grps={equipment:0,service:0,general:0};
+  roGroups.forEach(r=>{ if(r._group in grps) grps[r._group]++; });
+  const pL=['Equipment','Service','General'], pD=[grps.equipment,grps.service,grps.general];
+  const pC=['#378ADD','#1D9E75','#BA7517'];
+  document.getElementById('pie-legend').innerHTML = pL.map((l,i)=>
+    `<span><span class="lbox" style="background:${pC[i]}"></span>${l} ${pD[i].toLocaleString()}</span>`).join('');
   if (chartPie) chartPie.destroy();
-  chartPie = new Chart(document.getElementById('chart-pie'), {
-    type: 'doughnut',
-    data: { labels: pieLabels, datasets: [{ data: pieData, backgroundColor: pieColors, borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }] },
-    options: {
-      responsive: true, maintainAspectRatio: false, cutout: '62%',
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} รายการ` } }
-      }
-    }
+  chartPie = new Chart(document.getElementById('chart-pie'),{
+    type:'doughnut',
+    data:{ labels:pL, datasets:[{data:pD, backgroundColor:pC, borderWidth:2, borderColor:'#fff'}] },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'62%', plugins:{legend:{display:false}} }
   });
 }
 
-function statusPill(s) {
-  const map = { 'อนุมัติ': 'green', 'รอดำเนินการ': 'amber', 'ระหว่างดำเนินการ': 'blue', 'ยกเลิก': 'red' };
-  return `<span class="pill pill-${map[s] || 'gray'}">${s}</span>`;
-}
-
+// ============================================================
+//  TABLE
+// ============================================================
 function renderTable() {
-  const sf = document.getElementById('filter-sheet').value;
-  const st = document.getElementById('filter-status').value;
-  let rows = allData;
-  if (sf) rows = rows.filter(r => r._gid === sf);
-  if (st) rows = rows.filter(r => r._status === st);
-  const show = rows.slice(0, 300);
-  const fn = n => n.toLocaleString('th-TH');
-  document.getElementById('row-count').textContent = `${fn(show.length)} รายการ (จาก ${fn(rows.length)})`;
-  const tbody = document.getElementById('table-body');
-  if (!rows.length) {
-    tbody.innerHTML = `<tr><td colspan="9" class="empty-state">ไม่พบข้อมูลที่ตรงกับเงื่อนไข</td></tr>`;
-    document.getElementById('table-note').textContent = '';
-    return;
+  const isGrouped = document.getElementById('toggle-group').checked;
+  const sheetF    = document.getElementById('filter-sheet').value;
+  const statusF   = document.getElementById('filter-status').value;
+  const searchF   = (document.getElementById('filter-search').value||'').toLowerCase().trim();
+
+  document.getElementById('toggle-desc').textContent = isGrouped
+    ? 'เปิด — RO เดียวกันรวมเป็นบรรทัดเดียว (คลิก ▶ เพื่อดูรายการย่อย)'
+    : 'ปิด — แสดงทุกบรรทัดแยกกัน';
+
+  /* ---- GROUPED MODE ---- */
+  if (isGrouped) {
+    document.getElementById('thead-row').innerHTML = `<tr>
+      <th style="width:32px"></th>
+      <th style="width:40px">#</th>
+      <th>Sheet</th>
+      <th>RO Number</th>
+      <th style="text-align:center">รายการย่อย</th>
+      <th>ชื่อรายการ (หลัก)</th>
+      <th style="text-align:right">มูลค่ารวม (฿)</th>
+      <th>สถานะ</th>
+    </tr>`;
+
+    let data = roGroups;
+    if (sheetF)  data = data.filter(r=>r._gid===sheetF);
+    if (statusF) data = data.filter(r=>r._status===statusF);
+    if (searchF) data = data.filter(r=>
+      r._ro.toLowerCase().includes(searchF)||
+      r._items.some(i=>(i._name||'').toLowerCase().includes(searchF)||(i._code||'').toLowerCase().includes(searchF))
+    );
+
+    const show = data.slice(0, 500);
+    document.getElementById('row-count').textContent =
+      `${show.length.toLocaleString()} RO (จาก ${data.length.toLocaleString()})`;
+
+    let html = '';
+    show.forEach((g, idx) => {
+      const multi = g._items.length > 1;
+      const isExp = expandedROs.has(g._key);
+      const firstName = g._items.find(i=>i._name)?._name || '—';
+
+      html += `<tr class="ro-group" style="cursor:${multi?'pointer':'default'}" onclick="${multi?`toggleRO('${esc(g._key)}')`:''}">
+        <td style="text-align:center">
+          ${multi?`<button class="expand-btn" onclick="event.stopPropagation();toggleRO('${esc(g._key)}')">${isExp?'▼':'▶'}</button>`:''}
+        </td>
+        <td style="color:var(--text-tertiary);font-size:12px">${idx+1}</td>
+        <td><span class="pill pill-gray">${g._sheet}</span></td>
+        <td>
+          <span style="font-family:monospace;font-size:13px;font-weight:600">${esc(g._ro)}</span>
+          ${!g._hasRO?'<span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">(auto)</span>':''}
+        </td>
+        <td style="text-align:center">
+          ${multi?`<span class="badge-count">${g._items.length} รายการ</span>`:'1 รายการ'}
+        </td>
+        <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(firstName)}">${esc(firstName)}</td>
+        <td style="text-align:right;font-weight:600;font-size:14px">${g._total?'฿'+Math.round(g._total).toLocaleString():'—'}</td>
+        <td>${sPill(g._status)}</td>
+      </tr>`;
+
+      if (isExp && multi) {
+        g._items.forEach(item => {
+          html += `<tr class="ro-sub">
+            <td></td>
+            <td></td>
+            <td><span class="pill pill-gray" style="font-size:10px">${item._sheet}</span></td>
+            <td style="font-family:monospace;padding-left:28px;font-size:12px;color:var(--text-tertiary)">${esc(item._code)||'—'}</td>
+            <td style="text-align:center;font-size:12px">
+              ${item._qty?item._qty.toLocaleString():'—'}${item._unit?' '+esc(item._unit):''}
+            </td>
+            <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(item._name)}">${esc(item._name)||'—'}</td>
+            <td style="text-align:right">${item._total?'฿'+Math.round(item._total).toLocaleString():'—'}</td>
+            <td>${sPill(item._status)}</td>
+          </tr>`;
+        });
+      }
+    });
+
+    document.getElementById('table-body').innerHTML = html || noData();
+    document.getElementById('table-note').textContent = data.length>500
+      ? `* แสดง 500 RO แรก จากทั้งหมด ${data.length.toLocaleString()} RO` : '';
+
+  /* ---- FLAT MODE ---- */
+  } else {
+    document.getElementById('thead-row').innerHTML = `<tr>
+      <th>#</th><th>Sheet</th><th>RO Number</th><th>รหัส</th>
+      <th>ชื่อรายการ</th>
+      <th style="text-align:right">จำนวน</th><th>หน่วย</th>
+      <th style="text-align:right">ราคา/หน่วย</th>
+      <th style="text-align:right">มูลค่ารวม</th>
+      <th>สถานะ</th>
+    </tr>`;
+
+    let data = allData;
+    if (sheetF)  data = data.filter(r=>r._gid===sheetF);
+    if (statusF) data = data.filter(r=>r._status===statusF);
+    if (searchF) data = data.filter(r=>
+      r._ro.toLowerCase().includes(searchF)||
+      (r._name||'').toLowerCase().includes(searchF)||
+      (r._code||'').toLowerCase().includes(searchF)
+    );
+
+    const show = data.slice(0,300);
+    document.getElementById('row-count').textContent =
+      `${show.length.toLocaleString()} บรรทัด (จาก ${data.length.toLocaleString()})`;
+
+    document.getElementById('table-body').innerHTML = show.length
+      ? show.map((r,i)=>`<tr>
+          <td style="color:var(--text-tertiary);font-size:12px">${i+1}</td>
+          <td><span class="pill pill-gray">${r._sheet}</span></td>
+          <td style="font-family:monospace;font-weight:600">${esc(r._ro)||'—'}</td>
+          <td style="font-family:monospace;font-size:12px">${esc(r._code)||'—'}</td>
+          <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(r._name)}">${esc(r._name)||'—'}</td>
+          <td style="text-align:right">${r._qty?r._qty.toLocaleString():'—'}</td>
+          <td>${r._unit||'—'}</td>
+          <td style="text-align:right">${r._price?'฿'+Math.round(r._price).toLocaleString():'—'}</td>
+          <td style="text-align:right;font-weight:600">${r._total?'฿'+Math.round(r._total).toLocaleString():'—'}</td>
+          <td>${sPill(r._status)}</td>
+        </tr>`).join('')
+      : noData();
+    document.getElementById('table-note').textContent = data.length>300
+      ? `* แสดง 300 บรรทัดแรก จากทั้งหมด ${data.length.toLocaleString()} บรรทัด` : '';
   }
-  tbody.innerHTML = show.map((r, i) => `
-    <tr>
-      <td style="color:var(--text-tertiary);font-size:11px">${i+1}</td>
-      <td><span class="pill pill-gray" style="font-size:10px">${r._sheet}</span></td>
-      <td style="font-family:monospace;font-size:11px;color:var(--text-secondary)">${r._code || '—'}</td>
-      <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;" title="${(r._name||'').replace(/"/g,'&quot;')}">${r._name || '—'}</td>
-      <td style="text-align:right">${r._qty ? fn(r._qty) : '—'}</td>
-      <td style="color:var(--text-secondary)">${r._unit || '—'}</td>
-      <td style="text-align:right;font-size:12px">${r._price ? '฿'+fn(Math.round(r._price)) : '—'}</td>
-      <td style="text-align:right;font-weight:500">${r._total ? '฿'+fn(Math.round(r._total)) : '—'}</td>
-      <td>${statusPill(r._status)}</td>
-    </tr>
-  `).join('');
-  document.getElementById('table-note').textContent =
-    rows.length > 300 ? `แสดง 300 รายการแรก จากทั้งหมด ${fn(rows.length)} รายการ` : '';
 }
 
-function renderProgress() {
-  const groups = { equipment: [], service: [], general: [] };
-  SHEETS.forEach(s => {
-    const st = sheetStats[s.gid] || { total: 0, approved: 0 };
-    if (s.group in groups) groups[s.group].push({ ...st, label: s.label });
-  });
-
-  function make(items, id) {
-    const el = document.getElementById(id);
-    if (!items.length) { el.innerHTML = '<div class="empty-state">ไม่มีข้อมูล</div>'; return; }
-    el.innerHTML = items.map(it => {
-      const pct = it.total > 0 ? Math.round((it.approved / it.total) * 100) : 0;
-      const color = pct >= 75 ? '#1D9E75' : pct >= 40 ? '#378ADD' : '#BA7517';
-      return `<div class="prog-row">
-        <div class="prog-meta">
-          <span class="prog-label">${it.label}</span>
-          <span class="prog-stat">${it.approved}/${it.total} · ${pct}%</span>
-        </div>
-        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${color}"></div></div>
-      </div>`;
-    }).join('');
-  }
-  make(groups.equipment, 'progress-equip');
-  make(groups.service,   'progress-svc');
-  make(groups.general,   'progress-gen');
-}
-
-function selectSheet(gid, el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('filter-sheet').value = gid === 'all' ? '' : gid;
+function toggleRO(key) {
+  if (expandedROs.has(key)) expandedROs.delete(key);
+  else expandedROs.add(key);
   renderTable();
 }
 
+function noData(){
+  return `<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text-tertiary)">ไม่พบรายการที่ตรงกับตัวกรอง</td></tr>`;
+}
+function sPill(s){
+  const m={'อนุมัติ':'green','รอดำเนินการ':'amber','ระหว่างดำเนินการ':'blue','ยกเลิก':'red'};
+  return `<span class="pill pill-${m[s]||'gray'}">${s||'—'}</span>`;
+}
+
+// ============================================================
+//  PROGRESS
+// ============================================================
+function renderProgress() {
+  const grps={equipment:[],service:[],general:[]};
+  SHEETS.forEach(s=>{
+    const st=sheetStats[s.gid]||{totalRO:0,approved:0};
+    if(s.group in grps) grps[s.group].push({label:s.label,total:st.totalRO,approved:st.approved});
+  });
+  ['equipment','service','general'].forEach((g,idx)=>{
+    const id=['progress-equip','progress-svc','progress-gen'][idx];
+    const el=document.getElementById(id);
+    const items=grps[g];
+    if(!items.length){el.innerHTML='<p style="font-size:12px;color:var(--text-tertiary)">ไม่มีข้อมูล</p>';return;}
+    el.innerHTML=items.map(item=>{
+      const pct=item.total>0?Math.round((item.approved/item.total)*100):0;
+      const col=pct>=75?'#1D9E75':pct>=40?'#378ADD':'#BA7517';
+      return `<div class="prog-item">
+        <div class="prog-header">
+          <span class="prog-label">${item.label}</span>
+          <span class="prog-stat">${item.approved}/${item.total} · ${pct}%</span>
+        </div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${col}"></div></div>
+      </div>`;
+    }).join('');
+  });
+}
+
+// ============================================================
+//  TABS / EXPORT / DEBUG
+// ============================================================
+function selectTab(el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const gid=el.dataset.gid;
+  document.getElementById('filter-sheet').value=(gid==='all')?'':gid;
+  renderTable();
+}
+
+function exportCSV(){
+  if(!roGroups.length){alert('ยังไม่มีข้อมูล');return;}
+  const isGrouped=document.getElementById('toggle-group').checked;
+  let rows, header;
+  if(isGrouped){
+    header=['RO Number','Sheet','จำนวนรายการย่อย','มูลค่ารวม (฿)','สถานะ','หมายเหตุ'];
+    rows=roGroups.map(g=>[g._ro,g._sheet,g._items.length,Math.round(g._total),g._status,g._hasRO?'':'ไม่มี RO column (auto)']);
+  } else {
+    header=['Sheet','RO Number','รหัส','ชื่อรายการ','จำนวน','หน่วย','ราคา/หน่วย','มูลค่ารวม','สถานะ'];
+    rows=allData.map(r=>[r._sheet,r._ro,r._code,r._name,r._qty,r._unit,r._price,Math.round(r._total||0),r._status]);
+  }
+  const csv=[header,...rows].map(r=>r.map(v=>`"${(v||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`procurement_ro_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+function toggleDebug(){
+  const p=document.getElementById('debug-panel');
+  p.classList.toggle('show');
+  document.getElementById('debug-btn').textContent=p.classList.contains('show')?'✕ Debug':'🔍 Debug';
+}
+
+// INIT
 loadAllData();
 </script>
 </body>
