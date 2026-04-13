@@ -25,25 +25,24 @@
   }
   body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans Thai',sans-serif; background:var(--bg-tertiary); color:var(--text-primary); font-size:14px; line-height:1.5; }
 
-  /* ── Topbar ── */
-  .topbar { background:var(--bg-primary); border-bottom:0.5px solid var(--border); padding:14px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; position:sticky; top:0; z-index:100; }
+  /* Topbar */
+  .topbar { background:var(--bg-primary); border-bottom:0.5px solid var(--border); padding:14px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; position:sticky; top:0; z-index:200; }
   .topbar h1 { font-size:17px; font-weight:600; }
   .topbar p  { font-size:12px; color:var(--text-secondary); margin-top:1px; }
   .topbar-right { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
   .badge { font-size:11px; padding:4px 10px; border-radius:var(--radius-md); background:var(--info-bg); color:var(--info-text); font-weight:500; }
   .btn { font-size:13px; padding:6px 14px; cursor:pointer; border-radius:var(--radius-md); border:0.5px solid var(--border-md); background:var(--bg-primary); color:var(--text-primary); transition:background .15s; }
   .btn:hover { background:var(--bg-secondary); }
-
   .main { padding:20px 24px; max-width:1400px; margin:0 auto; }
 
-  /* ── Loading ── */
+  /* Loading */
   .loading-wrap { margin-bottom:14px; }
   .loading-bar  { height:3px; border-radius:99px; background:var(--bg-secondary); overflow:hidden; }
   .loading-fill { height:100%; width:30%; border-radius:99px; background:var(--blue); animation:pulse 1.5s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:.3;width:20%} 50%{opacity:1;width:80%} }
   .load-status { font-size:12px; color:var(--text-tertiary); margin-top:5px; font-style:italic; }
 
-  /* ── Metric cards ── */
+  /* Metrics */
   .metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-bottom:18px; }
   .metric { background:var(--bg-secondary); border-radius:var(--radius-md); padding:14px 16px; }
   .metric-label { font-size:11px; color:var(--text-secondary); margin-bottom:5px; text-transform:uppercase; letter-spacing:.04em; }
@@ -51,39 +50,40 @@
   .metric-sub   { font-size:11px; color:var(--text-tertiary); margin-top:3px; }
   .c-blue{color:var(--blue)} .c-amber{color:var(--amber)} .c-green{color:var(--green)} .c-purple{color:var(--purple)}
 
-  /* ── Value summary bar ── */
+  /* Value summary */
   .value-card { background:var(--bg-primary); border:0.5px solid var(--border); border-radius:var(--radius-lg); padding:16px 20px; margin-bottom:18px; }
   .value-card-title { font-size:11px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:.05em; margin-bottom:14px; }
-  .value-row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
-  .value-item { flex:1; min-width:150px; }
-  .value-item-label { font-size:11px; color:var(--text-secondary); margin-bottom:3px; }
-  .value-item-num   { font-size:20px; font-weight:600; }
-  .value-divider    { width:1px; height:40px; background:var(--border); flex-shrink:0; }
-  .progress-compare { height:10px; border-radius:99px; background:var(--bg-secondary); overflow:hidden; margin-top:10px; display:flex; gap:2px; }
-  .progress-compare-fill { height:100%; border-radius:99px; transition:width .8s ease; }
-  .progress-compare-legend { display:flex; gap:16px; margin-top:8px; font-size:11px; color:var(--text-secondary); flex-wrap:wrap; }
-  .progress-compare-legend span { display:flex; align-items:center; gap:5px; }
+  .value-row { display:flex; align-items:stretch; gap:0; flex-wrap:wrap; }
+  .value-item { flex:1; min-width:160px; padding:0 20px; border-right:0.5px solid var(--border); }
+  .value-item:first-child { padding-left:0; }
+  .value-item:last-child  { border-right:none; }
+  .value-item-label { font-size:11px; color:var(--text-secondary); margin-bottom:4px; }
+  .value-item-num   { font-size:22px; font-weight:600; }
+  .value-item-sub   { font-size:11px; color:var(--text-tertiary); margin-top:3px; }
+  .progress-compare { height:10px; border-radius:99px; background:var(--bg-secondary); overflow:hidden; margin-top:14px; display:flex; }
+  .pc-fill { height:100%; transition:width .8s ease; }
+  .pc-legend { display:flex; gap:16px; margin-top:8px; font-size:11px; color:var(--text-secondary); flex-wrap:wrap; }
+  .pc-legend span { display:flex; align-items:center; gap:5px; }
   .lbox { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
 
-  /* ── Dropdown filter ── */
+  /* Filter bar */
   .filter-bar { display:flex; align-items:center; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
   .filter-bar label { font-size:12px; color:var(--text-secondary); font-weight:500; }
-  .filter-bar select { font-size:13px; padding:7px 12px; border-radius:var(--radius-md); border:0.5px solid var(--border-md); background:var(--bg-primary); color:var(--text-primary); cursor:pointer; min-width:220px; }
+  .filter-bar select { font-size:13px; padding:7px 12px; border-radius:var(--radius-md); border:0.5px solid var(--border-md); background:var(--bg-primary); color:var(--text-primary); cursor:pointer; min-width:240px; }
   .filter-bar select:focus { outline:none; border-color:var(--blue); }
 
-  /* ── Charts ── */
+  /* Cards & Grid */
   .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px; }
   .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:18px; }
-  @media(max-width:900px){.grid2{grid-template-columns:1fr}}
-  @media(max-width:700px){.grid3{grid-template-columns:1fr}}
+  @media(max-width:900px){ .grid2{grid-template-columns:1fr} }
+  @media(max-width:700px){ .grid3{grid-template-columns:1fr} }
   .card { background:var(--bg-primary); border:0.5px solid var(--border); border-radius:var(--radius-lg); padding:16px 18px; }
   .card-title { font-size:11px; font-weight:600; color:var(--text-secondary); margin-bottom:12px; text-transform:uppercase; letter-spacing:.05em; }
   .legend { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:10px; font-size:12px; color:var(--text-secondary); }
   .legend span { display:flex; align-items:center; gap:5px; }
 
-  /* ── Table ── */
+  /* Toggle */
   .toggle-row { display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
-  .toggle-label { font-size:13px; color:var(--text-secondary); }
   .toggle-switch { position:relative; display:inline-block; width:40px; height:22px; cursor:pointer; flex-shrink:0; }
   .toggle-switch input { opacity:0; width:0; height:0; position:absolute; }
   .slider-track { position:absolute; inset:0; background:var(--bg-secondary); border:0.5px solid var(--border-md); border-radius:99px; transition:background .2s; }
@@ -91,6 +91,7 @@
   .slider-thumb { position:absolute; top:3px; left:3px; width:14px; height:14px; background:white; border-radius:50%; transition:transform .2s; box-shadow:0 1px 3px rgba(0,0,0,.25); pointer-events:none; }
   .toggle-switch input:checked ~ .slider-thumb { transform:translateX(18px); }
 
+  /* Table filters */
   .tbl-filter { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; align-items:center; }
   .tbl-filter label { font-size:12px; color:var(--text-secondary); }
   .tbl-filter select,.tbl-filter input[type=text] { font-size:13px; padding:6px 10px; border-radius:var(--radius-md); border:0.5px solid var(--border-md); background:var(--bg-primary); color:var(--text-primary); }
@@ -98,33 +99,31 @@
   .tbl-filter input[type=text] { width:200px; }
   .row-count { font-size:12px; color:var(--text-tertiary); margin-left:auto; }
 
+  /* Table */
   .table-wrap { overflow-x:auto; }
   table { width:100%; border-collapse:collapse; font-size:13px; }
   thead th { text-align:left; padding:8px 10px; font-weight:500; color:var(--text-secondary); border-bottom:0.5px solid var(--border); font-size:11px; white-space:nowrap; text-transform:uppercase; letter-spacing:.03em; background:var(--bg-secondary); }
   tbody td { padding:9px 10px; border-bottom:0.5px solid var(--border); color:var(--text-primary); vertical-align:middle; }
   tbody tr:hover td { background:var(--bg-secondary); }
-
-  /* RO grouped rows */
   tr.ro-group td { background:color-mix(in srgb,var(--blue) 5%,var(--bg-primary)); }
   tr.ro-group:hover td { background:color-mix(in srgb,var(--blue) 10%,var(--bg-primary)); }
-  tr.ro-sub td { background:color-mix(in srgb,var(--bg-secondary) 50%,var(--bg-primary)); font-size:12px; color:var(--text-secondary); }
-  tr.ro-sub:hover td { background:var(--bg-secondary); }
-
-  .ro-link { color:var(--blue); cursor:pointer; text-decoration:none; font-weight:600; font-family:monospace; font-size:13px; border:none; background:none; padding:0; text-align:left; }
+  .ro-link { color:var(--blue); cursor:pointer; font-weight:600; border:none; background:none; padding:0; text-align:left; font-size:13px; font-family:inherit; }
   .ro-link:hover { text-decoration:underline; }
-
   .pill { display:inline-block; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:500; white-space:nowrap; }
-  .pill-green{background:#EAF3DE;color:#3B6D11} .pill-amber{background:#FAEEDA;color:#854F0B}
-  .pill-red  {background:#FCEBEB;color:#A32D2D} .pill-blue {background:#E6F1FB;color:#185FA5}
-  .pill-gray {background:#F1EFE8;color:#5F5E5A} .pill-purple{background:#EEEDFE;color:#3C3489}
+  .pill-green {background:#EAF3DE;color:#3B6D11} .pill-amber  {background:#FAEEDA;color:#854F0B}
+  .pill-red   {background:#FCEBEB;color:#A32D2D} .pill-blue   {background:#E6F1FB;color:#185FA5}
+  .pill-gray  {background:#F1EFE8;color:#5F5E5A} .pill-purple {background:#EEEDFE;color:#3C3489}
+  .pill-teal  {background:#E1F5EE;color:#0F6E56}
   @media(prefers-color-scheme:dark){
-    .pill-green{background:#173404;color:#C0DD97} .pill-amber{background:#412402;color:#FAC775}
-    .pill-red  {background:#501313;color:#F7C1C1} .pill-blue {background:#042C53;color:#B5D4F4}
-    .pill-gray {background:#2C2C2A;color:#D3D1C7} .pill-purple{background:#26215C;color:#CECBF6}
+    .pill-green {background:#173404;color:#C0DD97} .pill-amber  {background:#412402;color:#FAC775}
+    .pill-red   {background:#501313;color:#F7C1C1} .pill-blue   {background:#042C53;color:#B5D4F4}
+    .pill-gray  {background:#2C2C2A;color:#D3D1C7} .pill-purple {background:#26215C;color:#CECBF6}
+    .pill-teal  {background:#04342C;color:#5DCAA5}
   }
   .table-note { font-size:12px; color:var(--text-tertiary); font-style:italic; margin-top:8px; }
+  .mono { font-family:'SF Mono','Fira Mono',Consolas,monospace; font-size:12px; }
 
-  /* ── Progress ── */
+  /* Progress bars */
   .prog-item { margin-bottom:14px; }
   .prog-header { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
   .prog-label { color:var(--text-primary); font-weight:500; }
@@ -132,28 +131,27 @@
   .prog-bar   { height:6px; border-radius:99px; background:var(--bg-secondary); overflow:hidden; }
   .prog-fill  { height:100%; border-radius:99px; transition:width .8s ease; }
 
-  /* ── Modal ── */
+  /* Modal */
   .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:999; display:none; align-items:center; justify-content:center; padding:20px; }
   .modal-overlay.show { display:flex; }
-  .modal { background:var(--bg-primary); border-radius:var(--radius-lg); border:0.5px solid var(--border-md); width:100%; max-width:720px; max-height:85vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.2); }
+  .modal { background:var(--bg-primary); border-radius:var(--radius-lg); border:0.5px solid var(--border-md); width:100%; max-width:760px; max-height:88vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 64px rgba(0,0,0,.22); }
   .modal-header { padding:16px 20px; border-bottom:0.5px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-shrink:0; }
-  .modal-title { font-size:15px; font-weight:600; }
-  .modal-subtitle { font-size:12px; color:var(--text-secondary); margin-top:2px; }
-  .modal-close { background:none; border:none; cursor:pointer; color:var(--text-secondary); font-size:18px; padding:2px 6px; border-radius:4px; line-height:1; }
+  .modal-title    { font-size:15px; font-weight:600; }
+  .modal-subtitle { font-size:12px; color:var(--text-secondary); margin-top:4px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .modal-close { background:none; border:none; cursor:pointer; color:var(--text-secondary); font-size:18px; padding:2px 7px; border-radius:4px; line-height:1; flex-shrink:0; }
   .modal-close:hover { background:var(--bg-secondary); color:var(--text-primary); }
-  .modal-body { padding:16px 20px; overflow-y:auto; flex:1; }
-  .modal-footer { padding:12px 20px; border-top:0.5px solid var(--border); display:flex; justify-content:flex-end; flex-shrink:0; }
-
-  .modal table { width:100%; border-collapse:collapse; font-size:13px; }
+  .modal-body   { padding:16px 20px; overflow-y:auto; flex:1; }
+  .modal-footer { padding:12px 20px; border-top:0.5px solid var(--border); display:flex; justify-content:flex-end; gap:8px; flex-shrink:0; }
+  .modal table  { width:100%; border-collapse:collapse; font-size:13px; }
   .modal thead th { text-align:left; padding:8px 10px; font-size:11px; font-weight:500; color:var(--text-secondary); border-bottom:0.5px solid var(--border); background:var(--bg-secondary); text-transform:uppercase; letter-spacing:.03em; white-space:nowrap; }
   .modal tbody td { padding:9px 10px; border-bottom:0.5px solid var(--border); vertical-align:middle; }
   .modal tbody tr:last-child td { border-bottom:none; }
   .modal tbody tr:hover td { background:var(--bg-secondary); }
-  .modal-total { display:flex; justify-content:space-between; align-items:center; padding:12px 10px 0; border-top:0.5px solid var(--border-md); margin-top:4px; }
+  .modal-total { display:flex; justify-content:space-between; align-items:center; padding:12px 10px 0; border-top:0.5px solid var(--border-md); margin-top:6px; }
   .modal-total-label { font-size:13px; font-weight:500; }
-  .modal-total-value { font-size:18px; font-weight:700; color:var(--amber); }
+  .modal-total-value { font-size:20px; font-weight:700; color:var(--amber); }
 
-  .mono { font-family:'SF Mono','Fira Mono',Consolas,monospace; font-size:12px; }
+  /* Debug */
   .debug-panel { background:var(--bg-secondary); border-radius:var(--radius-md); padding:10px 14px; font-size:12px; color:var(--text-tertiary); margin-bottom:14px; display:none; }
   .debug-panel.show { display:block; }
   .footer { text-align:center; padding:20px; font-size:11px; color:var(--text-tertiary); margin-top:10px; }
@@ -178,7 +176,7 @@
 
   <div class="debug-panel" id="debug-panel">
     <strong>Debug — Column Headers ที่พบในแต่ละ Budget:</strong>
-    <div id="debug-content" style="margin-top:8px;font-family:monospace;white-space:pre-wrap;max-height:240px;overflow-y:auto;line-height:1.8;"></div>
+    <div id="debug-content" style="margin-top:8px;font-family:monospace;white-space:pre-wrap;max-height:260px;overflow-y:auto;line-height:1.9;font-size:11px;"></div>
   </div>
 
   <div class="loading-wrap" id="loading-section">
@@ -186,7 +184,7 @@
     <p class="load-status" id="load-status">กำลังเริ่มต้นโหลดข้อมูล...</p>
   </div>
 
-  <!-- Metric cards -->
+  <!-- Metrics: 4 cards only -->
   <div class="metrics">
     <div class="metric">
       <div class="metric-label">RO ทั้งหมด</div>
@@ -208,50 +206,36 @@
       <div class="metric-value c-purple" id="m-archived">—</div>
       <div class="metric-sub" id="m-archived-pct">จาก RO ทั้งหมด</div>
     </div>
-    <div class="metric">
-      <div class="metric-label">จำนวน Budget</div>
-      <div class="metric-value">15</div>
-      <div class="metric-sub">หมวดหมู่</div>
-    </div>
   </div>
 
-  <!-- Value summary -->
+  <!-- Value Summary: 3 items only (removed GRPO & Archived individual) -->
   <div class="value-card">
     <div class="value-card-title">สรุปมูลค่าการสั่งซื้อ</div>
     <div class="value-row">
       <div class="value-item">
         <div class="value-item-label">มูลค่ารวมทั้งหมด</div>
         <div class="value-item-num c-amber" id="v-total">—</div>
-        <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px">ผลรวมทุก RO</div>
+        <div class="value-item-sub">ผลรวมทุก RO</div>
       </div>
-      <div class="value-divider"></div>
       <div class="value-item">
-        <div class="value-item-label">มูลค่า GRPO + Archived</div>
-        <div class="value-item-num c-green" id="v-grpo-arch">—</div>
-        <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px" id="v-grpo-arch-pct">— ของมูลค่ารวม</div>
+        <div class="value-item-label">มูลค่า PO</div>
+        <div class="value-item-num c-green" id="v-po">—</div>
+        <div class="value-item-sub" id="v-po-pct">GRPO + Archived</div>
       </div>
-      <div class="value-divider"></div>
       <div class="value-item">
-        <div class="value-item-label">มูลค่า GRPO</div>
-        <div class="value-item-num" style="color:var(--green);font-size:17px" id="v-grpo">—</div>
-        <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px" id="v-grpo-pct"></div>
-      </div>
-      <div class="value-divider"></div>
-      <div class="value-item">
-        <div class="value-item-label">มูลค่า Archived</div>
-        <div class="value-item-num" style="color:var(--purple);font-size:17px" id="v-arch">—</div>
-        <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px" id="v-arch-pct"></div>
+        <div class="value-item-label">คงเหลือ (ยังไม่ PO)</div>
+        <div class="value-item-num" style="color:var(--text-secondary)" id="v-remain">—</div>
+        <div class="value-item-sub" id="v-remain-pct">— ของมูลค่ารวม</div>
       </div>
     </div>
     <div class="progress-compare" id="value-bar"></div>
-    <div class="progress-compare-legend">
-      <span><span class="lbox" style="background:var(--green)"></span>GRPO</span>
-      <span><span class="lbox" style="background:var(--purple)"></span>Archived</span>
-      <span><span class="lbox" style="background:var(--bg-secondary);border:0.5px solid var(--border)"></span>อื่นๆ</span>
+    <div class="pc-legend">
+      <span><span class="lbox" style="background:var(--green)"></span>มูลค่า PO (GRPO + Archived)</span>
+      <span><span class="lbox" style="background:var(--bg-tertiary);border:0.5px solid var(--border)"></span>คงเหลือ</span>
     </div>
   </div>
 
-  <!-- Budget dropdown -->
+  <!-- Budget Dropdown -->
   <div class="filter-bar">
     <label>Budget:</label>
     <select id="budget-select" onchange="onBudgetChange()">
@@ -274,7 +258,7 @@
     </select>
   </div>
 
-  <!-- Charts -->
+  <!-- Charts Row -->
   <div class="grid2">
     <div class="card">
       <div class="card-title">จำนวน RO ตาม Budget</div>
@@ -292,19 +276,28 @@
     </div>
   </div>
 
+  <!-- Monthly Expense Chart -->
+  <div class="card" style="margin-bottom:18px;">
+    <div class="card-title">ค่าใช้จ่ายรายเดือน (ตาม PO Date)</div>
+    <div class="legend">
+      <span><span class="lbox" style="background:#378ADD"></span>มูลค่า (฿)</span>
+    </div>
+    <div style="position:relative;width:100%;height:300px;"><canvas id="chart-monthly"></canvas></div>
+  </div>
+
   <!-- Table -->
   <div class="card" style="margin-bottom:18px;">
     <div class="card-title">รายการสั่งซื้อ — สรุปตาม RO Number</div>
 
     <div class="toggle-row">
-      <span class="toggle-label">รวมตาม RO:</span>
+      <span style="font-size:13px;color:var(--text-secondary)">รวมตาม RO:</span>
       <label class="toggle-switch">
         <input type="checkbox" id="toggle-group" checked onchange="renderTable()">
         <div class="slider-track"></div>
         <div class="slider-thumb"></div>
       </label>
       <span id="toggle-desc" style="font-size:12px;color:var(--text-secondary)">
-        เปิด — RO เดียวกันรวมเป็นบรรทัดเดียว (คลิกชื่อ RO เพื่อดูรายละเอียด)
+        เปิด — RO เดียวกันรวมเป็นบรรทัดเดียว (คลิก RO Name เพื่อดูรายละเอียด)
       </span>
     </div>
 
@@ -328,7 +321,7 @@
         <option value="287824465">7-104 Service Conveyor System</option>
         <option value="1562418173">9-111 General Expense CV</option>
       </select>
-      <label>สถานะ:</label>
+      <label>State:</label>
       <select id="filter-status" onchange="renderTable()">
         <option value="">ทั้งหมด</option>
         <option value="GRPO">GRPO</option>
@@ -337,7 +330,7 @@
         <option value="Cancelled">Cancelled</option>
       </select>
       <label>ค้นหา:</label>
-      <input type="text" id="filter-search" placeholder="RO / รายการ / รหัส..." oninput="renderTable()">
+      <input type="text" id="filter-search" placeholder="RO / ชื่อ / ร้านค้า..." oninput="renderTable()">
       <span class="row-count" id="row-count"></span>
     </div>
 
@@ -362,7 +355,7 @@
   <div class="footer">Procurement Dashboard · ข้อมูลจาก Google Sheets · รวมตาม RO Number อัตโนมัติ</div>
 </div>
 
-<!-- ── Modal Detail ── -->
+<!-- Modal -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-header">
@@ -403,105 +396,159 @@ const SHEETS = [
   { gid:'1562418173', name:'9-111', label:'General Expense CV',       group:'general'   },
 ];
 
-// ════════════════════════════════════════════════════════════
-//  STATUS DETECTION — GRPO / Archived / Open / Cancelled
-// ════════════════════════════════════════════════════════════
-const STATUS_COL_KEYWORDS = ['status','สถานะ','doc status','document status','state'];
+// Month label map — Jan 2026 absorbs Dec 2025
+const MONTH_LABELS = ['ม.ค. 26','ก.พ. 26','มี.ค. 26','เม.ย. 26','พ.ค. 26','มิ.ย. 26',
+                      'ก.ค. 26','ส.ค. 26','ก.ย. 26','ต.ค. 26','พ.ย. 26','ธ.ค. 26'];
 
-function detectStatusColumn(headers) {
-  for (const h of headers) {
-    if (STATUS_COL_KEYWORDS.some(kw => h.toLowerCase().includes(kw))) return h;
+// ════════════════════════════════════════════════════════════
+//  COLUMN DETECTION
+// ════════════════════════════════════════════════════════════
+const RO_KW      = ['ro no','ro number','ro#','r.o. no','repair order no','ro_no','ro_number','rono',
+                    'หมายเลข ro','เลข ro','ro เลขที่','เลขที่ ro','work order no','wo no','wo_no',
+                    'po no','po number','po_no','order no','order number','req no','job no','ro'];
+const VENDOR_KW  = ['vendor','supplier','ร้านค้า','บริษัท','vendor name','supplier name',
+                    'ชื่อผู้ขาย','ผู้จัดจำหน่าย','card name','bp name','business partner'];
+// "Description" column — for item detail in modal
+const DESC_KW    = ['description','item description','รายการ','ชื่อสินค้า','รายละเอียด','detail'];
+// "RO Name / RO Description" — the RO-level name shown in table
+const RONAME_KW  = ['ro name','ro description','ro desc','ro_name','ro_desc',
+                    'document title','title','name','ชื่อ ro','ชื่อรายการ','ชื่อ'];
+// PO Date
+const PODATE_KW  = ['po date','posting date','doc date','document date','วันที่ po',
+                    'วันที่สั่ง','order date','purchase date','date'];
+// State — exact "State" column first
+const STATE_KW   = ['state','สถานะ','status','doc status','document status'];
+
+function detectCol(headers, keywords) {
+  const lc = headers.map(h => h.toLowerCase().trim());
+  // exact (skip short 'ro' alone first pass)
+  for (let i = 0; i < lc.length; i++) {
+    if (keywords.slice(0,-1).some(kw => lc[i] === kw)) return headers[i];
+  }
+  // starts-with
+  for (let i = 0; i < lc.length; i++) {
+    if (keywords.some(kw => kw.length > 2 && (lc[i].startsWith(kw+' ')||lc[i].startsWith(kw+'_')||lc[i].startsWith(kw+'.')))) return headers[i];
+  }
+  // contains (longer first)
+  const sorted = [...keywords].sort((a,b) => b.length - a.length);
+  for (let i = 0; i < lc.length; i++) {
+    if (sorted.some(kw => kw.length >= 3 && lc[i].includes(kw))) return headers[i];
+  }
+  // exact short 'ro', 'date', etc
+  for (let i = 0; i < lc.length; i++) {
+    if (keywords[keywords.length-1] && lc[i] === keywords[keywords.length-1]) return headers[i];
   }
   return null;
 }
 
-function inferStatus(row, statusCol) {
-  const raw = statusCol ? (row[statusCol]||'') : '';
-  const val = raw.trim();
-  // ตรวจ exact/partial match
-  if (/grpo/i.test(val))                                        return 'GRPO';
-  if (/archiv/i.test(val))                                      return 'Archived';
-  if (/cancel/i.test(val)||/ยกเลิก/i.test(val))                return 'Cancelled';
-  if (/open/i.test(val)||/รอ/i.test(val)||/pending/i.test(val)) return 'Open';
-  // fallback: scan all values
-  const all = Object.values(row).join(' ');
-  if (/grpo/i.test(all))    return 'GRPO';
-  if (/archiv/i.test(all))  return 'Archived';
-  if (/cancel/i.test(all))  return 'Cancelled';
-  return 'Open';
-}
-
-// ════════════════════════════════════════════════════════════
-//  COLUMN DETECTION HELPERS
-// ════════════════════════════════════════════════════════════
-const RO_KW = ['ro no','ro number','ro#','r.o. no','repair order no','ro_no','ro_number','rono',
-               'หมายเลข ro','เลข ro','ro เลขที่','เลขที่ ro','work order no','wo no','wo_no',
-               'po no','po number','po_no','order no','order number','req no','job no','ro'];
-
-const VENDOR_KW = ['vendor','supplier','ร้านค้า','บริษัท','vendor name','supplier name',
-                   'ชื่อผู้ขาย','ผู้จัดจำหน่าย','card name','bp name','business partner'];
-
-const DESC_KW   = ['ro description','ro desc','description','item description','part name',
-                   'material name','รายการ','ชื่อรายการ','ชื่อสินค้า','ชื่อ','name','detail','desc'];
-
-function detectCol(headers, keywords) {
-  const lc = headers.map(h=>h.toLowerCase().trim());
-  // exact (skip 'ro' alone for first pass)
-  for (let i=0;i<lc.length;i++) {
-    if (keywords.slice(0,-1).some(kw=>lc[i]===kw)) return headers[i];
+// State: read directly from "State" column (exact match first)
+function detectStateCol(headers) {
+  const lc = headers.map(h => h.toLowerCase().trim());
+  // priority: exact "state"
+  const exact = lc.findIndex(h => h === 'state');
+  if (exact >= 0) return headers[exact];
+  // then "status"
+  const stat  = lc.findIndex(h => h === 'status');
+  if (stat  >= 0) return headers[stat];
+  // partial
+  for (let i = 0; i < lc.length; i++) {
+    if (STATE_KW.some(kw => lc[i].includes(kw))) return headers[i];
   }
-  // starts-with
-  for (let i=0;i<lc.length;i++) {
-    if (keywords.some(kw=>kw.length>2 && (lc[i].startsWith(kw+' ')||lc[i].startsWith(kw+'.')||lc[i].startsWith(kw+'_')))) return headers[i];
-  }
-  // contains (longer first)
-  const sorted=[...keywords].sort((a,b)=>b.length-a.length);
-  for (let i=0;i<lc.length;i++) {
-    if (sorted.some(kw=>kw.length>=3 && lc[i].includes(kw))) return headers[i];
-  }
-  // exact 'ro'
-  for (let i=0;i<lc.length;i++) { if(lc[i]==='ro') return headers[i]; }
   return null;
 }
 
 function getNum(row, kws) {
-  for (const key of Object.keys(row)) {
-    if (kws.some(kw=>key.toLowerCase().includes(kw))) {
-      const v=parseFloat((row[key]||'').replace(/,/g,''));
-      if (!isNaN(v)&&v>0) return v;
+  for (const k of Object.keys(row)) {
+    if (kws.some(kw => k.toLowerCase().includes(kw))) {
+      const v = parseFloat((row[k]||'').replace(/,/g,''));
+      if (!isNaN(v) && v > 0) return v;
     }
   }
   return 0;
 }
 function getStr(row, kws) {
-  for (const key of Object.keys(row)) {
-    if (kws.some(kw=>key.toLowerCase().includes(kw))) {
-      if(row[key]&&row[key].trim()) return row[key].trim();
+  for (const k of Object.keys(row)) {
+    if (kws.some(kw => k.toLowerCase().includes(kw))) {
+      if (row[k] && row[k].trim()) return row[k].trim();
     }
   }
   return '';
 }
-function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function fmt(n){ return n?'฿'+Math.round(n).toLocaleString():'—'; }
+
+// ════════════════════════════════════════════════════════════
+//  STATE NORMALIZER — map raw cell value → canonical status
+// ════════════════════════════════════════════════════════════
+function normalizeState(raw) {
+  if (!raw) return 'Open';
+  const v = raw.trim();
+  // exact match first (case-insensitive)
+  if (/^grpo$/i.test(v))     return 'GRPO';
+  if (/^archived?$/i.test(v))return 'Archived';
+  if (/^open$/i.test(v))     return 'Open';
+  if (/^cancel/i.test(v)||/ยกเลิก/.test(v)) return 'Cancelled';
+  if (/^closed?$/i.test(v))  return 'Closed';
+  // partial
+  if (/grpo/i.test(v))       return 'GRPO';
+  if (/archiv/i.test(v))     return 'Archived';
+  if (/cancel/i.test(v))     return 'Cancelled';
+  if (/close/i.test(v))      return 'Closed';
+  // return raw value as-is so real statuses show up
+  return v || 'Open';
+}
+
+// ════════════════════════════════════════════════════════════
+//  PO DATE PARSER  → { year, month } (1-based, Jan2026 absorbs Dec2025)
+// ════════════════════════════════════════════════════════════
+function parsePODate(raw) {
+  if (!raw || !raw.trim()) return null;
+  const s = raw.trim();
+  // Try formats: DD/MM/YYYY, MM/DD/YYYY, YYYY-MM-DD, DD-MM-YYYY, DD.MM.YYYY
+  let d = null;
+  const p1 = s.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})$/);
+  if (p1) {
+    let [, a, b, c] = p1;
+    const yr = c.length === 2 ? 2000 + parseInt(c) : parseInt(c);
+    // Heuristic: if a > 12, it's DD/MM; if b > 12, it's MM/DD; else assume DD/MM (Thai convention)
+    if (parseInt(a) > 12)      d = new Date(yr, parseInt(b)-1, parseInt(a));
+    else if (parseInt(b) > 12) d = new Date(yr, parseInt(a)-1, parseInt(b));
+    else                       d = new Date(yr, parseInt(b)-1, parseInt(a)); // DD/MM
+  }
+  // ISO: YYYY-MM-DD
+  const p2 = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (!d && p2) d = new Date(parseInt(p2[1]), parseInt(p2[2])-1, parseInt(p2[3]));
+  // Month Year: "Jan 2026", "01/2026"
+  const p3 = s.match(/^(\d{1,2})[\/\-](\d{4})$/);
+  if (!d && p3) d = new Date(parseInt(p3[2]), parseInt(p3[1])-1, 1);
+
+  if (!d || isNaN(d.getTime())) return null;
+
+  let year  = d.getFullYear();
+  let month = d.getMonth() + 1; // 1-based
+
+  // Dec 2025 → Jan 2026
+  if (year === 2025 && month === 12) { year = 2026; month = 1; }
+
+  return { year, month };
+}
 
 // ════════════════════════════════════════════════════════════
 //  CSV PARSER
 // ════════════════════════════════════════════════════════════
 function parseCSV(text) {
-  const lines=text.trim().split('\n');
-  if(lines.length<2) return {headers:[],rows:[]};
-  const headers=parseLine(lines[0]);
-  const rows=lines.slice(1).map(line=>{
-    const vals=parseLine(line);
-    const obj={};
-    headers.forEach((h,i)=>obj[h]=(vals[i]||'').trim());
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return { headers:[], rows:[] };
+  const headers = parseLine(lines[0]);
+  const rows = lines.slice(1).map(line => {
+    const vals = parseLine(line);
+    const obj = {};
+    headers.forEach((h,i) => obj[h] = (vals[i]||'').trim());
     return obj;
-  }).filter(r=>Object.values(r).some(v=>v!==''));
-  return {headers,rows};
+  }).filter(r => Object.values(r).some(v => v !== ''));
+  return { headers, rows };
 }
-function parseLine(line){
+function parseLine(line) {
   const vals=[]; let cur='',inQ=false;
-  for(let i=0;i<line.length;i++){
+  for (let i=0;i<line.length;i++){
     const c=line[i];
     if(c==='"'){inQ=!inQ;}
     else if(c===','&&!inQ){vals.push(cur.replace(/^"|"$/g,''));cur='';}
@@ -515,21 +562,27 @@ function parseLine(line){
 //  GROUP BY RO
 // ════════════════════════════════════════════════════════════
 function groupByRO(rows) {
-  const map=new Map();
-  const RANK={'GRPO':4,'Archived':3,'Open':2,'Cancelled':1};
-  for(const r of rows){
-    const key=`${r._gid}||${r._ro}`;
-    if(!map.has(key)){
-      map.set(key,{ _key:key, _ro:r._ro, _roDesc:r._roDesc, _hasRO:r._hasRO,
+  const map = new Map();
+  for (const r of rows) {
+    const key = `${r._gid}||${r._ro}`;
+    if (!map.has(key)) {
+      map.set(key, {
+        _key:r._ro+'__'+r._gid, _ro:r._ro, _roName:r._roName, _hasRO:r._hasRO,
         _gid:r._gid, _sheet:r._sheet, _label:r._label, _group:r._group,
-        _status:r._status, _total:0, _vendor:r._vendor, _items:[] });
+        _state:r._state, _stateRaw:r._stateRaw,
+        _total:0, _vendor:r._vendor, _poDate:r._poDate, _items:[],
+      });
     }
-    const g=map.get(key);
-    g._total+=(r._total||0);
+    const g = map.get(key);
+    g._total += (r._total||0);
     g._items.push(r);
-    if((RANK[r._status]||0)>(RANK[g._status]||0)) g._status=r._status;
-    if(!g._vendor && r._vendor) g._vendor=r._vendor;
-    if(!g._roDesc && r._roDesc) g._roDesc=r._roDesc;
+    // keep first vendor, first PO date
+    if (!g._vendor && r._vendor) g._vendor = r._vendor;
+    if (!g._roName && r._roName) g._roName = r._roName;
+    if (!g._poDate && r._poDate) g._poDate = r._poDate;
+    // state: priority GRPO > Archived > Closed > Cancelled > Open
+    const RANK = {'GRPO':5,'Archived':4,'Closed':3,'Cancelled':2,'Open':1};
+    if ((RANK[r._state]||0) > (RANK[g._state]||0)) { g._state = r._state; g._stateRaw = r._stateRaw; }
   }
   return [...map.values()];
 }
@@ -538,46 +591,60 @@ function groupByRO(rows) {
 //  GLOBAL STATE
 // ════════════════════════════════════════════════════════════
 let allData=[]; let sheetStats={}; let roGroups=[];
-let chartBudget=null; let chartPie=null; let debugInfo=[];
+let chartBudget=null; let chartPie=null; let chartMonthly=null;
+let debugInfo=[];
 
 // ════════════════════════════════════════════════════════════
-//  FETCH
+//  FETCH SHEET
 // ════════════════════════════════════════════════════════════
-async function fetchSheet(gid,name,label,group){
-  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
-  try{
-    const res=await fetch(url);
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const text=await res.text();
-    const {headers,rows}=parseCSV(text);
+async function fetchSheet(gid, name, label, group) {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    const text = await res.text();
+    const { headers, rows } = parseCSV(text);
+
     const roCol     = detectCol(headers, RO_KW);
-    const statusCol = detectStatusColumn(headers);
+    const stateCol  = detectStateCol(headers);
     const vendorCol = detectCol(headers, VENDOR_KW);
     const descCol   = detectCol(headers, DESC_KW);
-    debugInfo.push({sheet:name,headers,roCol,statusCol,vendorCol,descCol});
+    const roNameCol = detectCol(headers, RONAME_KW);
+    const poDateCol = detectCol(headers, PODATE_KW);
 
-    return rows.map((r,i)=>{
-      const roVal  = roCol ? (r[roCol]||'').trim() : '';
-      const qty    = getNum(r,['qty','จำนวน','quantity','amount','count']);
-      const price  = getNum(r,['unit price','unit_price','price/unit','ราคา/หน่วย','ราคาต่อหน่วย','price','ราคา','rate']);
-      const total  = getNum(r,['total amount','grand total','total price','มูลค่ารวม','ยอดรวม','total','รวม','มูลค่า','sum','value']) || (qty*price);
-      const descVal= descCol ? (r[descCol]||'').trim() : '';
+    debugInfo.push({ sheet:name, headers, roCol, stateCol, vendorCol, descCol, roNameCol, poDateCol });
+
+    return rows.map((r,i) => {
+      const roVal    = roCol    ? (r[roCol]||'').trim()    : '';
+      const stateRaw = stateCol ? (r[stateCol]||'').trim() : '';
+      const qty      = getNum(r,['qty','จำนวน','quantity','count']);
+      const price    = getNum(r,['unit price','unit_price','price/unit','ราคา/หน่วย','ราคาต่อหน่วย','price','ราคา','rate']);
+      const total    = getNum(r,['total amount','grand total','total price','มูลค่ารวม','ยอดรวม','total','รวม','มูลค่า','sum','value']) || (qty*price);
+      const poDateRaw= poDateCol ? (r[poDateCol]||'') : '';
+      // description from "Description" column
+      const descVal  = descCol ? (r[descCol]||'').trim() : '';
+      // RO Name: prefer dedicated column, else description, else ro value
+      const roNameVal= roNameCol ? (r[roNameCol]||'').trim() : (descVal||roVal||`${name}-row${i+1}`);
+
       return {
         ...r,
         _gid:gid, _sheet:name, _label:label, _group:group,
-        _status: inferStatus(r,statusCol),
-        _ro:     roVal||`${name}-row${i+1}`,
-        _roDesc: descVal || roVal || `${name}-row${i+1}`,
-        _hasRO:  !!roVal,
-        _vendor: vendorCol ? (r[vendorCol]||'').trim() : getStr(r,VENDOR_KW),
-        _code:   getStr(r,['part no','part_no','partno','material code','mat.code','item code','รหัส','code','id','no.']),
-        _name:   getStr(r,['item description','part name','material name','ชื่อสินค้า','รายการ','ชื่อรายการ','ชื่อ','name','detail']),
-        _qty: qty, _unit: getStr(r,['unit','หน่วย','uom']), _price:price, _total:total,
+        _stateRaw: stateRaw,
+        _state:    normalizeState(stateRaw),
+        _ro:       roVal || `${name}-row${i+1}`,
+        _roName:   roNameVal,
+        _hasRO:    !!roVal,
+        _vendor:   vendorCol ? (r[vendorCol]||'').trim() : getStr(r, VENDOR_KW),
+        _desc:     descVal,   // item-level description (for modal)
+        _code:     getStr(r,['part no','part_no','partno','material code','mat.code','item code','รหัส','code','id','no.']),
+        _qty:qty, _unit:getStr(r,['unit','หน่วย','uom']), _price:price, _total:total,
+        _poDate:   parsePODate(poDateRaw),
+        _poDateRaw:poDateRaw,
       };
     });
-  }catch(e){
-    console.warn(`Budget ${name} failed:`,e.message);
-    debugInfo.push({sheet:name,headers:[],roCol:null,statusCol:null,vendorCol:null,descCol:null,error:e.message});
+  } catch(e) {
+    console.warn(`Budget ${name} failed:`, e.message);
+    debugInfo.push({ sheet:name, headers:[], roCol:null, stateCol:null, error:e.message });
     return [];
   }
 }
@@ -585,124 +652,120 @@ async function fetchSheet(gid,name,label,group){
 // ════════════════════════════════════════════════════════════
 //  LOAD ALL
 // ════════════════════════════════════════════════════════════
-async function loadAllData(){
-  document.getElementById('loading-section').style.display='block';
-  document.getElementById('status-badge').textContent='กำลังโหลด...';
+async function loadAllData() {
+  document.getElementById('loading-section').style.display = 'block';
+  document.getElementById('status-badge').textContent = 'กำลังโหลด...';
   allData=[]; sheetStats={}; debugInfo=[];
 
-  for(let i=0;i<SHEETS.length;i++){
-    const s=SHEETS[i];
+  for (let i=0; i<SHEETS.length; i++) {
+    const s = SHEETS[i];
     setStatus(`โหลด ${s.name} — ${s.label} (${i+1}/${SHEETS.length})`);
-    const rows=await fetchSheet(s.gid,s.name,s.label,s.group);
+    const rows = await fetchSheet(s.gid, s.name, s.label, s.group);
     allData.push(...rows);
-    const grp=groupByRO(rows);
-    sheetStats[s.gid]={
-      name:s.name,label:s.label,group:s.group,
-      totalRO:grp.length, totalRows:rows.length,
-      grpo:    grp.filter(r=>r._status==='GRPO').length,
-      archived:grp.filter(r=>r._status==='Archived').length,
-      valTotal:rows.reduce((a,r)=>a+(r._total||0),0),
-      valGrpo: rows.filter(r=>r._status==='GRPO').reduce((a,r)=>a+(r._total||0),0),
-      valArch: rows.filter(r=>r._status==='Archived').reduce((a,r)=>a+(r._total||0),0),
+    const grp = groupByRO(rows);
+    sheetStats[s.gid] = {
+      name:s.name, label:s.label, group:s.group,
+      totalRO:   grp.length,
+      totalRows: rows.length,
+      grpo:      grp.filter(r=>r._state==='GRPO').length,
+      archived:  grp.filter(r=>r._state==='Archived').length,
+      valTotal:  rows.reduce((a,r)=>a+(r._total||0),0),
+      valPO:     rows.filter(r=>r._state==='GRPO'||r._state==='Archived').reduce((a,r)=>a+(r._total||0),0),
     };
   }
 
-  roGroups=groupByRO(allData);
+  roGroups = groupByRO(allData);
 
-  document.getElementById('debug-content').textContent=debugInfo.map(d=>
-    `[${d.sheet}] RO:"${d.roCol||'❌'}" Status:"${d.statusCol||'❌'}" Vendor:"${d.vendorCol||'❌'}" Desc:"${d.descCol||'❌'}"\n         Headers: ${(d.headers||[]).join(', ')}${d.error?`\n         ERROR: ${d.error}`:''}`
+  // Debug output
+  document.getElementById('debug-content').textContent = debugInfo.map(d =>
+    `[${d.sheet}]  RO:"${d.roCol||'❌'}"  State:"${d.stateCol||'❌'}"  Vendor:"${d.vendorCol||'❌'}"  Desc:"${d.descCol||'❌'}"  ROName:"${d.roNameCol||'❌'}"  PODate:"${d.poDateCol||'❌'}"${d.error?`\n  ERROR: ${d.error}`:''}\n  Headers: ${(d.headers||[]).join(' | ')}`
   ).join('\n\n');
 
-  const loaded=Object.values(sheetStats).filter(s=>s.totalRows>0).length;
+  const loaded = Object.values(sheetStats).filter(s=>s.totalRows>0).length;
   setStatus(`โหลดเสร็จ · ${roGroups.length.toLocaleString()} RO (${allData.length.toLocaleString()} บรรทัด) จาก ${loaded}/${SHEETS.length} budgets`);
-  document.getElementById('status-badge').textContent=`✓ ${roGroups.length.toLocaleString()} RO`;
-  if(allData.length>0) document.getElementById('loading-section').style.display='none';
+  document.getElementById('status-badge').textContent = `✓ ${roGroups.length.toLocaleString()} RO`;
+  if (allData.length > 0) document.getElementById('loading-section').style.display = 'none';
 
   updateMetrics();
   updateValueSummary();
   renderCharts();
+  renderMonthlyChart();
   renderTable();
   renderProgress();
 }
 
-function setStatus(msg){document.getElementById('load-status').textContent=msg;}
+function setStatus(msg){ document.getElementById('load-status').textContent=msg; }
 
 // ════════════════════════════════════════════════════════════
 //  METRICS
 // ════════════════════════════════════════════════════════════
-function updateMetrics(filtered){
-  const data=filtered||roGroups;
-  const total=data.length;
-  const grpo=data.filter(r=>r._status==='GRPO').length;
-  const arch=data.filter(r=>r._status==='Archived').length;
-  document.getElementById('m-ro').textContent    = total.toLocaleString();
-  document.getElementById('m-total').textContent = allData.length.toLocaleString();
-  document.getElementById('m-grpo').textContent  = grpo.toLocaleString();
+function updateMetrics(ro) {
+  const data  = ro || roGroups;
+  const total = data.length;
+  const grpo  = data.filter(r=>r._state==='GRPO').length;
+  const arch  = data.filter(r=>r._state==='Archived').length;
+  document.getElementById('m-ro').textContent       = total.toLocaleString();
+  document.getElementById('m-total').textContent    = allData.length.toLocaleString();
+  document.getElementById('m-grpo').textContent     = grpo.toLocaleString();
   document.getElementById('m-archived').textContent = arch.toLocaleString();
-  document.getElementById('m-grpo-pct').textContent    = total>0?`${Math.round(grpo/total*100)}% จาก RO ทั้งหมด`:'จาก RO ทั้งหมด';
-  document.getElementById('m-archived-pct').textContent= total>0?`${Math.round(arch/total*100)}% จาก RO ทั้งหมด`:'จาก RO ทั้งหมด';
+  document.getElementById('m-grpo-pct').textContent     = total>0 ? `${Math.round(grpo/total*100)}% จาก RO ทั้งหมด` : 'จาก RO ทั้งหมด';
+  document.getElementById('m-archived-pct').textContent = total>0 ? `${Math.round(arch/total*100)}% จาก RO ทั้งหมด` : 'จาก RO ทั้งหมด';
 }
 
 // ════════════════════════════════════════════════════════════
 //  VALUE SUMMARY
 // ════════════════════════════════════════════════════════════
-function updateValueSummary(filtered){
-  const data=filtered||allData;
-  const vTotal=data.reduce((a,r)=>a+(r._total||0),0);
-  const vGrpo =data.filter(r=>r._status==='GRPO').reduce((a,r)=>a+(r._total||0),0);
-  const vArch =data.filter(r=>r._status==='Archived').reduce((a,r)=>a+(r._total||0),0);
-  const vCombi=vGrpo+vArch;
-  const pGrpo =vTotal>0?Math.round(vGrpo/vTotal*100):0;
-  const pArch =vTotal>0?Math.round(vArch/vTotal*100):0;
-  const pCombi=vTotal>0?Math.round(vCombi/vTotal*100):0;
+function updateValueSummary(rows) {
+  const data   = rows || allData;
+  const vTotal = data.reduce((a,r)=>a+(r._total||0),0);
+  const vPO    = data.filter(r=>r._state==='GRPO'||r._state==='Archived').reduce((a,r)=>a+(r._total||0),0);
+  const vRem   = Math.max(0, vTotal - vPO);
+  const pPO    = vTotal>0 ? Math.round(vPO/vTotal*100) : 0;
+  const pRem   = vTotal>0 ? Math.round(vRem/vTotal*100) : 0;
 
-  document.getElementById('v-total').textContent     = fmt(vTotal);
-  document.getElementById('v-grpo-arch').textContent = fmt(vCombi);
-  document.getElementById('v-grpo-arch-pct').textContent = `${pCombi}% ของมูลค่ารวม`;
-  document.getElementById('v-grpo').textContent      = fmt(vGrpo);
-  document.getElementById('v-grpo-pct').textContent  = `${pGrpo}% ของมูลค่ารวม`;
-  document.getElementById('v-arch').textContent      = fmt(vArch);
-  document.getElementById('v-arch-pct').textContent  = `${pArch}% ของมูลค่ารวม`;
+  document.getElementById('v-total').textContent   = fmt(vTotal);
+  document.getElementById('v-po').textContent      = fmt(vPO);
+  document.getElementById('v-po-pct').textContent  = `${pPO}% ของมูลค่ารวม · GRPO + Archived`;
+  document.getElementById('v-remain').textContent  = fmt(vRem);
+  document.getElementById('v-remain-pct').textContent = `${pRem}% ของมูลค่ารวม`;
 
-  const bar=document.getElementById('value-bar');
-  const pOther=Math.max(0,100-pGrpo-pArch);
-  bar.innerHTML=`
-    <div class="progress-compare-fill" style="width:${pGrpo}%;background:var(--green)"></div>
-    <div class="progress-compare-fill" style="width:${pArch}%;background:var(--purple)"></div>
-    <div class="progress-compare-fill" style="width:${pOther}%;background:var(--bg-tertiary)"></div>`;
+  const bar = document.getElementById('value-bar');
+  bar.innerHTML = `
+    <div class="pc-fill" style="width:${pPO}%;background:var(--green)"></div>
+    <div class="pc-fill" style="width:${pRem}%;background:var(--bg-tertiary)"></div>`;
 }
 
 // ════════════════════════════════════════════════════════════
 //  CHARTS
 // ════════════════════════════════════════════════════════════
-function renderCharts(filteredGid){
-  const labels  =SHEETS.map(s=>s.name);
-  const roCount =SHEETS.map(s=>(sheetStats[s.gid]||{}).totalRO  ||0);
-  const grpoCnt =SHEETS.map(s=>(sheetStats[s.gid]||{}).grpo     ||0);
-  const archCnt =SHEETS.map(s=>(sheetStats[s.gid]||{}).archived ||0);
+function renderCharts() {
+  const labels  = SHEETS.map(s=>s.name);
+  const roCount = SHEETS.map(s=>(sheetStats[s.gid]||{}).totalRO  ||0);
+  const grpoCnt = SHEETS.map(s=>(sheetStats[s.gid]||{}).grpo     ||0);
+  const archCnt = SHEETS.map(s=>(sheetStats[s.gid]||{}).archived ||0);
 
-  if(chartBudget) chartBudget.destroy();
-  chartBudget=new Chart(document.getElementById('chart-budget'),{
+  if (chartBudget) chartBudget.destroy();
+  chartBudget = new Chart(document.getElementById('chart-budget'),{
     type:'bar',
     data:{ labels, datasets:[
-      {label:'RO ทั้งหมด',data:roCount,  backgroundColor:'#378ADD',borderRadius:4},
-      {label:'GRPO',       data:grpoCnt, backgroundColor:'#1D9E75',borderRadius:4},
-      {label:'Archived',   data:archCnt, backgroundColor:'#534AB7',borderRadius:4},
+      {label:'RO ทั้งหมด', data:roCount,  backgroundColor:'#378ADD', borderRadius:4},
+      {label:'GRPO',        data:grpoCnt, backgroundColor:'#1D9E75', borderRadius:4},
+      {label:'Archived',    data:archCnt, backgroundColor:'#534AB7', borderRadius:4},
     ]},
-    options:{ responsive:true,maintainAspectRatio:false,
+    options:{ responsive:true, maintainAspectRatio:false,
       plugins:{legend:{display:false}},
       scales:{x:{ticks:{font:{size:10},maxRotation:45,autoSkip:false},grid:{display:false}},
               y:{beginAtZero:true,ticks:{font:{size:11}}}} }
   });
 
   const grps={equipment:0,service:0,general:0};
-  roGroups.forEach(r=>{if(r._group in grps) grps[r._group]++;});
-  const pL=['Equipment','Service','General'],pD=[grps.equipment,grps.service,grps.general];
+  roGroups.forEach(r=>{ if(r._group in grps) grps[r._group]++; });
+  const pL=['Equipment','Service','General'], pD=[grps.equipment,grps.service,grps.general];
   const pC=['#378ADD','#1D9E75','#BA7517'];
   document.getElementById('pie-legend').innerHTML=pL.map((l,i)=>
     `<span><span class="lbox" style="background:${pC[i]}"></span>${l} ${pD[i].toLocaleString()}</span>`).join('');
-  if(chartPie) chartPie.destroy();
-  chartPie=new Chart(document.getElementById('chart-pie'),{
+  if (chartPie) chartPie.destroy();
+  chartPie = new Chart(document.getElementById('chart-pie'),{
     type:'doughnut',
     data:{labels:pL,datasets:[{data:pD,backgroundColor:pC,borderWidth:2,borderColor:'#fff'}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false}}}
@@ -710,40 +773,84 @@ function renderCharts(filteredGid){
 }
 
 // ════════════════════════════════════════════════════════════
+//  MONTHLY CHART — ค่าใช้จ่ายรายเดือน (PO Date)
+// ════════════════════════════════════════════════════════════
+function renderMonthlyChart(filterGid) {
+  // Aggregate by month (Jan–Dec 2026, index 0–11)
+  const monthly = new Array(12).fill(0);
+  const src = filterGid ? allData.filter(r=>r._gid===filterGid) : allData;
+
+  for (const r of src) {
+    if (!r._poDate) continue;
+    const { year, month } = r._poDate;
+    if (year === 2026 && month >= 1 && month <= 12) {
+      monthly[month-1] += (r._total||0);
+    }
+  }
+
+  const rounded = monthly.map(v => Math.round(v));
+
+  if (chartMonthly) chartMonthly.destroy();
+  chartMonthly = new Chart(document.getElementById('chart-monthly'), {
+    type:'bar',
+    data:{
+      labels: MONTH_LABELS,
+      datasets:[{
+        label:'มูลค่า (฿)',
+        data: rounded,
+        backgroundColor: rounded.map((v,i) => i===0?'#378ADD':'rgba(55,138,221,0.55)'),
+        borderRadius: 5,
+        borderSkipped: false,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{display:false},
+        tooltip:{ callbacks:{ label: ctx=>'฿'+Math.round(ctx.parsed.y).toLocaleString() } } },
+      scales:{
+        x:{ticks:{font:{size:11}}, grid:{display:false}},
+        y:{beginAtZero:true, ticks:{font:{size:11}, callback: v=>'฿'+Math.round(v).toLocaleString()}}
+      }
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════════════
 //  TABLE
 // ════════════════════════════════════════════════════════════
-function renderTable(){
-  const isGrouped=document.getElementById('toggle-group').checked;
-  const budgetF  =document.getElementById('filter-budget').value;
-  const statusF  =document.getElementById('filter-status').value;
-  const searchF  =(document.getElementById('filter-search').value||'').toLowerCase().trim();
+function renderTable() {
+  const isGrouped = document.getElementById('toggle-group').checked;
+  const budgetF   = document.getElementById('filter-budget').value;
+  const statusF   = document.getElementById('filter-status').value;
+  const searchF   = (document.getElementById('filter-search').value||'').toLowerCase().trim();
 
-  document.getElementById('toggle-desc').textContent=isGrouped
-    ?'เปิด — RO เดียวกันรวมเป็นบรรทัดเดียว (คลิกชื่อ RO เพื่อดูรายละเอียด)'
-    :'ปิด — แสดงทุกบรรทัดแยกกัน';
+  document.getElementById('toggle-desc').textContent = isGrouped
+    ? 'เปิด — RO เดียวกันรวมเป็นบรรทัดเดียว (คลิก RO Name เพื่อดูรายละเอียด)'
+    : 'ปิด — แสดงทุกบรรทัดแยกกัน';
 
-  /* GROUPED */
-  if(isGrouped){
+  /* ── GROUPED ── */
+  if (isGrouped) {
     document.getElementById('thead-row').innerHTML=`<tr>
       <th style="width:40px">#</th>
       <th>Budget</th>
-      <th>RO Description</th>
+      <th>RO Name</th>
+      <th>PO Date</th>
       <th style="text-align:right">มูลค่ารวม (฿)</th>
       <th>ร้านค้า / Vendor</th>
-      <th>สถานะ</th>
+      <th>State</th>
     </tr>`;
 
-    let data=roGroups;
-    if(budgetF) data=data.filter(r=>r._gid===budgetF);
-    if(statusF) data=data.filter(r=>r._status===statusF);
-    if(searchF) data=data.filter(r=>
+    let data = roGroups;
+    if (budgetF) data = data.filter(r=>r._gid===budgetF);
+    if (statusF) data = data.filter(r=>r._state===statusF);
+    if (searchF) data = data.filter(r=>
       r._ro.toLowerCase().includes(searchF)||
-      (r._roDesc||'').toLowerCase().includes(searchF)||
+      (r._roName||'').toLowerCase().includes(searchF)||
       (r._vendor||'').toLowerCase().includes(searchF)||
-      r._items.some(i=>(i._name||'').toLowerCase().includes(searchF)||(i._code||'').toLowerCase().includes(searchF))
+      r._items.some(i=>(i._desc||i._name||'').toLowerCase().includes(searchF)||(i._code||'').toLowerCase().includes(searchF))
     );
 
-    const show=data.slice(0,500);
+    const show = data.slice(0,500);
     document.getElementById('row-count').textContent=`${show.length.toLocaleString()} RO (จาก ${data.length.toLocaleString()})`;
 
     document.getElementById('table-body').innerHTML=show.map((g,idx)=>`
@@ -751,54 +858,54 @@ function renderTable(){
         <td style="color:var(--text-tertiary);font-size:12px">${idx+1}</td>
         <td><span class="pill pill-gray">${g._sheet}</span></td>
         <td>
-          <button class="ro-link" onclick="openModal('${esc(g._key)}')">${esc(g._roDesc||g._ro)}</button>
+          <button class="ro-link" onclick="openModal('${escAttr(g._gid+'||'+g._ro)}')">${esc(g._roName||g._ro)}</button>
           ${!g._hasRO?'<span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">(auto)</span>':''}
         </td>
+        <td style="font-size:12px;color:var(--text-secondary)">${g._poDate?`${g._poDate.year}/${String(g._poDate.month).padStart(2,'0')}`:'—'}</td>
         <td style="text-align:right;font-weight:600;font-size:14px">${fmt(g._total)}</td>
-        <td style="color:var(--text-secondary);font-size:12px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(g._vendor)}">${esc(g._vendor)||'—'}</td>
-        <td>${sPill(g._status)}</td>
-      </tr>`).join('') || noData(6);
+        <td style="font-size:12px;color:var(--text-secondary);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(g._vendor)}">${esc(g._vendor)||'—'}</td>
+        <td>${sPill(g._state, g._stateRaw)}</td>
+      </tr>`).join('') || noData(7);
 
     document.getElementById('table-note').textContent=data.length>500
       ?`* แสดง 500 RO แรก จากทั้งหมด ${data.length.toLocaleString()} RO`:'';
 
-  /* FLAT */
-  }else{
+  /* ── FLAT ── */
+  } else {
     document.getElementById('thead-row').innerHTML=`<tr>
-      <th>#</th><th>Budget</th><th>RO Description</th><th>รหัส</th>
-      <th>ชื่อสินค้า</th>
+      <th>#</th><th>Budget</th><th>RO Name</th><th>รหัส</th>
+      <th>Description</th>
       <th style="text-align:right">จำนวน</th><th>หน่วย</th>
       <th style="text-align:right">ราคา/หน่วย</th>
       <th style="text-align:right">มูลค่ารวม</th>
-      <th>ร้านค้า</th><th>สถานะ</th>
+      <th>ร้านค้า</th><th>State</th>
     </tr>`;
 
-    let data=allData;
-    if(budgetF) data=data.filter(r=>r._gid===budgetF);
-    if(statusF) data=data.filter(r=>r._status===statusF);
-    if(searchF) data=data.filter(r=>
+    let data = allData;
+    if (budgetF) data = data.filter(r=>r._gid===budgetF);
+    if (statusF) data = data.filter(r=>r._state===statusF);
+    if (searchF) data = data.filter(r=>
       r._ro.toLowerCase().includes(searchF)||
-      (r._roDesc||'').toLowerCase().includes(searchF)||
-      (r._name||'').toLowerCase().includes(searchF)||
+      (r._roName||'').toLowerCase().includes(searchF)||
+      (r._desc||r._name||'').toLowerCase().includes(searchF)||
       (r._code||'').toLowerCase().includes(searchF)
     );
 
-    const show=data.slice(0,300);
+    const show = data.slice(0,300);
     document.getElementById('row-count').textContent=`${show.length.toLocaleString()} บรรทัด (จาก ${data.length.toLocaleString()})`;
-
     document.getElementById('table-body').innerHTML=show.length
       ?show.map((r,i)=>`<tr>
           <td style="color:var(--text-tertiary);font-size:12px">${i+1}</td>
           <td><span class="pill pill-gray">${r._sheet}</span></td>
-          <td style="font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r._roDesc||r._ro)||'—'}</td>
+          <td style="font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r._roName||r._ro)||'—'}</td>
           <td class="mono">${esc(r._code)||'—'}</td>
-          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(r._name)}">${esc(r._name)||'—'}</td>
+          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(r._desc||r._name)}">${esc(r._desc||r._name)||'—'}</td>
           <td style="text-align:right">${r._qty?r._qty.toLocaleString():'—'}</td>
           <td>${r._unit||'—'}</td>
           <td style="text-align:right">${r._price?fmt(r._price):'—'}</td>
           <td style="text-align:right;font-weight:600">${fmt(r._total)}</td>
           <td style="font-size:12px;color:var(--text-secondary);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r._vendor)||'—'}</td>
-          <td>${sPill(r._status)}</td>
+          <td>${sPill(r._state, r._stateRaw)}</td>
         </tr>`).join('')
       :noData(11);
     document.getElementById('table-note').textContent=data.length>300
@@ -806,53 +913,54 @@ function renderTable(){
   }
 }
 
-function noData(cols){ return `<tr><td colspan="${cols}" style="text-align:center;padding:32px;color:var(--text-tertiary)">ไม่พบรายการที่ตรงกับตัวกรอง</td></tr>`; }
+function noData(c){ return `<tr><td colspan="${c}" style="text-align:center;padding:32px;color:var(--text-tertiary)">ไม่พบรายการที่ตรงกับตัวกรอง</td></tr>`; }
 
-function sPill(s){
-  const m={'GRPO':'green','Archived':'purple','Open':'blue','Cancelled':'red'};
-  return `<span class="pill pill-${m[s]||'gray'}">${s||'—'}</span>`;
+function sPill(state, raw) {
+  // show raw value but color by normalised state
+  const label = raw||state||'—';
+  const m = {'GRPO':'green','Archived':'purple','Open':'blue','Cancelled':'red','Closed':'teal'};
+  return `<span class="pill pill-${m[state]||'gray'}">${esc(label)}</span>`;
 }
 
 // ════════════════════════════════════════════════════════════
-//  MODAL — รายละเอียด RO
+//  MODAL
 // ════════════════════════════════════════════════════════════
-function openModal(key){
-  const g=roGroups.find(r=>r._key===key);
-  if(!g) return;
+function openModal(key) {
+  // key format: gid||ro
+  const g = roGroups.find(r => (r._gid+'||'+r._ro) === key);
+  if (!g) return;
 
-  document.getElementById('modal-title').textContent = g._roDesc||g._ro;
+  document.getElementById('modal-title').textContent = g._roName || g._ro;
   document.getElementById('modal-subtitle').innerHTML =
-    `<span class="pill pill-gray" style="font-size:11px">${g._sheet} — ${g._label}</span>&nbsp;` +
-    sPill(g._status) +
-    (g._vendor?`&nbsp;<span style="font-size:12px;color:var(--text-secondary)">ร้านค้า: <strong>${esc(g._vendor)}</strong></span>`:'');
+    `<span class="pill pill-gray" style="font-size:11px">${g._sheet} — ${g._label}</span>` +
+    ` ${sPill(g._state, g._stateRaw)}` +
+    (g._poDate?` <span style="font-size:12px;color:var(--text-secondary)">PO Date: ${g._poDate.year}/${String(g._poDate.month).padStart(2,'0')}</span>`:'') +
+    (g._vendor?` <span style="font-size:12px;color:var(--text-secondary)">ร้านค้า: <strong>${esc(g._vendor)}</strong></span>`:'');
 
-  const items=g._items;
-  const rowsHtml=items.map(item=>`
+  const rowsHtml = g._items.map(item => `
     <tr>
-      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(item._name)}">${esc(item._name)||'—'}</td>
+      <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(item._desc||item._name)}">${esc(item._desc||item._name)||'—'}</td>
       <td style="text-align:right">${item._qty?item._qty.toLocaleString():'—'}</td>
       <td>${item._unit||'—'}</td>
       <td style="text-align:right">${item._price?fmt(item._price):'—'}</td>
       <td style="text-align:right;font-weight:600">${fmt(item._total)}</td>
-      <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--text-secondary)" title="${esc(item._vendor)}">${esc(item._vendor)||esc(g._vendor)||'—'}</td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--text-secondary)">${esc(item._vendor||g._vendor)||'—'}</td>
     </tr>`).join('');
 
   document.getElementById('modal-body').innerHTML=`
     <table>
-      <thead>
-        <tr>
-          <th>ชื่อสินค้า</th>
-          <th style="text-align:right">จำนวนที่สั่ง</th>
-          <th>หน่วย</th>
-          <th style="text-align:right">ราคาต่อหน่วย</th>
-          <th style="text-align:right">ผลรวมราคา</th>
-          <th>ร้านค้าที่สั่ง</th>
-        </tr>
-      </thead>
+      <thead><tr>
+        <th>ชื่อสินค้า (Description)</th>
+        <th style="text-align:right">จำนวนที่สั่ง</th>
+        <th>หน่วย</th>
+        <th style="text-align:right">ราคาต่อหน่วย</th>
+        <th style="text-align:right">ผลรวมราคา</th>
+        <th>ร้านค้าที่สั่ง</th>
+      </tr></thead>
       <tbody>${rowsHtml}</tbody>
     </table>
     <div class="modal-total">
-      <span class="modal-total-label">มูลค่ารวมทั้งหมด (${items.length} รายการ)</span>
+      <span class="modal-total-label">มูลค่ารวมทั้งหมด (${g._items.length} รายการ)</span>
       <span class="modal-total-value">${fmt(g._total)}</span>
     </div>`;
 
@@ -861,12 +969,12 @@ function openModal(key){
 
 function closeModal(e){ if(e.target===document.getElementById('modal-overlay')) closeModalDirect(); }
 function closeModalDirect(){ document.getElementById('modal-overlay').classList.remove('show'); }
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModalDirect(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModalDirect(); });
 
 // ════════════════════════════════════════════════════════════
 //  PROGRESS
 // ════════════════════════════════════════════════════════════
-function renderProgress(){
+function renderProgress() {
   const grps={equipment:[],service:[],general:[]};
   SHEETS.forEach(s=>{
     const st=sheetStats[s.gid]||{totalRO:0,grpo:0,archived:0};
@@ -875,16 +983,12 @@ function renderProgress(){
   ['equipment','service','general'].forEach((g,idx)=>{
     const id=['progress-equip','progress-svc','progress-gen'][idx];
     const el=document.getElementById(id);
-    const items=grps[g];
-    if(!items.length){el.innerHTML='<p style="font-size:12px;color:var(--text-tertiary)">ไม่มีข้อมูล</p>';return;}
-    el.innerHTML=items.map(item=>{
+    if(!grps[g].length){el.innerHTML='<p style="font-size:12px;color:var(--text-tertiary)">ไม่มีข้อมูล</p>';return;}
+    el.innerHTML=grps[g].map(item=>{
       const pct=item.total>0?Math.round((item.done/item.total)*100):0;
       const col=pct>=75?'#1D9E75':pct>=40?'#378ADD':'#BA7517';
       return `<div class="prog-item">
-        <div class="prog-header">
-          <span class="prog-label">${item.label}</span>
-          <span class="prog-stat">${item.done}/${item.total} · ${pct}%</span>
-        </div>
+        <div class="prog-header"><span class="prog-label">${item.label}</span><span class="prog-stat">${item.done}/${item.total} · ${pct}%</span></div>
         <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${col}"></div></div>
       </div>`;
     }).join('');
@@ -892,13 +996,13 @@ function renderProgress(){
 }
 
 // ════════════════════════════════════════════════════════════
-//  BUDGET DROPDOWN (top-level filter)
+//  BUDGET DROPDOWN
 // ════════════════════════════════════════════════════════════
-function onBudgetChange(){
-  const gid=document.getElementById('budget-select').value;
-  document.getElementById('filter-budget').value=gid;
+function onBudgetChange() {
+  const gid = document.getElementById('budget-select').value;
+  document.getElementById('filter-budget').value = gid;
   renderTable();
-  // update metrics & value summary for selected budget
+  renderMonthlyChart(gid || null);
   const fRows = gid ? allData.filter(r=>r._gid===gid) : allData;
   const fRO   = gid ? roGroups.filter(r=>r._gid===gid) : roGroups;
   updateMetrics(fRO);
@@ -906,24 +1010,31 @@ function onBudgetChange(){
 }
 
 // ════════════════════════════════════════════════════════════
-//  EXPORT & DEBUG
+//  HELPERS
+// ════════════════════════════════════════════════════════════
+function fmt(n){ return n?'฿'+Math.round(n).toLocaleString():'—'; }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escAttr(s){ return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+
+// ════════════════════════════════════════════════════════════
+//  EXPORT
 // ════════════════════════════════════════════════════════════
 function exportCSV(){
   if(!roGroups.length){alert('ยังไม่มีข้อมูล');return;}
   const isGrouped=document.getElementById('toggle-group').checked;
   let rows,header;
   if(isGrouped){
-    header=['RO Description','Budget','มูลค่ารวม (฿)','ร้านค้า','สถานะ'];
-    rows=roGroups.map(g=>[g._roDesc||g._ro,g._sheet,Math.round(g._total),g._vendor,g._status]);
+    header=['RO Name','Budget','PO Date','มูลค่ารวม (฿)','ร้านค้า','State'];
+    rows=roGroups.map(g=>[g._roName||g._ro,g._sheet,g._poDate?`${g._poDate.year}/${g._poDate.month}`:'',Math.round(g._total),g._vendor,g._stateRaw||g._state]);
   }else{
-    header=['Budget','RO Description','รหัส','ชื่อสินค้า','จำนวน','หน่วย','ราคา/หน่วย','มูลค่ารวม','ร้านค้า','สถานะ'];
-    rows=allData.map(r=>[r._sheet,r._roDesc||r._ro,r._code,r._name,r._qty,r._unit,r._price,Math.round(r._total||0),r._vendor,r._status]);
+    header=['Budget','RO Name','รหัส','Description','จำนวน','หน่วย','ราคา/หน่วย','มูลค่ารวม','ร้านค้า','State'];
+    rows=allData.map(r=>[r._sheet,r._roName||r._ro,r._code,r._desc||r._name,r._qty,r._unit,r._price,Math.round(r._total||0),r._vendor,r._stateRaw||r._state]);
   }
   const csv=[header,...rows].map(r=>r.map(v=>`"${(v||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
   const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(blob);
-  a.download=`procurement_ro_${new Date().toISOString().slice(0,10)}.csv`;
+  a.download=`procurement_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
 }
 
