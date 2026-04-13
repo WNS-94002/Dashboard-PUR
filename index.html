@@ -12,7 +12,7 @@
     --text-primary: #1a1a18; --text-secondary: #5f5e5a; --text-tertiary: #888780;
     --border: rgba(0,0,0,0.12); --border-md: rgba(0,0,0,0.22);
     --radius-md: 8px; --radius-lg: 12px;
-    --blue: #378ADD; --green: #1D9E75; --amber: #BA7517; --red: #A32D2D;
+    --blue: #378ADD; --green: #1D9E75; --amber: #BA7517; --red: #A32D2D; --purple: #534AB7;
     --info-bg: #E6F1FB; --info-text: #185FA5;
   }
   @media (prefers-color-scheme: dark) {
@@ -25,6 +25,7 @@
   }
   body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans Thai',sans-serif; background:var(--bg-tertiary); color:var(--text-primary); font-size:14px; line-height:1.5; }
 
+  /* ── Topbar ── */
   .topbar { background:var(--bg-primary); border-bottom:0.5px solid var(--border); padding:14px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; position:sticky; top:0; z-index:100; }
   .topbar h1 { font-size:17px; font-weight:600; }
   .topbar p  { font-size:12px; color:var(--text-secondary); margin-top:1px; }
@@ -35,40 +36,52 @@
 
   .main { padding:20px 24px; max-width:1400px; margin:0 auto; }
 
+  /* ── Loading ── */
   .loading-wrap { margin-bottom:14px; }
-  .loading-bar { height:3px; border-radius:99px; background:var(--bg-secondary); overflow:hidden; }
+  .loading-bar  { height:3px; border-radius:99px; background:var(--bg-secondary); overflow:hidden; }
   .loading-fill { height:100%; width:30%; border-radius:99px; background:var(--blue); animation:pulse 1.5s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:.3;width:20%} 50%{opacity:1;width:80%} }
   .load-status { font-size:12px; color:var(--text-tertiary); margin-top:5px; font-style:italic; }
 
-  .metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(145px,1fr)); gap:10px; margin-bottom:18px; }
+  /* ── Metric cards ── */
+  .metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-bottom:18px; }
   .metric { background:var(--bg-secondary); border-radius:var(--radius-md); padding:14px 16px; }
   .metric-label { font-size:11px; color:var(--text-secondary); margin-bottom:5px; text-transform:uppercase; letter-spacing:.04em; }
   .metric-value { font-size:24px; font-weight:600; }
   .metric-sub   { font-size:11px; color:var(--text-tertiary); margin-top:3px; }
-  .c-green{color:var(--green)} .c-amber{color:var(--amber)} .c-blue{color:var(--blue)} .c-red{color:var(--red)}
+  .c-blue{color:var(--blue)} .c-amber{color:var(--amber)} .c-green{color:var(--green)} .c-purple{color:var(--purple)}
 
-  .section-label { font-size:11px; color:var(--text-secondary); margin-bottom:6px; text-transform:uppercase; letter-spacing:.05em; }
-  .tabs-wrap { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:18px; }
-  .tab { display:inline-block; padding:5px 12px; border-radius:var(--radius-md); font-size:12px; cursor:pointer; border:0.5px solid var(--border); background:var(--bg-secondary); color:var(--text-secondary); transition:all .15s; user-select:none; }
-  .tab:hover { background:var(--bg-primary); color:var(--text-primary); }
-  .tab.active { background:var(--info-bg); color:var(--info-text); border-color:transparent; font-weight:500; }
+  /* ── Value summary bar ── */
+  .value-card { background:var(--bg-primary); border:0.5px solid var(--border); border-radius:var(--radius-lg); padding:16px 20px; margin-bottom:18px; }
+  .value-card-title { font-size:11px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:.05em; margin-bottom:14px; }
+  .value-row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px; }
+  .value-item { flex:1; min-width:150px; }
+  .value-item-label { font-size:11px; color:var(--text-secondary); margin-bottom:3px; }
+  .value-item-num   { font-size:20px; font-weight:600; }
+  .value-divider    { width:1px; height:40px; background:var(--border); flex-shrink:0; }
+  .progress-compare { height:10px; border-radius:99px; background:var(--bg-secondary); overflow:hidden; margin-top:10px; display:flex; gap:2px; }
+  .progress-compare-fill { height:100%; border-radius:99px; transition:width .8s ease; }
+  .progress-compare-legend { display:flex; gap:16px; margin-top:8px; font-size:11px; color:var(--text-secondary); flex-wrap:wrap; }
+  .progress-compare-legend span { display:flex; align-items:center; gap:5px; }
+  .lbox { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
 
+  /* ── Dropdown filter ── */
+  .filter-bar { display:flex; align-items:center; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
+  .filter-bar label { font-size:12px; color:var(--text-secondary); font-weight:500; }
+  .filter-bar select { font-size:13px; padding:7px 12px; border-radius:var(--radius-md); border:0.5px solid var(--border-md); background:var(--bg-primary); color:var(--text-primary); cursor:pointer; min-width:220px; }
+  .filter-bar select:focus { outline:none; border-color:var(--blue); }
+
+  /* ── Charts ── */
   .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:18px; }
   .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:18px; }
   @media(max-width:900px){.grid2{grid-template-columns:1fr}}
   @media(max-width:700px){.grid3{grid-template-columns:1fr}}
   .card { background:var(--bg-primary); border:0.5px solid var(--border); border-radius:var(--radius-lg); padding:16px 18px; }
   .card-title { font-size:11px; font-weight:600; color:var(--text-secondary); margin-bottom:12px; text-transform:uppercase; letter-spacing:.05em; }
-
   .legend { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:10px; font-size:12px; color:var(--text-secondary); }
   .legend span { display:flex; align-items:center; gap:5px; }
-  .lbox { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
 
-  .info-box { background:var(--info-bg); border-radius:var(--radius-md); padding:10px 14px; font-size:12px; color:var(--info-text); margin-bottom:14px; line-height:1.7; }
-  .mono { font-family:'SF Mono','Fira Mono',Consolas,monospace; font-size:12px; }
-
-  /* Toggle switch */
+  /* ── Table ── */
   .toggle-row { display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
   .toggle-label { font-size:13px; color:var(--text-secondary); }
   .toggle-switch { position:relative; display:inline-block; width:40px; height:22px; cursor:pointer; flex-shrink:0; }
@@ -78,41 +91,40 @@
   .slider-thumb { position:absolute; top:3px; left:3px; width:14px; height:14px; background:white; border-radius:50%; transition:transform .2s; box-shadow:0 1px 3px rgba(0,0,0,.25); pointer-events:none; }
   .toggle-switch input:checked ~ .slider-thumb { transform:translateX(18px); }
 
-  .filter-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; align-items:center; }
-  .filter-row label { font-size:12px; color:var(--text-secondary); }
-  .filter-row select,.filter-row input[type=text] { font-size:13px; padding:6px 10px; border-radius:var(--radius-md); border:0.5px solid var(--border-md); background:var(--bg-primary); color:var(--text-primary); }
-  .filter-row select { cursor:pointer; }
-  .filter-row input[type=text] { width:200px; }
+  .tbl-filter { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; align-items:center; }
+  .tbl-filter label { font-size:12px; color:var(--text-secondary); }
+  .tbl-filter select,.tbl-filter input[type=text] { font-size:13px; padding:6px 10px; border-radius:var(--radius-md); border:0.5px solid var(--border-md); background:var(--bg-primary); color:var(--text-primary); }
+  .tbl-filter select { cursor:pointer; }
+  .tbl-filter input[type=text] { width:200px; }
   .row-count { font-size:12px; color:var(--text-tertiary); margin-left:auto; }
 
   .table-wrap { overflow-x:auto; }
   table { width:100%; border-collapse:collapse; font-size:13px; }
   thead th { text-align:left; padding:8px 10px; font-weight:500; color:var(--text-secondary); border-bottom:0.5px solid var(--border); font-size:11px; white-space:nowrap; text-transform:uppercase; letter-spacing:.03em; background:var(--bg-secondary); }
-  tbody td { padding:8px 10px; border-bottom:0.5px solid var(--border); color:var(--text-primary); vertical-align:middle; }
+  tbody td { padding:9px 10px; border-bottom:0.5px solid var(--border); color:var(--text-primary); vertical-align:middle; }
   tbody tr:hover td { background:var(--bg-secondary); }
 
-  /* RO group rows */
-  tr.ro-group td { background:color-mix(in srgb,var(--blue) 6%,var(--bg-primary)); border-bottom:0.5px solid var(--border-md); }
-  tr.ro-group:hover td { background:color-mix(in srgb,var(--blue) 12%,var(--bg-primary)); }
-  tr.ro-sub td { background:color-mix(in srgb,var(--bg-secondary) 55%,var(--bg-primary)); font-size:12px; color:var(--text-secondary); }
+  /* RO grouped rows */
+  tr.ro-group td { background:color-mix(in srgb,var(--blue) 5%,var(--bg-primary)); }
+  tr.ro-group:hover td { background:color-mix(in srgb,var(--blue) 10%,var(--bg-primary)); }
+  tr.ro-sub td { background:color-mix(in srgb,var(--bg-secondary) 50%,var(--bg-primary)); font-size:12px; color:var(--text-secondary); }
   tr.ro-sub:hover td { background:var(--bg-secondary); }
-  tr.ro-sub td:nth-child(3) { padding-left:28px; }
 
-  .expand-btn { cursor:pointer; font-size:11px; color:var(--info-text); background:var(--info-bg); border:none; border-radius:4px; padding:2px 7px; line-height:1.4; transition:background .1s; }
-  .expand-btn:hover { background:color-mix(in srgb,var(--blue) 20%,var(--info-bg)); }
+  .ro-link { color:var(--blue); cursor:pointer; text-decoration:none; font-weight:600; font-family:monospace; font-size:13px; border:none; background:none; padding:0; text-align:left; }
+  .ro-link:hover { text-decoration:underline; }
 
   .pill { display:inline-block; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:500; white-space:nowrap; }
   .pill-green{background:#EAF3DE;color:#3B6D11} .pill-amber{background:#FAEEDA;color:#854F0B}
   .pill-red  {background:#FCEBEB;color:#A32D2D} .pill-blue {background:#E6F1FB;color:#185FA5}
-  .pill-gray {background:#F1EFE8;color:#5F5E5A}
+  .pill-gray {background:#F1EFE8;color:#5F5E5A} .pill-purple{background:#EEEDFE;color:#3C3489}
   @media(prefers-color-scheme:dark){
     .pill-green{background:#173404;color:#C0DD97} .pill-amber{background:#412402;color:#FAC775}
     .pill-red  {background:#501313;color:#F7C1C1} .pill-blue {background:#042C53;color:#B5D4F4}
-    .pill-gray {background:#2C2C2A;color:#D3D1C7}
+    .pill-gray {background:#2C2C2A;color:#D3D1C7} .pill-purple{background:#26215C;color:#CECBF6}
   }
-  .badge-count { display:inline-block; background:var(--bg-tertiary); color:var(--text-secondary); font-size:11px; border-radius:99px; padding:1px 7px; margin-left:5px; }
   .table-note { font-size:12px; color:var(--text-tertiary); font-style:italic; margin-top:8px; }
 
+  /* ── Progress ── */
   .prog-item { margin-bottom:14px; }
   .prog-header { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
   .prog-label { color:var(--text-primary); font-weight:500; }
@@ -120,9 +132,30 @@
   .prog-bar   { height:6px; border-radius:99px; background:var(--bg-secondary); overflow:hidden; }
   .prog-fill  { height:100%; border-radius:99px; transition:width .8s ease; }
 
+  /* ── Modal ── */
+  .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:999; display:none; align-items:center; justify-content:center; padding:20px; }
+  .modal-overlay.show { display:flex; }
+  .modal { background:var(--bg-primary); border-radius:var(--radius-lg); border:0.5px solid var(--border-md); width:100%; max-width:720px; max-height:85vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.2); }
+  .modal-header { padding:16px 20px; border-bottom:0.5px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-shrink:0; }
+  .modal-title { font-size:15px; font-weight:600; }
+  .modal-subtitle { font-size:12px; color:var(--text-secondary); margin-top:2px; }
+  .modal-close { background:none; border:none; cursor:pointer; color:var(--text-secondary); font-size:18px; padding:2px 6px; border-radius:4px; line-height:1; }
+  .modal-close:hover { background:var(--bg-secondary); color:var(--text-primary); }
+  .modal-body { padding:16px 20px; overflow-y:auto; flex:1; }
+  .modal-footer { padding:12px 20px; border-top:0.5px solid var(--border); display:flex; justify-content:flex-end; flex-shrink:0; }
+
+  .modal table { width:100%; border-collapse:collapse; font-size:13px; }
+  .modal thead th { text-align:left; padding:8px 10px; font-size:11px; font-weight:500; color:var(--text-secondary); border-bottom:0.5px solid var(--border); background:var(--bg-secondary); text-transform:uppercase; letter-spacing:.03em; white-space:nowrap; }
+  .modal tbody td { padding:9px 10px; border-bottom:0.5px solid var(--border); vertical-align:middle; }
+  .modal tbody tr:last-child td { border-bottom:none; }
+  .modal tbody tr:hover td { background:var(--bg-secondary); }
+  .modal-total { display:flex; justify-content:space-between; align-items:center; padding:12px 10px 0; border-top:0.5px solid var(--border-md); margin-top:4px; }
+  .modal-total-label { font-size:13px; font-weight:500; }
+  .modal-total-value { font-size:18px; font-weight:700; color:var(--amber); }
+
+  .mono { font-family:'SF Mono','Fira Mono',Consolas,monospace; font-size:12px; }
   .debug-panel { background:var(--bg-secondary); border-radius:var(--radius-md); padding:10px 14px; font-size:12px; color:var(--text-tertiary); margin-bottom:14px; display:none; }
   .debug-panel.show { display:block; }
-
   .footer { text-align:center; padding:20px; font-size:11px; color:var(--text-tertiary); margin-top:10px; }
 </style>
 </head>
@@ -143,15 +176,8 @@
 
 <div class="main">
 
-  <div class="info-box">
-    <strong>การรวม RO:</strong> ระบบตรวจหา column ที่เก็บหมายเลข RO อัตโนมัติ — RO เดียวกันใน Sheet เดียวกันจะถูก <strong>รวมมูลค่าทั้งหมด</strong>
-    คลิก <strong>▶</strong> เพื่อดูรายการย่อยภายใน RO นั้น &nbsp;|&nbsp;
-    ปิด Toggle "รวมตาม RO" เพื่อดูทุกบรรทัดแยกกัน &nbsp;|&nbsp;
-    Google Sheet ต้องตั้งเป็น <strong>"Anyone with the link can view"</strong>
-  </div>
-
   <div class="debug-panel" id="debug-panel">
-    <strong>Debug — Column Headers ที่พบในแต่ละ Sheet:</strong>
+    <strong>Debug — Column Headers ที่พบในแต่ละ Budget:</strong>
     <div id="debug-content" style="margin-top:8px;font-family:monospace;white-space:pre-wrap;max-height:240px;overflow-y:auto;line-height:1.8;"></div>
   </div>
 
@@ -160,43 +186,104 @@
     <p class="load-status" id="load-status">กำลังเริ่มต้นโหลดข้อมูล...</p>
   </div>
 
+  <!-- Metric cards -->
   <div class="metrics">
-    <div class="metric"><div class="metric-label">RO ทั้งหมด</div><div class="metric-value" id="m-ro">—</div><div class="metric-sub">หมายเลข RO ไม่ซ้ำ</div></div>
-    <div class="metric"><div class="metric-label">รายการย่อยรวม</div><div class="metric-value c-blue" id="m-total">—</div><div class="metric-sub">ทุกบรรทัด</div></div>
-    <div class="metric"><div class="metric-label">มูลค่ารวม (บาท)</div><div class="metric-value c-amber" id="m-value">—</div><div class="metric-sub">Sum ของทุก RO</div></div>
-    <div class="metric"><div class="metric-label">อนุมัติแล้ว</div><div class="metric-value c-green" id="m-approved">—</div><div class="metric-sub">RO</div></div>
-    <div class="metric"><div class="metric-label">รอดำเนินการ</div><div class="metric-value c-amber" id="m-pending">—</div><div class="metric-sub">RO</div></div>
-    <div class="metric"><div class="metric-label">ระหว่างดำเนินการ</div><div class="metric-value c-blue" id="m-inprog">—</div><div class="metric-sub">RO</div></div>
+    <div class="metric">
+      <div class="metric-label">RO ทั้งหมด</div>
+      <div class="metric-value" id="m-ro">—</div>
+      <div class="metric-sub">หมายเลข RO ไม่ซ้ำ</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">รายการย่อยรวม</div>
+      <div class="metric-value c-blue" id="m-total">—</div>
+      <div class="metric-sub">ทุกบรรทัด</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">สถานะ GRPO</div>
+      <div class="metric-value c-green" id="m-grpo">—</div>
+      <div class="metric-sub" id="m-grpo-pct">จาก RO ทั้งหมด</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">สถานะ Archived</div>
+      <div class="metric-value c-purple" id="m-archived">—</div>
+      <div class="metric-sub" id="m-archived-pct">จาก RO ทั้งหมด</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">จำนวน Budget</div>
+      <div class="metric-value">15</div>
+      <div class="metric-sub">หมวดหมู่</div>
+    </div>
   </div>
 
-  <div class="section-label">เลือก Sheet / หมวดหมู่</div>
-  <div class="tabs-wrap">
-    <span class="tab active" data-gid="all" onclick="selectTab(this)">ทั้งหมด</span>
-    <span class="tab" data-gid="0"          onclick="selectTab(this)">0-101 Conveyor Equip.</span>
-    <span class="tab" data-gid="696948322"  onclick="selectTab(this)">4-501 Lubricant</span>
-    <span class="tab" data-gid="1216432940" onclick="selectTab(this)">6-101 Spreader</span>
-    <span class="tab" data-gid="594703843"  onclick="selectTab(this)">6-102 BWE</span>
-    <span class="tab" data-gid="1309658412" onclick="selectTab(this)">6-103 Crusher</span>
-    <span class="tab" data-gid="188899962"  onclick="selectTab(this)">6-104 CV System</span>
-    <span class="tab" data-gid="1019106348" onclick="selectTab(this)">6-105 Aux. CV</span>
-    <span class="tab" data-gid="1624105960" onclick="selectTab(this)">6-106 Svc CV</span>
-    <span class="tab" data-gid="1225728737" onclick="selectTab(this)">6-111 General CV</span>
-    <span class="tab" data-gid="1177087368" onclick="selectTab(this)">6-227 Hydraulic</span>
-    <span class="tab" data-gid="1566400890" onclick="selectTab(this)">7-101 Svc Spreader</span>
-    <span class="tab" data-gid="1228114688" onclick="selectTab(this)">7-102 Svc BWE</span>
-    <span class="tab" data-gid="1252174840" onclick="selectTab(this)">7-103 Svc Crusher</span>
-    <span class="tab" data-gid="287824465"  onclick="selectTab(this)">7-104 Svc CV Sys.</span>
-    <span class="tab" data-gid="1562418173" onclick="selectTab(this)">9-111 General Exp.</span>
+  <!-- Value summary -->
+  <div class="value-card">
+    <div class="value-card-title">สรุปมูลค่าการสั่งซื้อ</div>
+    <div class="value-row">
+      <div class="value-item">
+        <div class="value-item-label">มูลค่ารวมทั้งหมด</div>
+        <div class="value-item-num c-amber" id="v-total">—</div>
+        <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px">ผลรวมทุก RO</div>
+      </div>
+      <div class="value-divider"></div>
+      <div class="value-item">
+        <div class="value-item-label">มูลค่า GRPO + Archived</div>
+        <div class="value-item-num c-green" id="v-grpo-arch">—</div>
+        <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px" id="v-grpo-arch-pct">— ของมูลค่ารวม</div>
+      </div>
+      <div class="value-divider"></div>
+      <div class="value-item">
+        <div class="value-item-label">มูลค่า GRPO</div>
+        <div class="value-item-num" style="color:var(--green);font-size:17px" id="v-grpo">—</div>
+        <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px" id="v-grpo-pct"></div>
+      </div>
+      <div class="value-divider"></div>
+      <div class="value-item">
+        <div class="value-item-label">มูลค่า Archived</div>
+        <div class="value-item-num" style="color:var(--purple);font-size:17px" id="v-arch">—</div>
+        <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px" id="v-arch-pct"></div>
+      </div>
+    </div>
+    <div class="progress-compare" id="value-bar"></div>
+    <div class="progress-compare-legend">
+      <span><span class="lbox" style="background:var(--green)"></span>GRPO</span>
+      <span><span class="lbox" style="background:var(--purple)"></span>Archived</span>
+      <span><span class="lbox" style="background:var(--bg-secondary);border:0.5px solid var(--border)"></span>อื่นๆ</span>
+    </div>
   </div>
 
+  <!-- Budget dropdown -->
+  <div class="filter-bar">
+    <label>Budget:</label>
+    <select id="budget-select" onchange="onBudgetChange()">
+      <option value="">— ทั้งหมด —</option>
+      <option value="0">0-101 Conveyor Equipment</option>
+      <option value="696948322">4-501 Lubricant</option>
+      <option value="1216432940">6-101 Spreader</option>
+      <option value="594703843">6-102 Bucket Wheel Excavator</option>
+      <option value="1309658412">6-103 Crusher</option>
+      <option value="188899962">6-104 Conveyor System</option>
+      <option value="1019106348">6-105 Aux. CV Equipment</option>
+      <option value="1624105960">6-106 Service CV Equipment</option>
+      <option value="1225728737">6-111 General Consume CV</option>
+      <option value="1177087368">6-227 Hydraulic Hose and Fitting</option>
+      <option value="1566400890">7-101 Service Spreader</option>
+      <option value="1228114688">7-102 Service Bucket Wheel Excavator</option>
+      <option value="1252174840">7-103 Service Crusher</option>
+      <option value="287824465">7-104 Service Conveyor System</option>
+      <option value="1562418173">9-111 General Expense CV</option>
+    </select>
+  </div>
+
+  <!-- Charts -->
   <div class="grid2">
     <div class="card">
-      <div class="card-title">จำนวน RO ตาม Sheet</div>
+      <div class="card-title">จำนวน RO ตาม Budget</div>
       <div class="legend">
         <span><span class="lbox" style="background:#378ADD"></span>RO ทั้งหมด</span>
-        <span><span class="lbox" style="background:#1D9E75"></span>อนุมัติแล้ว</span>
+        <span><span class="lbox" style="background:#1D9E75"></span>GRPO</span>
+        <span><span class="lbox" style="background:#534AB7"></span>Archived</span>
       </div>
-      <div style="position:relative;width:100%;height:280px;"><canvas id="chart-sheet"></canvas></div>
+      <div style="position:relative;width:100%;height:280px;"><canvas id="chart-budget"></canvas></div>
     </div>
     <div class="card">
       <div class="card-title">สัดส่วนตามกลุ่มงาน (RO)</div>
@@ -205,6 +292,7 @@
     </div>
   </div>
 
+  <!-- Table -->
   <div class="card" style="margin-bottom:18px;">
     <div class="card-title">รายการสั่งซื้อ — สรุปตาม RO Number</div>
 
@@ -216,13 +304,13 @@
         <div class="slider-thumb"></div>
       </label>
       <span id="toggle-desc" style="font-size:12px;color:var(--text-secondary)">
-        เปิด — RO เดียวกันรวมเป็นบรรทัดเดียว (คลิก ▶ เพื่อดูรายการย่อย)
+        เปิด — RO เดียวกันรวมเป็นบรรทัดเดียว (คลิกชื่อ RO เพื่อดูรายละเอียด)
       </span>
     </div>
 
-    <div class="filter-row">
-      <label>Sheet:</label>
-      <select id="filter-sheet" onchange="renderTable()">
+    <div class="tbl-filter">
+      <label>Budget:</label>
+      <select id="filter-budget" onchange="renderTable()">
         <option value="">ทั้งหมด</option>
         <option value="0">0-101 Conveyor Equipment</option>
         <option value="696948322">4-501 Lubricant</option>
@@ -235,7 +323,7 @@
         <option value="1225728737">6-111 General Consume CV</option>
         <option value="1177087368">6-227 Hydraulic Hose and Fitting</option>
         <option value="1566400890">7-101 Service Spreader</option>
-        <option value="1228114688">7-102 Service BWE</option>
+        <option value="1228114688">7-102 Service Bucket Wheel Excavator</option>
         <option value="1252174840">7-103 Service Crusher</option>
         <option value="287824465">7-104 Service Conveyor System</option>
         <option value="1562418173">9-111 General Expense CV</option>
@@ -243,10 +331,10 @@
       <label>สถานะ:</label>
       <select id="filter-status" onchange="renderTable()">
         <option value="">ทั้งหมด</option>
-        <option value="อนุมัติ">อนุมัติ</option>
-        <option value="รอดำเนินการ">รอดำเนินการ</option>
-        <option value="ระหว่างดำเนินการ">ระหว่างดำเนินการ</option>
-        <option value="ยกเลิก">ยกเลิก</option>
+        <option value="GRPO">GRPO</option>
+        <option value="Archived">Archived</option>
+        <option value="Open">Open</option>
+        <option value="Cancelled">Cancelled</option>
       </select>
       <label>ค้นหา:</label>
       <input type="text" id="filter-search" placeholder="RO / รายการ / รหัส..." oninput="renderTable()">
@@ -257,13 +345,14 @@
       <table>
         <thead id="thead-row"></thead>
         <tbody id="table-body">
-          <tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-tertiary)">กำลังโหลดข้อมูล...</td></tr>
+          <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text-tertiary)">กำลังโหลดข้อมูล...</td></tr>
         </tbody>
       </table>
     </div>
     <p class="table-note" id="table-note"></p>
   </div>
 
+  <!-- Progress -->
   <div class="grid3">
     <div class="card"><div class="card-title">Equipment — ความคืบหน้า</div><div id="progress-equip"></div></div>
     <div class="card"><div class="card-title">Services — ความคืบหน้า</div><div id="progress-svc"></div></div>
@@ -273,10 +362,27 @@
   <div class="footer">Procurement Dashboard · ข้อมูลจาก Google Sheets · รวมตาม RO Number อัตโนมัติ</div>
 </div>
 
+<!-- ── Modal Detail ── -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-title">รายละเอียดการสั่งซื้อ</div>
+        <div class="modal-subtitle" id="modal-subtitle"></div>
+      </div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModalDirect()">ปิด</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ============================================================
-//  CONFIG — แก้ไข SHEET_ID ให้ตรงกับ Google Sheets ของคุณ
-// ============================================================
+// ════════════════════════════════════════════════════════════
+//  CONFIG
+// ════════════════════════════════════════════════════════════
 const SHEET_ID = '1x8nzBNv4RGV-x6AtMIqm8HWJt5k0a-aVuEV8Zezess4';
 
 const SHEETS = [
@@ -297,92 +403,105 @@ const SHEETS = [
   { gid:'1562418173', name:'9-111', label:'General Expense CV',       group:'general'   },
 ];
 
-// ============================================================
-//  RO COLUMN DETECTION — ตรวจหา column RO อัตโนมัติ
-// ============================================================
-const RO_KEYWORDS = [
-  'ro no','ro number','ro#','r.o. no','repair order','ro_no','ro_number',
-  'rono','หมายเลข ro','เลข ro','ro เลขที่','เลขที่ ro',
-  'work order no','wo no','wo number','wo_no',
-  'po no','po number','po_no',
-  'order no','order number','order_no',
-  'request no','req no','req. no','requisition no',
-  'job no','job number','job order',
-  'ro' /* fallback — ตรวจ exact match สุดท้าย */
-];
+// ════════════════════════════════════════════════════════════
+//  STATUS DETECTION — GRPO / Archived / Open / Cancelled
+// ════════════════════════════════════════════════════════════
+const STATUS_COL_KEYWORDS = ['status','สถานะ','doc status','document status','state'];
 
-function detectROColumn(headers) {
-  const lc = headers.map(h => h.toLowerCase().trim());
-  // pass 1: exact match (ยกเว้น 'ro' อย่างเดียว ไว้ทีหลัง)
-  for (let i=0; i<lc.length; i++) {
-    const h = lc[i];
-    if (RO_KEYWORDS.slice(0,-1).some(kw => h === kw)) return headers[i];
-  }
-  // pass 2: starts with
-  for (let i=0; i<lc.length; i++) {
-    const h = lc[i];
-    if (RO_KEYWORDS.some(kw => h.startsWith(kw+' ')||h.startsWith(kw+'.')||h.startsWith(kw+'_'))) return headers[i];
-  }
-  // pass 3: contains any keyword (longer ones first to avoid 'ro' matching 'process')
-  const sorted = [...RO_KEYWORDS].sort((a,b)=>b.length-a.length);
-  for (let i=0; i<lc.length; i++) {
-    const h = lc[i];
-    if (sorted.some(kw => kw.length >= 3 && h.includes(kw))) return headers[i];
-  }
-  // pass 4: exact 'ro'
-  for (let i=0; i<lc.length; i++) {
-    if (lc[i] === 'ro') return headers[i];
+function detectStatusColumn(headers) {
+  for (const h of headers) {
+    if (STATUS_COL_KEYWORDS.some(kw => h.toLowerCase().includes(kw))) return h;
   }
   return null;
 }
 
-// ============================================================
-//  FIELD HELPERS
-// ============================================================
+function inferStatus(row, statusCol) {
+  const raw = statusCol ? (row[statusCol]||'') : '';
+  const val = raw.trim();
+  // ตรวจ exact/partial match
+  if (/grpo/i.test(val))                                        return 'GRPO';
+  if (/archiv/i.test(val))                                      return 'Archived';
+  if (/cancel/i.test(val)||/ยกเลิก/i.test(val))                return 'Cancelled';
+  if (/open/i.test(val)||/รอ/i.test(val)||/pending/i.test(val)) return 'Open';
+  // fallback: scan all values
+  const all = Object.values(row).join(' ');
+  if (/grpo/i.test(all))    return 'GRPO';
+  if (/archiv/i.test(all))  return 'Archived';
+  if (/cancel/i.test(all))  return 'Cancelled';
+  return 'Open';
+}
+
+// ════════════════════════════════════════════════════════════
+//  COLUMN DETECTION HELPERS
+// ════════════════════════════════════════════════════════════
+const RO_KW = ['ro no','ro number','ro#','r.o. no','repair order no','ro_no','ro_number','rono',
+               'หมายเลข ro','เลข ro','ro เลขที่','เลขที่ ro','work order no','wo no','wo_no',
+               'po no','po number','po_no','order no','order number','req no','job no','ro'];
+
+const VENDOR_KW = ['vendor','supplier','ร้านค้า','บริษัท','vendor name','supplier name',
+                   'ชื่อผู้ขาย','ผู้จัดจำหน่าย','card name','bp name','business partner'];
+
+const DESC_KW   = ['ro description','ro desc','description','item description','part name',
+                   'material name','รายการ','ชื่อรายการ','ชื่อสินค้า','ชื่อ','name','detail','desc'];
+
+function detectCol(headers, keywords) {
+  const lc = headers.map(h=>h.toLowerCase().trim());
+  // exact (skip 'ro' alone for first pass)
+  for (let i=0;i<lc.length;i++) {
+    if (keywords.slice(0,-1).some(kw=>lc[i]===kw)) return headers[i];
+  }
+  // starts-with
+  for (let i=0;i<lc.length;i++) {
+    if (keywords.some(kw=>kw.length>2 && (lc[i].startsWith(kw+' ')||lc[i].startsWith(kw+'.')||lc[i].startsWith(kw+'_')))) return headers[i];
+  }
+  // contains (longer first)
+  const sorted=[...keywords].sort((a,b)=>b.length-a.length);
+  for (let i=0;i<lc.length;i++) {
+    if (sorted.some(kw=>kw.length>=3 && lc[i].includes(kw))) return headers[i];
+  }
+  // exact 'ro'
+  for (let i=0;i<lc.length;i++) { if(lc[i]==='ro') return headers[i]; }
+  return null;
+}
+
 function getNum(row, kws) {
   for (const key of Object.keys(row)) {
-    if (kws.some(kw => key.toLowerCase().includes(kw))) {
-      const v = parseFloat((row[key]||'').replace(/,/g,''));
-      if (!isNaN(v) && v > 0) return v;
+    if (kws.some(kw=>key.toLowerCase().includes(kw))) {
+      const v=parseFloat((row[key]||'').replace(/,/g,''));
+      if (!isNaN(v)&&v>0) return v;
     }
   }
   return 0;
 }
 function getStr(row, kws) {
   for (const key of Object.keys(row)) {
-    if (kws.some(kw => key.toLowerCase().includes(kw))) {
-      if (row[key]&&row[key].trim()) return row[key].trim();
+    if (kws.some(kw=>key.toLowerCase().includes(kw))) {
+      if(row[key]&&row[key].trim()) return row[key].trim();
     }
   }
   return '';
 }
-function inferStatus(row) {
-  const all = Object.values(row).join(' ').toLowerCase();
-  if (all.includes('cancel')||all.includes('ยกเลิก')) return 'ยกเลิก';
-  if (all.includes('complete')||all.includes('เสร็จ')||all.includes('อนุมัติ')||all.includes('approve')) return 'อนุมัติ';
-  if (all.includes('progress')||all.includes('ดำเนินการ')||all.includes('ordered')||all.includes('order')) return 'ระหว่างดำเนินการ';
-  return 'รอดำเนินการ';
-}
 function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmt(n){ return n?'฿'+Math.round(n).toLocaleString():'—'; }
 
-// ============================================================
+// ════════════════════════════════════════════════════════════
 //  CSV PARSER
-// ============================================================
+// ════════════════════════════════════════════════════════════
 function parseCSV(text) {
-  const lines = text.trim().split('\n');
-  if (lines.length < 2) return { headers:[], rows:[] };
-  const headers = parseLine(lines[0]);
-  const rows = lines.slice(1).map(line => {
-    const vals = parseLine(line);
-    const obj = {};
-    headers.forEach((h,i) => obj[h] = (vals[i]||'').trim());
+  const lines=text.trim().split('\n');
+  if(lines.length<2) return {headers:[],rows:[]};
+  const headers=parseLine(lines[0]);
+  const rows=lines.slice(1).map(line=>{
+    const vals=parseLine(line);
+    const obj={};
+    headers.forEach((h,i)=>obj[h]=(vals[i]||'').trim());
     return obj;
-  }).filter(r => Object.values(r).some(v=>v!==''));
-  return { headers, rows };
+  }).filter(r=>Object.values(r).some(v=>v!==''));
+  return {headers,rows};
 }
-function parseLine(line) {
+function parseLine(line){
   const vals=[]; let cur='',inQ=false;
-  for (let i=0;i<line.length;i++){
+  for(let i=0;i<line.length;i++){
     const c=line[i];
     if(c==='"'){inQ=!inQ;}
     else if(c===','&&!inQ){vals.push(cur.replace(/^"|"$/g,''));cur='';}
@@ -392,334 +511,366 @@ function parseLine(line) {
   return vals;
 }
 
-// ============================================================
+// ════════════════════════════════════════════════════════════
 //  GROUP BY RO
-// ============================================================
+// ════════════════════════════════════════════════════════════
 function groupByRO(rows) {
-  const map = new Map();
-  const STATUS_RANK = {'อนุมัติ':3,'ระหว่างดำเนินการ':2,'รอดำเนินการ':1,'ยกเลิก':0};
-  for (const r of rows) {
-    // key = gid + RO เพื่อให้ group เฉพาะใน Sheet เดียวกัน
-    const key = `${r._gid}||${r._ro}`;
-    if (!map.has(key)) {
-      map.set(key, {
-        _key:   key,
-        _ro:    r._ro,
-        _hasRO: r._hasRO,
-        _gid:   r._gid,
-        _sheet: r._sheet,
-        _label: r._label,
-        _group: r._group,
-        _status:r._status,
-        _total: 0,
-        _items: [],
-      });
+  const map=new Map();
+  const RANK={'GRPO':4,'Archived':3,'Open':2,'Cancelled':1};
+  for(const r of rows){
+    const key=`${r._gid}||${r._ro}`;
+    if(!map.has(key)){
+      map.set(key,{ _key:key, _ro:r._ro, _roDesc:r._roDesc, _hasRO:r._hasRO,
+        _gid:r._gid, _sheet:r._sheet, _label:r._label, _group:r._group,
+        _status:r._status, _total:0, _vendor:r._vendor, _items:[] });
     }
-    const g = map.get(key);
-    g._total += (r._total||0);
+    const g=map.get(key);
+    g._total+=(r._total||0);
     g._items.push(r);
-    // สถานะ = ค่าที่ priority สูงสุดในกลุ่ม
-    if ((STATUS_RANK[r._status]||0) > (STATUS_RANK[g._status]||0)) g._status = r._status;
+    if((RANK[r._status]||0)>(RANK[g._status]||0)) g._status=r._status;
+    if(!g._vendor && r._vendor) g._vendor=r._vendor;
+    if(!g._roDesc && r._roDesc) g._roDesc=r._roDesc;
   }
   return [...map.values()];
 }
 
-// ============================================================
+// ════════════════════════════════════════════════════════════
 //  GLOBAL STATE
-// ============================================================
-let allData    = [];
-let sheetStats = {};
-let roGroups   = [];
-let expandedROs= new Set();
-let chartSheet = null, chartPie = null;
-let debugInfo  = [];
+// ════════════════════════════════════════════════════════════
+let allData=[]; let sheetStats={}; let roGroups=[];
+let chartBudget=null; let chartPie=null; let debugInfo=[];
 
-// ============================================================
-//  FETCH SHEET
-// ============================================================
-async function fetchSheet(gid, name, label, group) {
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
-  try {
-    const res  = await fetch(url);
-    if (!res.ok) throw new Error('HTTP '+res.status);
-    const text = await res.text();
-    const { headers, rows } = parseCSV(text);
-    const roCol = detectROColumn(headers);
-    debugInfo.push({ sheet:name, headers, roCol });
+// ════════════════════════════════════════════════════════════
+//  FETCH
+// ════════════════════════════════════════════════════════════
+async function fetchSheet(gid,name,label,group){
+  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
+  try{
+    const res=await fetch(url);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const text=await res.text();
+    const {headers,rows}=parseCSV(text);
+    const roCol     = detectCol(headers, RO_KW);
+    const statusCol = detectStatusColumn(headers);
+    const vendorCol = detectCol(headers, VENDOR_KW);
+    const descCol   = detectCol(headers, DESC_KW);
+    debugInfo.push({sheet:name,headers,roCol,statusCol,vendorCol,descCol});
 
-    return rows.map((r,i) => {
+    return rows.map((r,i)=>{
       const roVal  = roCol ? (r[roCol]||'').trim() : '';
       const qty    = getNum(r,['qty','จำนวน','quantity','amount','count']);
       const price  = getNum(r,['unit price','unit_price','price/unit','ราคา/หน่วย','ราคาต่อหน่วย','price','ราคา','rate']);
-      const total  = getNum(r,['total amount','grand total','total price','มูลค่ารวม','ยอดรวม','total','รวม','มูลค่า','sum','value'])
-                     || (qty*price);
+      const total  = getNum(r,['total amount','grand total','total price','มูลค่ารวม','ยอดรวม','total','รวม','มูลค่า','sum','value']) || (qty*price);
+      const descVal= descCol ? (r[descCol]||'').trim() : '';
       return {
         ...r,
-        _gid:    gid,
-        _sheet:  name,
-        _label:  label,
-        _group:  group,
-        _status: inferStatus(r),
-        _ro:     roVal || `${name}-row${i+1}`,
+        _gid:gid, _sheet:name, _label:label, _group:group,
+        _status: inferStatus(r,statusCol),
+        _ro:     roVal||`${name}-row${i+1}`,
+        _roDesc: descVal || roVal || `${name}-row${i+1}`,
         _hasRO:  !!roVal,
-        _roCol:  roCol,
+        _vendor: vendorCol ? (r[vendorCol]||'').trim() : getStr(r,VENDOR_KW),
         _code:   getStr(r,['part no','part_no','partno','material code','mat.code','item code','รหัส','code','id','no.']),
-        _name:   getStr(r,['description','item description','part name','material name','รายการ','ชื่อรายการ','ชื่อ','name','detail','desc']),
-        _qty:    qty,
-        _unit:   getStr(r,['unit','หน่วย','uom']),
-        _price:  price,
-        _total:  total,
+        _name:   getStr(r,['item description','part name','material name','ชื่อสินค้า','รายการ','ชื่อรายการ','ชื่อ','name','detail']),
+        _qty: qty, _unit: getStr(r,['unit','หน่วย','uom']), _price:price, _total:total,
       };
     });
-  } catch(e) {
-    console.warn(`Sheet ${name} failed:`,e.message);
-    debugInfo.push({ sheet:name, headers:[], roCol:null, error:e.message });
+  }catch(e){
+    console.warn(`Budget ${name} failed:`,e.message);
+    debugInfo.push({sheet:name,headers:[],roCol:null,statusCol:null,vendorCol:null,descCol:null,error:e.message});
     return [];
   }
 }
 
-// ============================================================
+// ════════════════════════════════════════════════════════════
 //  LOAD ALL
-// ============================================================
-async function loadAllData() {
+// ════════════════════════════════════════════════════════════
+async function loadAllData(){
   document.getElementById('loading-section').style.display='block';
   document.getElementById('status-badge').textContent='กำลังโหลด...';
-  allData=[]; sheetStats={}; debugInfo=[]; expandedROs.clear();
+  allData=[]; sheetStats={}; debugInfo=[];
 
-  for (let i=0;i<SHEETS.length;i++) {
+  for(let i=0;i<SHEETS.length;i++){
     const s=SHEETS[i];
     setStatus(`โหลด ${s.name} — ${s.label} (${i+1}/${SHEETS.length})`);
-    const rows = await fetchSheet(s.gid,s.name,s.label,s.group);
+    const rows=await fetchSheet(s.gid,s.name,s.label,s.group);
     allData.push(...rows);
-    const grp = groupByRO(rows);
-    sheetStats[s.gid] = {
-      name:s.name, label:s.label, group:s.group,
-      totalRO:   grp.length,
-      totalRows: rows.length,
-      approved:  grp.filter(r=>r._status==='อนุมัติ').length,
-      pending:   grp.filter(r=>r._status==='รอดำเนินการ').length,
-      inprog:    grp.filter(r=>r._status==='ระหว่างดำเนินการ').length,
-      value:     rows.reduce((a,r)=>a+(r._total||0),0),
+    const grp=groupByRO(rows);
+    sheetStats[s.gid]={
+      name:s.name,label:s.label,group:s.group,
+      totalRO:grp.length, totalRows:rows.length,
+      grpo:    grp.filter(r=>r._status==='GRPO').length,
+      archived:grp.filter(r=>r._status==='Archived').length,
+      valTotal:rows.reduce((a,r)=>a+(r._total||0),0),
+      valGrpo: rows.filter(r=>r._status==='GRPO').reduce((a,r)=>a+(r._total||0),0),
+      valArch: rows.filter(r=>r._status==='Archived').reduce((a,r)=>a+(r._total||0),0),
     };
   }
 
-  roGroups = groupByRO(allData);
+  roGroups=groupByRO(allData);
 
-  // debug output
-  document.getElementById('debug-content').textContent = debugInfo.map(d =>
-    `[${d.sheet}] RO column: ${d.roCol ? `"${d.roCol}"` : '❌ ไม่พบ (ใช้ index แทน)'}${d.error?` | ERROR: ${d.error}`:''}\n         Headers: ${(d.headers||[]).join(', ')}`
+  document.getElementById('debug-content').textContent=debugInfo.map(d=>
+    `[${d.sheet}] RO:"${d.roCol||'❌'}" Status:"${d.statusCol||'❌'}" Vendor:"${d.vendorCol||'❌'}" Desc:"${d.descCol||'❌'}"\n         Headers: ${(d.headers||[]).join(', ')}${d.error?`\n         ERROR: ${d.error}`:''}`
   ).join('\n\n');
 
-  const loaded = Object.values(sheetStats).filter(s=>s.totalRows>0).length;
-  setStatus(`โหลดเสร็จ · ${roGroups.length.toLocaleString()} RO (${allData.length.toLocaleString()} บรรทัด) จาก ${loaded}/${SHEETS.length} sheets`);
-  document.getElementById('status-badge').textContent = `✓ ${roGroups.length.toLocaleString()} RO`;
-  if (allData.length>0) document.getElementById('loading-section').style.display='none';
+  const loaded=Object.values(sheetStats).filter(s=>s.totalRows>0).length;
+  setStatus(`โหลดเสร็จ · ${roGroups.length.toLocaleString()} RO (${allData.length.toLocaleString()} บรรทัด) จาก ${loaded}/${SHEETS.length} budgets`);
+  document.getElementById('status-badge').textContent=`✓ ${roGroups.length.toLocaleString()} RO`;
+  if(allData.length>0) document.getElementById('loading-section').style.display='none';
 
   updateMetrics();
+  updateValueSummary();
   renderCharts();
   renderTable();
   renderProgress();
 }
 
-function setStatus(msg){ document.getElementById('load-status').textContent=msg; }
+function setStatus(msg){document.getElementById('load-status').textContent=msg;}
 
-// ============================================================
+// ════════════════════════════════════════════════════════════
 //  METRICS
-// ============================================================
-function updateMetrics() {
-  const value = roGroups.reduce((a,r)=>a+(r._total||0),0);
-  document.getElementById('m-ro').textContent       = roGroups.length.toLocaleString();
-  document.getElementById('m-total').textContent    = allData.length.toLocaleString();
-  document.getElementById('m-value').textContent    = value>0 ? '฿'+Math.round(value).toLocaleString() : '—';
-  document.getElementById('m-approved').textContent = roGroups.filter(r=>r._status==='อนุมัติ').length.toLocaleString();
-  document.getElementById('m-pending').textContent  = roGroups.filter(r=>r._status==='รอดำเนินการ').length.toLocaleString();
-  document.getElementById('m-inprog').textContent   = roGroups.filter(r=>r._status==='ระหว่างดำเนินการ').length.toLocaleString();
+// ════════════════════════════════════════════════════════════
+function updateMetrics(filtered){
+  const data=filtered||roGroups;
+  const total=data.length;
+  const grpo=data.filter(r=>r._status==='GRPO').length;
+  const arch=data.filter(r=>r._status==='Archived').length;
+  document.getElementById('m-ro').textContent    = total.toLocaleString();
+  document.getElementById('m-total').textContent = allData.length.toLocaleString();
+  document.getElementById('m-grpo').textContent  = grpo.toLocaleString();
+  document.getElementById('m-archived').textContent = arch.toLocaleString();
+  document.getElementById('m-grpo-pct').textContent    = total>0?`${Math.round(grpo/total*100)}% จาก RO ทั้งหมด`:'จาก RO ทั้งหมด';
+  document.getElementById('m-archived-pct').textContent= total>0?`${Math.round(arch/total*100)}% จาก RO ทั้งหมด`:'จาก RO ทั้งหมด';
 }
 
-// ============================================================
-//  CHARTS
-// ============================================================
-function renderCharts() {
-  const labels   = SHEETS.map(s=>s.name);
-  const roCount  = SHEETS.map(s=>(sheetStats[s.gid]||{}).totalRO  ||0);
-  const approved = SHEETS.map(s=>(sheetStats[s.gid]||{}).approved ||0);
+// ════════════════════════════════════════════════════════════
+//  VALUE SUMMARY
+// ════════════════════════════════════════════════════════════
+function updateValueSummary(filtered){
+  const data=filtered||allData;
+  const vTotal=data.reduce((a,r)=>a+(r._total||0),0);
+  const vGrpo =data.filter(r=>r._status==='GRPO').reduce((a,r)=>a+(r._total||0),0);
+  const vArch =data.filter(r=>r._status==='Archived').reduce((a,r)=>a+(r._total||0),0);
+  const vCombi=vGrpo+vArch;
+  const pGrpo =vTotal>0?Math.round(vGrpo/vTotal*100):0;
+  const pArch =vTotal>0?Math.round(vArch/vTotal*100):0;
+  const pCombi=vTotal>0?Math.round(vCombi/vTotal*100):0;
 
-  if (chartSheet) chartSheet.destroy();
-  chartSheet = new Chart(document.getElementById('chart-sheet'),{
+  document.getElementById('v-total').textContent     = fmt(vTotal);
+  document.getElementById('v-grpo-arch').textContent = fmt(vCombi);
+  document.getElementById('v-grpo-arch-pct').textContent = `${pCombi}% ของมูลค่ารวม`;
+  document.getElementById('v-grpo').textContent      = fmt(vGrpo);
+  document.getElementById('v-grpo-pct').textContent  = `${pGrpo}% ของมูลค่ารวม`;
+  document.getElementById('v-arch').textContent      = fmt(vArch);
+  document.getElementById('v-arch-pct').textContent  = `${pArch}% ของมูลค่ารวม`;
+
+  const bar=document.getElementById('value-bar');
+  const pOther=Math.max(0,100-pGrpo-pArch);
+  bar.innerHTML=`
+    <div class="progress-compare-fill" style="width:${pGrpo}%;background:var(--green)"></div>
+    <div class="progress-compare-fill" style="width:${pArch}%;background:var(--purple)"></div>
+    <div class="progress-compare-fill" style="width:${pOther}%;background:var(--bg-tertiary)"></div>`;
+}
+
+// ════════════════════════════════════════════════════════════
+//  CHARTS
+// ════════════════════════════════════════════════════════════
+function renderCharts(filteredGid){
+  const labels  =SHEETS.map(s=>s.name);
+  const roCount =SHEETS.map(s=>(sheetStats[s.gid]||{}).totalRO  ||0);
+  const grpoCnt =SHEETS.map(s=>(sheetStats[s.gid]||{}).grpo     ||0);
+  const archCnt =SHEETS.map(s=>(sheetStats[s.gid]||{}).archived ||0);
+
+  if(chartBudget) chartBudget.destroy();
+  chartBudget=new Chart(document.getElementById('chart-budget'),{
     type:'bar',
     data:{ labels, datasets:[
-      {label:'RO ทั้งหมด', data:roCount,  backgroundColor:'#378ADD', borderRadius:4},
-      {label:'อนุมัติแล้ว',data:approved, backgroundColor:'#1D9E75', borderRadius:4},
+      {label:'RO ทั้งหมด',data:roCount,  backgroundColor:'#378ADD',borderRadius:4},
+      {label:'GRPO',       data:grpoCnt, backgroundColor:'#1D9E75',borderRadius:4},
+      {label:'Archived',   data:archCnt, backgroundColor:'#534AB7',borderRadius:4},
     ]},
-    options:{ responsive:true, maintainAspectRatio:false,
+    options:{ responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false}},
-      scales:{ x:{ticks:{font:{size:10},maxRotation:45,autoSkip:false},grid:{display:false}},
-               y:{beginAtZero:true,ticks:{font:{size:11}}} } }
+      scales:{x:{ticks:{font:{size:10},maxRotation:45,autoSkip:false},grid:{display:false}},
+              y:{beginAtZero:true,ticks:{font:{size:11}}}} }
   });
 
   const grps={equipment:0,service:0,general:0};
-  roGroups.forEach(r=>{ if(r._group in grps) grps[r._group]++; });
-  const pL=['Equipment','Service','General'], pD=[grps.equipment,grps.service,grps.general];
+  roGroups.forEach(r=>{if(r._group in grps) grps[r._group]++;});
+  const pL=['Equipment','Service','General'],pD=[grps.equipment,grps.service,grps.general];
   const pC=['#378ADD','#1D9E75','#BA7517'];
-  document.getElementById('pie-legend').innerHTML = pL.map((l,i)=>
+  document.getElementById('pie-legend').innerHTML=pL.map((l,i)=>
     `<span><span class="lbox" style="background:${pC[i]}"></span>${l} ${pD[i].toLocaleString()}</span>`).join('');
-  if (chartPie) chartPie.destroy();
-  chartPie = new Chart(document.getElementById('chart-pie'),{
+  if(chartPie) chartPie.destroy();
+  chartPie=new Chart(document.getElementById('chart-pie'),{
     type:'doughnut',
-    data:{ labels:pL, datasets:[{data:pD, backgroundColor:pC, borderWidth:2, borderColor:'#fff'}] },
-    options:{ responsive:true, maintainAspectRatio:false, cutout:'62%', plugins:{legend:{display:false}} }
+    data:{labels:pL,datasets:[{data:pD,backgroundColor:pC,borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false}}}
   });
 }
 
-// ============================================================
+// ════════════════════════════════════════════════════════════
 //  TABLE
-// ============================================================
-function renderTable() {
-  const isGrouped = document.getElementById('toggle-group').checked;
-  const sheetF    = document.getElementById('filter-sheet').value;
-  const statusF   = document.getElementById('filter-status').value;
-  const searchF   = (document.getElementById('filter-search').value||'').toLowerCase().trim();
+// ════════════════════════════════════════════════════════════
+function renderTable(){
+  const isGrouped=document.getElementById('toggle-group').checked;
+  const budgetF  =document.getElementById('filter-budget').value;
+  const statusF  =document.getElementById('filter-status').value;
+  const searchF  =(document.getElementById('filter-search').value||'').toLowerCase().trim();
 
-  document.getElementById('toggle-desc').textContent = isGrouped
-    ? 'เปิด — RO เดียวกันรวมเป็นบรรทัดเดียว (คลิก ▶ เพื่อดูรายการย่อย)'
-    : 'ปิด — แสดงทุกบรรทัดแยกกัน';
+  document.getElementById('toggle-desc').textContent=isGrouped
+    ?'เปิด — RO เดียวกันรวมเป็นบรรทัดเดียว (คลิกชื่อ RO เพื่อดูรายละเอียด)'
+    :'ปิด — แสดงทุกบรรทัดแยกกัน';
 
-  /* ---- GROUPED MODE ---- */
-  if (isGrouped) {
-    document.getElementById('thead-row').innerHTML = `<tr>
-      <th style="width:32px"></th>
+  /* GROUPED */
+  if(isGrouped){
+    document.getElementById('thead-row').innerHTML=`<tr>
       <th style="width:40px">#</th>
-      <th>Sheet</th>
-      <th>RO Number</th>
-      <th style="text-align:center">รายการย่อย</th>
-      <th>ชื่อรายการ (หลัก)</th>
+      <th>Budget</th>
+      <th>RO Description</th>
       <th style="text-align:right">มูลค่ารวม (฿)</th>
+      <th>ร้านค้า / Vendor</th>
       <th>สถานะ</th>
     </tr>`;
 
-    let data = roGroups;
-    if (sheetF)  data = data.filter(r=>r._gid===sheetF);
-    if (statusF) data = data.filter(r=>r._status===statusF);
-    if (searchF) data = data.filter(r=>
+    let data=roGroups;
+    if(budgetF) data=data.filter(r=>r._gid===budgetF);
+    if(statusF) data=data.filter(r=>r._status===statusF);
+    if(searchF) data=data.filter(r=>
       r._ro.toLowerCase().includes(searchF)||
+      (r._roDesc||'').toLowerCase().includes(searchF)||
+      (r._vendor||'').toLowerCase().includes(searchF)||
       r._items.some(i=>(i._name||'').toLowerCase().includes(searchF)||(i._code||'').toLowerCase().includes(searchF))
     );
 
-    const show = data.slice(0, 500);
-    document.getElementById('row-count').textContent =
-      `${show.length.toLocaleString()} RO (จาก ${data.length.toLocaleString()})`;
+    const show=data.slice(0,500);
+    document.getElementById('row-count').textContent=`${show.length.toLocaleString()} RO (จาก ${data.length.toLocaleString()})`;
 
-    let html = '';
-    show.forEach((g, idx) => {
-      const multi = g._items.length > 1;
-      const isExp = expandedROs.has(g._key);
-      const firstName = g._items.find(i=>i._name)?._name || '—';
-
-      html += `<tr class="ro-group" style="cursor:${multi?'pointer':'default'}" onclick="${multi?`toggleRO('${esc(g._key)}')`:''}">
-        <td style="text-align:center">
-          ${multi?`<button class="expand-btn" onclick="event.stopPropagation();toggleRO('${esc(g._key)}')">${isExp?'▼':'▶'}</button>`:''}
-        </td>
+    document.getElementById('table-body').innerHTML=show.map((g,idx)=>`
+      <tr class="ro-group">
         <td style="color:var(--text-tertiary);font-size:12px">${idx+1}</td>
         <td><span class="pill pill-gray">${g._sheet}</span></td>
         <td>
-          <span style="font-family:monospace;font-size:13px;font-weight:600">${esc(g._ro)}</span>
+          <button class="ro-link" onclick="openModal('${esc(g._key)}')">${esc(g._roDesc||g._ro)}</button>
           ${!g._hasRO?'<span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">(auto)</span>':''}
         </td>
-        <td style="text-align:center">
-          ${multi?`<span class="badge-count">${g._items.length} รายการ</span>`:'1 รายการ'}
-        </td>
-        <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(firstName)}">${esc(firstName)}</td>
-        <td style="text-align:right;font-weight:600;font-size:14px">${g._total?'฿'+Math.round(g._total).toLocaleString():'—'}</td>
+        <td style="text-align:right;font-weight:600;font-size:14px">${fmt(g._total)}</td>
+        <td style="color:var(--text-secondary);font-size:12px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(g._vendor)}">${esc(g._vendor)||'—'}</td>
         <td>${sPill(g._status)}</td>
-      </tr>`;
+      </tr>`).join('') || noData(6);
 
-      if (isExp && multi) {
-        g._items.forEach(item => {
-          html += `<tr class="ro-sub">
-            <td></td>
-            <td></td>
-            <td><span class="pill pill-gray" style="font-size:10px">${item._sheet}</span></td>
-            <td style="font-family:monospace;padding-left:28px;font-size:12px;color:var(--text-tertiary)">${esc(item._code)||'—'}</td>
-            <td style="text-align:center;font-size:12px">
-              ${item._qty?item._qty.toLocaleString():'—'}${item._unit?' '+esc(item._unit):''}
-            </td>
-            <td style="max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(item._name)}">${esc(item._name)||'—'}</td>
-            <td style="text-align:right">${item._total?'฿'+Math.round(item._total).toLocaleString():'—'}</td>
-            <td>${sPill(item._status)}</td>
-          </tr>`;
-        });
-      }
-    });
+    document.getElementById('table-note').textContent=data.length>500
+      ?`* แสดง 500 RO แรก จากทั้งหมด ${data.length.toLocaleString()} RO`:'';
 
-    document.getElementById('table-body').innerHTML = html || noData();
-    document.getElementById('table-note').textContent = data.length>500
-      ? `* แสดง 500 RO แรก จากทั้งหมด ${data.length.toLocaleString()} RO` : '';
-
-  /* ---- FLAT MODE ---- */
-  } else {
-    document.getElementById('thead-row').innerHTML = `<tr>
-      <th>#</th><th>Sheet</th><th>RO Number</th><th>รหัส</th>
-      <th>ชื่อรายการ</th>
+  /* FLAT */
+  }else{
+    document.getElementById('thead-row').innerHTML=`<tr>
+      <th>#</th><th>Budget</th><th>RO Description</th><th>รหัส</th>
+      <th>ชื่อสินค้า</th>
       <th style="text-align:right">จำนวน</th><th>หน่วย</th>
       <th style="text-align:right">ราคา/หน่วย</th>
       <th style="text-align:right">มูลค่ารวม</th>
-      <th>สถานะ</th>
+      <th>ร้านค้า</th><th>สถานะ</th>
     </tr>`;
 
-    let data = allData;
-    if (sheetF)  data = data.filter(r=>r._gid===sheetF);
-    if (statusF) data = data.filter(r=>r._status===statusF);
-    if (searchF) data = data.filter(r=>
+    let data=allData;
+    if(budgetF) data=data.filter(r=>r._gid===budgetF);
+    if(statusF) data=data.filter(r=>r._status===statusF);
+    if(searchF) data=data.filter(r=>
       r._ro.toLowerCase().includes(searchF)||
+      (r._roDesc||'').toLowerCase().includes(searchF)||
       (r._name||'').toLowerCase().includes(searchF)||
       (r._code||'').toLowerCase().includes(searchF)
     );
 
-    const show = data.slice(0,300);
-    document.getElementById('row-count').textContent =
-      `${show.length.toLocaleString()} บรรทัด (จาก ${data.length.toLocaleString()})`;
+    const show=data.slice(0,300);
+    document.getElementById('row-count').textContent=`${show.length.toLocaleString()} บรรทัด (จาก ${data.length.toLocaleString()})`;
 
-    document.getElementById('table-body').innerHTML = show.length
-      ? show.map((r,i)=>`<tr>
+    document.getElementById('table-body').innerHTML=show.length
+      ?show.map((r,i)=>`<tr>
           <td style="color:var(--text-tertiary);font-size:12px">${i+1}</td>
           <td><span class="pill pill-gray">${r._sheet}</span></td>
-          <td style="font-family:monospace;font-weight:600">${esc(r._ro)||'—'}</td>
-          <td style="font-family:monospace;font-size:12px">${esc(r._code)||'—'}</td>
-          <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(r._name)}">${esc(r._name)||'—'}</td>
+          <td style="font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r._roDesc||r._ro)||'—'}</td>
+          <td class="mono">${esc(r._code)||'—'}</td>
+          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(r._name)}">${esc(r._name)||'—'}</td>
           <td style="text-align:right">${r._qty?r._qty.toLocaleString():'—'}</td>
           <td>${r._unit||'—'}</td>
-          <td style="text-align:right">${r._price?'฿'+Math.round(r._price).toLocaleString():'—'}</td>
-          <td style="text-align:right;font-weight:600">${r._total?'฿'+Math.round(r._total).toLocaleString():'—'}</td>
+          <td style="text-align:right">${r._price?fmt(r._price):'—'}</td>
+          <td style="text-align:right;font-weight:600">${fmt(r._total)}</td>
+          <td style="font-size:12px;color:var(--text-secondary);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(r._vendor)||'—'}</td>
           <td>${sPill(r._status)}</td>
         </tr>`).join('')
-      : noData();
-    document.getElementById('table-note').textContent = data.length>300
-      ? `* แสดง 300 บรรทัดแรก จากทั้งหมด ${data.length.toLocaleString()} บรรทัด` : '';
+      :noData(11);
+    document.getElementById('table-note').textContent=data.length>300
+      ?`* แสดง 300 บรรทัดแรก จากทั้งหมด ${data.length.toLocaleString()} บรรทัด`:'';
   }
 }
 
-function toggleRO(key) {
-  if (expandedROs.has(key)) expandedROs.delete(key);
-  else expandedROs.add(key);
-  renderTable();
-}
+function noData(cols){ return `<tr><td colspan="${cols}" style="text-align:center;padding:32px;color:var(--text-tertiary)">ไม่พบรายการที่ตรงกับตัวกรอง</td></tr>`; }
 
-function noData(){
-  return `<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text-tertiary)">ไม่พบรายการที่ตรงกับตัวกรอง</td></tr>`;
-}
 function sPill(s){
-  const m={'อนุมัติ':'green','รอดำเนินการ':'amber','ระหว่างดำเนินการ':'blue','ยกเลิก':'red'};
+  const m={'GRPO':'green','Archived':'purple','Open':'blue','Cancelled':'red'};
   return `<span class="pill pill-${m[s]||'gray'}">${s||'—'}</span>`;
 }
 
-// ============================================================
+// ════════════════════════════════════════════════════════════
+//  MODAL — รายละเอียด RO
+// ════════════════════════════════════════════════════════════
+function openModal(key){
+  const g=roGroups.find(r=>r._key===key);
+  if(!g) return;
+
+  document.getElementById('modal-title').textContent = g._roDesc||g._ro;
+  document.getElementById('modal-subtitle').innerHTML =
+    `<span class="pill pill-gray" style="font-size:11px">${g._sheet} — ${g._label}</span>&nbsp;` +
+    sPill(g._status) +
+    (g._vendor?`&nbsp;<span style="font-size:12px;color:var(--text-secondary)">ร้านค้า: <strong>${esc(g._vendor)}</strong></span>`:'');
+
+  const items=g._items;
+  const rowsHtml=items.map(item=>`
+    <tr>
+      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(item._name)}">${esc(item._name)||'—'}</td>
+      <td style="text-align:right">${item._qty?item._qty.toLocaleString():'—'}</td>
+      <td>${item._unit||'—'}</td>
+      <td style="text-align:right">${item._price?fmt(item._price):'—'}</td>
+      <td style="text-align:right;font-weight:600">${fmt(item._total)}</td>
+      <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;color:var(--text-secondary)" title="${esc(item._vendor)}">${esc(item._vendor)||esc(g._vendor)||'—'}</td>
+    </tr>`).join('');
+
+  document.getElementById('modal-body').innerHTML=`
+    <table>
+      <thead>
+        <tr>
+          <th>ชื่อสินค้า</th>
+          <th style="text-align:right">จำนวนที่สั่ง</th>
+          <th>หน่วย</th>
+          <th style="text-align:right">ราคาต่อหน่วย</th>
+          <th style="text-align:right">ผลรวมราคา</th>
+          <th>ร้านค้าที่สั่ง</th>
+        </tr>
+      </thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>
+    <div class="modal-total">
+      <span class="modal-total-label">มูลค่ารวมทั้งหมด (${items.length} รายการ)</span>
+      <span class="modal-total-value">${fmt(g._total)}</span>
+    </div>`;
+
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function closeModal(e){ if(e.target===document.getElementById('modal-overlay')) closeModalDirect(); }
+function closeModalDirect(){ document.getElementById('modal-overlay').classList.remove('show'); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModalDirect(); });
+
+// ════════════════════════════════════════════════════════════
 //  PROGRESS
-// ============================================================
-function renderProgress() {
+// ════════════════════════════════════════════════════════════
+function renderProgress(){
   const grps={equipment:[],service:[],general:[]};
   SHEETS.forEach(s=>{
-    const st=sheetStats[s.gid]||{totalRO:0,approved:0};
-    if(s.group in grps) grps[s.group].push({label:s.label,total:st.totalRO,approved:st.approved});
+    const st=sheetStats[s.gid]||{totalRO:0,grpo:0,archived:0};
+    if(s.group in grps) grps[s.group].push({label:s.label,total:st.totalRO,done:st.grpo+st.archived});
   });
   ['equipment','service','general'].forEach((g,idx)=>{
     const id=['progress-equip','progress-svc','progress-gen'][idx];
@@ -727,12 +878,12 @@ function renderProgress() {
     const items=grps[g];
     if(!items.length){el.innerHTML='<p style="font-size:12px;color:var(--text-tertiary)">ไม่มีข้อมูล</p>';return;}
     el.innerHTML=items.map(item=>{
-      const pct=item.total>0?Math.round((item.approved/item.total)*100):0;
+      const pct=item.total>0?Math.round((item.done/item.total)*100):0;
       const col=pct>=75?'#1D9E75':pct>=40?'#378ADD':'#BA7517';
       return `<div class="prog-item">
         <div class="prog-header">
           <span class="prog-label">${item.label}</span>
-          <span class="prog-stat">${item.approved}/${item.total} · ${pct}%</span>
+          <span class="prog-stat">${item.done}/${item.total} · ${pct}%</span>
         </div>
         <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${col}"></div></div>
       </div>`;
@@ -740,27 +891,33 @@ function renderProgress() {
   });
 }
 
-// ============================================================
-//  TABS / EXPORT / DEBUG
-// ============================================================
-function selectTab(el){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  const gid=el.dataset.gid;
-  document.getElementById('filter-sheet').value=(gid==='all')?'':gid;
+// ════════════════════════════════════════════════════════════
+//  BUDGET DROPDOWN (top-level filter)
+// ════════════════════════════════════════════════════════════
+function onBudgetChange(){
+  const gid=document.getElementById('budget-select').value;
+  document.getElementById('filter-budget').value=gid;
   renderTable();
+  // update metrics & value summary for selected budget
+  const fRows = gid ? allData.filter(r=>r._gid===gid) : allData;
+  const fRO   = gid ? roGroups.filter(r=>r._gid===gid) : roGroups;
+  updateMetrics(fRO);
+  updateValueSummary(fRows);
 }
 
+// ════════════════════════════════════════════════════════════
+//  EXPORT & DEBUG
+// ════════════════════════════════════════════════════════════
 function exportCSV(){
   if(!roGroups.length){alert('ยังไม่มีข้อมูล');return;}
   const isGrouped=document.getElementById('toggle-group').checked;
-  let rows, header;
+  let rows,header;
   if(isGrouped){
-    header=['RO Number','Sheet','จำนวนรายการย่อย','มูลค่ารวม (฿)','สถานะ','หมายเหตุ'];
-    rows=roGroups.map(g=>[g._ro,g._sheet,g._items.length,Math.round(g._total),g._status,g._hasRO?'':'ไม่มี RO column (auto)']);
-  } else {
-    header=['Sheet','RO Number','รหัส','ชื่อรายการ','จำนวน','หน่วย','ราคา/หน่วย','มูลค่ารวม','สถานะ'];
-    rows=allData.map(r=>[r._sheet,r._ro,r._code,r._name,r._qty,r._unit,r._price,Math.round(r._total||0),r._status]);
+    header=['RO Description','Budget','มูลค่ารวม (฿)','ร้านค้า','สถานะ'];
+    rows=roGroups.map(g=>[g._roDesc||g._ro,g._sheet,Math.round(g._total),g._vendor,g._status]);
+  }else{
+    header=['Budget','RO Description','รหัส','ชื่อสินค้า','จำนวน','หน่วย','ราคา/หน่วย','มูลค่ารวม','ร้านค้า','สถานะ'];
+    rows=allData.map(r=>[r._sheet,r._roDesc||r._ro,r._code,r._name,r._qty,r._unit,r._price,Math.round(r._total||0),r._vendor,r._status]);
   }
   const csv=[header,...rows].map(r=>r.map(v=>`"${(v||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
   const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
