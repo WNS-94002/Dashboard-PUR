@@ -202,28 +202,34 @@
 
   <!-- Value Summary -->
   <div class="value-card">
-    <div class="value-card-title">สรุปมูลค่าการสั่งซื้อ</div>
+    <div class="value-card-title">สรุปมูลค่าการสั่งซื้อ เทียบกับ Budget ปี 2026</div>
     <div class="value-row">
       <div class="value-item">
-        <div class="value-item-label">มูลค่ารวมทั้งหมด</div>
-        <div class="value-item-num c-amber" id="v-total">—</div>
-        <div class="value-item-sub">ผลรวมทุก RO</div>
+        <div class="value-item-label">งบประมาณ 2026</div>
+        <div class="value-item-num" style="color:var(--text-secondary)" id="v-budget2026">—</div>
+        <div class="value-item-sub">จาก Sheet BG</div>
       </div>
       <div class="value-item">
-        <div class="value-item-label">มูลค่า PO</div>
+        <div class="value-item-label">มูลค่า RO รวม</div>
+        <div class="value-item-num c-amber" id="v-total">—</div>
+        <div class="value-item-sub" id="v-total-pct-bg">— ของงบประมาณ</div>
+      </div>
+      <div class="value-item">
+        <div class="value-item-label">มูลค่า PO (GRPO+Archived)</div>
         <div class="value-item-num c-green" id="v-po">—</div>
-        <div class="value-item-sub" id="v-po-pct">GRPO + Archived</div>
+        <div class="value-item-sub" id="v-po-pct">— ของงบประมาณ</div>
       </div>
       <div class="value-item">
         <div class="value-item-label">คงเหลือ (ยังไม่ PO)</div>
         <div class="value-item-num" style="color:var(--text-secondary)" id="v-remain">—</div>
-        <div class="value-item-sub" id="v-remain-pct">— ของมูลค่ารวม</div>
+        <div class="value-item-sub" id="v-remain-pct">— ของงบประมาณ</div>
       </div>
     </div>
-    <div class="progress-compare" id="value-bar"></div>
+    <div class="progress-compare" id="value-bar" style="height:12px;margin-top:14px;"></div>
     <div class="pc-legend">
       <span><span class="lbox" style="background:var(--green)"></span>มูลค่า PO (GRPO + Archived)</span>
-      <span><span class="lbox" style="background:var(--bg-tertiary);border:0.5px solid var(--border)"></span>คงเหลือ</span>
+      <span><span class="lbox" style="background:var(--amber)"></span>RO ที่ยังไม่ PO</span>
+      <span><span class="lbox" style="background:var(--bg-tertiary);border:0.5px solid var(--border)"></span>งบที่ยังไม่มี RO</span>
     </div>
   </div>
 
@@ -250,53 +256,55 @@
     </select>
   </div>
 
-  <!-- Charts Row: RO by Budget (full width) -->
-  <div class="card chart-full">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
-      <div>
-        <div class="card-title" style="margin-bottom:6px;">จำนวน RO ตาม Budget</div>
-        <div class="legend">
-          <span><span class="lbox" style="background:#378ADD"></span>RO ทั้งหมด</span>
-          <span><span class="lbox" style="background:#1D9E75"></span>PO (GRPO)</span>
-          <span><span class="lbox" style="background:#534AB7"></span>ส่งของ (Archived)</span>
+  <!-- Charts Row: RO Budget (left) + Vendor Top5 (right) -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;">
+    <!-- Left: RO by Budget -->
+    <div class="card">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
+        <div>
+          <div class="card-title" style="margin-bottom:5px;">จำนวน RO ตาม Budget</div>
+          <div class="legend">
+            <span><span class="lbox" style="background:#378ADD"></span>RO ทั้งหมด</span>
+            <span><span class="lbox" style="background:#1D9E75"></span>PO (GRPO)</span>
+            <span><span class="lbox" style="background:#534AB7"></span>ส่งของ (Archived)</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;" id="ro-summary-pills"></div>
+      </div>
+      <div style="position:relative;width:100%;height:280px;"><canvas id="chart-budget"></canvas></div>
+    </div>
+    <!-- Right: Vendor Top5 -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+        <div class="card-title" style="margin-bottom:0">ภาพรวม Vendor ที่ได้ PO (ปี 2026)</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <div class="chart-controls" style="margin-bottom:0">
+            <label>Top:</label>
+            <select id="vendor-top-n" onchange="renderVendorChart()" style="font-size:12px;padding:4px 8px;">
+              <option value="5" selected>5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="0">ทั้งหมด</option>
+            </select>
+            <label>เรียงตาม:</label>
+            <select id="vendor-sort" onchange="renderVendorChart()" style="font-size:12px;padding:4px 8px;">
+              <option value="po">จำนวน PO</option>
+              <option value="value">มูลค่า</option>
+            </select>
+          </div>
+          <span class="badge-sm" id="vendor-total-badge">— Vendor</span>
         </div>
       </div>
-      <!-- Summary pills -->
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;" id="ro-summary-pills"></div>
+      <div id="vendor-chart-wrap" style="position:relative;width:100%;">
+        <canvas id="chart-vendor"></canvas>
+      </div>
     </div>
-    <div style="position:relative;width:100%;height:260px;"><canvas id="chart-budget"></canvas></div>
   </div>
 
   <!-- Monthly Chart (full width) -->
   <div class="card chart-full">
     <div class="card-title">ค่าใช้จ่ายรายเดือน (ตาม PO Date)</div>
-    <div class="legend">
-      <span><span class="lbox" style="background:#378ADD"></span>มูลค่า (฿)</span>
-    </div>
-    <div style="position:relative;width:100%;height:260px;"><canvas id="chart-monthly"></canvas></div>
-  </div>
-
-  <!-- Vendor PO Chart (full width) -->
-  <div class="card chart-full">
-    <div class="card-title">ภาพรวม Vendor ที่ได้ PO (ปี 2026)</div>
-    <div class="chart-controls">
-      <label>แสดง Top:</label>
-      <select id="vendor-top-n" onchange="renderVendorChart()">
-        <option value="10">10 อันดับแรก</option>
-        <option value="15" selected>15 อันดับแรก</option>
-        <option value="20">20 อันดับแรก</option>
-        <option value="0">ทั้งหมด</option>
-      </select>
-      <label>เรียงตาม:</label>
-      <select id="vendor-sort" onchange="renderVendorChart()">
-        <option value="po">จำนวน PO</option>
-        <option value="value">มูลค่า</option>
-      </select>
-      <span class="badge-sm" id="vendor-total-badge">— Vendor</span>
-    </div>
-    <div id="vendor-chart-wrap" style="position:relative;width:100%;">
-      <canvas id="chart-vendor"></canvas>
-    </div>
+    <div style="position:relative;width:100%;height:280px;"><canvas id="chart-monthly"></canvas></div>
   </div>
 
   <!-- BG Budget Overview -->
@@ -822,20 +830,49 @@ function renderROSummaryPills(total, grpo, arch) {
 // ════════════════════════════════════════════════════════════
 //  VALUE SUMMARY
 // ════════════════════════════════════════════════════════════
+// shared Budget 2026 total from BG sheet (set by loadBGSheet)
+let bgTotalBudget2026 = 0;
+
 function updateValueSummary(rows){
-  const data  =rows||allData;
-  const vTotal=data.reduce((a,r)=>a+(r._total||0),0);
-  const vPO   =data.filter(r=>r._state==='GRPO'||r._state==='Archived').reduce((a,r)=>a+(r._total||0),0);
-  const vRem  =Math.max(0,vTotal-vPO);
-  const pPO   =vTotal>0?Math.round(vPO/vTotal*100):0;
-  const pRem  =vTotal>0?Math.round(vRem/vTotal*100):0;
-  document.getElementById('v-total').textContent  =fmt(vTotal);
-  document.getElementById('v-po').textContent     =fmt(vPO);
-  document.getElementById('v-po-pct').textContent =`${pPO}% ของมูลค่ารวม · GRPO + Archived`;
-  document.getElementById('v-remain').textContent =fmt(vRem);
-  document.getElementById('v-remain-pct').textContent=`${pRem}% ของมูลค่ารวม`;
-  const bar=document.getElementById('value-bar');
-  bar.innerHTML=`<div class="pc-fill" style="width:${pPO}%;background:var(--green)"></div><div class="pc-fill" style="width:${pRem}%;background:var(--bg-tertiary)"></div>`;
+  const data    = rows||allData;
+  const vTotal  = data.reduce((a,r)=>a+(r._total||0),0);
+  const vPO     = data.filter(r=>r._state==='GRPO'||r._state==='Archived').reduce((a,r)=>a+(r._total||0),0);
+  const vUnPO   = Math.max(0, vTotal - vPO);   // มี RO แต่ยังไม่ PO
+  const bg      = bgTotalBudget2026;
+
+  // % เทียบกับงบ
+  const pTotal  = bg>0 ? (vTotal/bg*100).toFixed(1) : null;
+  const pPO     = bg>0 ? (vPO/bg*100).toFixed(1) : null;
+  const pUnPO   = bg>0 ? (vUnPO/bg*100).toFixed(1) : null;
+  // งบที่ยังไม่มี RO เลย
+  const vNoRO   = bg>0 ? Math.max(0, bg - vTotal) : 0;
+  const pNoRO   = bg>0 ? Math.max(0, 100 - parseFloat(pTotal||0)).toFixed(1) : null;
+
+  document.getElementById('v-budget2026').textContent = bg>0 ? fmt(bg) : '—';
+  document.getElementById('v-total').textContent      = fmt(vTotal);
+  document.getElementById('v-total-pct-bg').textContent = pTotal ? `${pTotal}% ของงบประมาณ` : 'ผลรวมทุก RO';
+  document.getElementById('v-po').textContent         = fmt(vPO);
+  document.getElementById('v-po-pct').textContent     = pPO ? `${pPO}% ของงบประมาณ · GRPO+Archived` : 'GRPO + Archived';
+  document.getElementById('v-remain').textContent     = fmt(vUnPO);
+  document.getElementById('v-remain-pct').textContent = pUnPO ? `${pUnPO}% ของงบประมาณ` : 'ยังไม่ PO';
+
+  // progress bar 3 ส่วน: PO | มี RO แต่ยังไม่ PO | ยังไม่มี RO
+  const bar = document.getElementById('value-bar');
+  if(bg>0){
+    const wPO    = Math.min(100, vPO/bg*100);
+    const wUnPO  = Math.min(100-wPO, vUnPO/bg*100);
+    const wNoRO  = Math.max(0, 100-wPO-wUnPO);
+    bar.innerHTML = `
+      <div class="pc-fill" style="width:${wPO.toFixed(1)}%;background:var(--green)"></div>
+      <div class="pc-fill" style="width:${wUnPO.toFixed(1)}%;background:var(--amber)"></div>
+      <div class="pc-fill" style="width:${wNoRO.toFixed(1)}%;background:var(--bg-tertiary)"></div>`;
+  } else {
+    const pPOr  = vTotal>0?Math.round(vPO/vTotal*100):0;
+    const pRem  = vTotal>0?Math.round(vUnPO/vTotal*100):0;
+    bar.innerHTML = `
+      <div class="pc-fill" style="width:${pPOr}%;background:var(--green)"></div>
+      <div class="pc-fill" style="width:${pRem}%;background:var(--amber)"></div>`;
+  }
 }
 
 // ════════════════════════════════════════════════════════════
@@ -936,7 +973,7 @@ function renderMonthlyChart(filterGid){
           pointRadius:4,
           pointHoverRadius:6,
           tension:0.35,
-          fill:true,
+          fill:false,
           yAxisID:'y2',
           order:1,
         }
@@ -1039,7 +1076,7 @@ function renderVendorChart(filterGid){
   document.getElementById('vendor-total-badge').textContent=`${entries.length} Vendor ทั้งหมด`;
 
   // Dynamic height: 36px per bar
-  const h=Math.max(200, display.length*26+50);
+  const h=Math.max(180, display.length*36+60);
   const wrap=document.getElementById('vendor-chart-wrap');
   wrap.style.height=h+'px';
 
@@ -1066,6 +1103,7 @@ function renderVendorChart(filterGid){
       indexAxis:'y',
       responsive:true,
       maintainAspectRatio:false,
+      layout:{padding:{right:42}},
       plugins:{
         legend:{display:false},
         tooltip:{
@@ -1078,7 +1116,8 @@ function renderVendorChart(filterGid){
       scales:{
         x:{beginAtZero:true,ticks:{font:{size:11},stepSize:1},grid:{color:'rgba(0,0,0,0.06)'}},
         y:{ticks:{font:{size:11}},grid:{display:false}},
-      }
+      },
+      animation:{onComplete:function(){drawVendorLabels(this, poData);}}
     }
   });
 }
@@ -1166,6 +1205,31 @@ function applySortFlat(data) {
     }
     return cmpNullLast(va, vb, dir);
   });
+}
+
+function drawVendorLabels(chart, poData){
+  const ctx=chart.ctx;
+  ctx.save();
+  ctx.font='bold 11px sans-serif';
+  ctx.textBaseline='middle';
+  ctx.fillStyle='var(--text-primary)';
+  const meta=chart.getDatasetMeta(0);
+  meta.data.forEach((bar,i)=>{
+    const val=poData[i];
+    if(!val) return;
+    const x=bar.x+5;
+    const y=bar.y;
+    // measure background
+    const txt=val.toString();
+    const tw=ctx.measureText(txt).width;
+    ctx.fillStyle='rgba(55,138,221,0.15)';
+    ctx.beginPath();
+    ctx.roundRect(x-3, y-9, tw+8, 18, 3);
+    ctx.fill();
+    ctx.fillStyle='#185FA5';
+    ctx.fillText(txt, x+1, y);
+  });
+  ctx.restore();
 }
 
 // ════════════════════════════════════════════════════════════
@@ -1457,6 +1521,7 @@ async function loadBGSheet() {
         data = parsed;
         statusEl.textContent = `โหลดสำเร็จ · ${parsed.length} หมวด (Live จาก Google Sheets)`;
       }
+      bgTotalBudget2026 = data.reduce((a,r)=>a+(r.budget||0),0);
     }
   } catch(e) { /* fall through to fallback */ }
 
@@ -1464,6 +1529,9 @@ async function loadBGSheet() {
     data = BG_FALLBACK;
     statusEl.textContent = 'ใช้ข้อมูล Snapshot (ไม่สามารถดึง Live ได้ — ตรวจสอบสิทธิ์ Sheet)';
   }
+  bgTotalBudget2026 = data.reduce((a,r)=>a+(r.budget||0),0);
+  // refresh value summary now that we have Budget 2026
+  updateValueSummary();
 
   renderBGTable(data);
   renderBGCharts(data);
