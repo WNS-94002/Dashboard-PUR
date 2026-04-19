@@ -310,6 +310,46 @@
     </div>
   </div>
 
+  <!-- BG Budget Overview -->
+  <div class="card chart-full" id="bg-section">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+      <div>
+        <div class="card-title" style="margin-bottom:2px;">ภาพรวม Budget ปี 2026 (Sheet BG)</div>
+        <div style="font-size:11px;color:var(--text-tertiary)" id="bg-load-status">กำลังโหลด...</div>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;" id="bg-totals"></div>
+    </div>
+    <div style="overflow-x:auto;margin-bottom:20px;">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead><tr id="bg-thead">
+          <th style="text-align:left;padding:7px 10px;background:var(--bg-secondary);border-bottom:0.5px solid var(--border);font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">No.</th>
+          <th style="text-align:left;padding:7px 10px;background:var(--bg-secondary);border-bottom:0.5px solid var(--border);font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.03em;">Description</th>
+          <th style="text-align:center;padding:7px 10px;background:var(--bg-secondary);border-bottom:0.5px solid var(--border);font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">Code</th>
+          <th style="text-align:right;padding:7px 10px;background:var(--bg-secondary);border-bottom:0.5px solid var(--border);font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">Budget (฿)</th>
+          <th style="text-align:right;padding:7px 10px;background:var(--bg-secondary);border-bottom:0.5px solid var(--border);font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">RO Expense (฿)</th>
+          <th style="text-align:right;padding:7px 10px;background:var(--bg-secondary);border-bottom:0.5px solid var(--border);font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">Remain (฿)</th>
+          <th style="text-align:right;padding:7px 10px;background:var(--bg-secondary);border-bottom:0.5px solid var(--border);font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">% Remain</th>
+          <th style="text-align:right;padding:7px 10px;background:var(--bg-secondary);border-bottom:0.5px solid var(--border);font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">% Per Budget</th>
+        </tr></thead>
+        <tbody id="bg-tbody"><tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text-tertiary)">กำลังโหลด...</td></tr></tbody>
+      </table>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Budget vs RO Expense ตามหมวด</div>
+        <div class="legend">
+          <span><span class="lbox" style="background:#378ADD"></span>Budget</span>
+          <span><span class="lbox" style="background:#1D9E75"></span>RO Expense</span>
+        </div>
+        <div style="position:relative;width:100%;height:320px;"><canvas id="chart-bg-bar"></canvas></div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">% Remain ต่อ Budget (น้อย = ใช้มาก)</div>
+        <div style="position:relative;width:100%;height:320px;"><canvas id="chart-bg-remain"></canvas></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Table -->
   <div class="card" style="margin-bottom:18px;">
     <div class="card-title">รายการสั่งซื้อ — สรุปตาม RO Number</div>
@@ -1218,7 +1258,214 @@ function toggleDebug(){
   document.getElementById('debug-btn').textContent=p.classList.contains('show')?'✕ Debug':'🔍 Debug';
 }
 
+// ════════════════════════════════════════════════════════════
+//  BG SHEET — Budget Overview 2026
+// ════════════════════════════════════════════════════════════
+const BG_GID = '2052519392';
+let chartBGBar = null, chartBGRemain = null;
+
+// Fallback data from screenshot (used when Sheet is not accessible)
+const BG_FALLBACK = [
+  { no:1,  desc:'CONVEYOR EQUIPMENT',                         code:'0-101', budget:50480000.00,  expense:32868045.00, remain:17611955.00, pctRemain:34.89, pctPerBudget:13.23 },
+  { no:2,  desc:'LUBRICANT CV',                               code:'4-501', budget:7827839.10,   expense:2912273.00,  remain:4915566.10,  pctRemain:62.80, pctPerBudget:1.17  },
+  { no:3,  desc:'SPREADER',                                   code:'6-101', budget:12894496.00,  expense:2064444.72,  remain:10830051.28, pctRemain:83.99, pctPerBudget:0.83  },
+  { no:4,  desc:'BUCKET WHEEL EXCVATOR, BELT WAGON, HOPPER',  code:'6-102', budget:68140580.00,  expense:14594698.13, remain:53545881.87, pctRemain:78.58, pctPerBudget:5.88  },
+  { no:5,  desc:'CRUSHER 5500 TPH, 1500 TPH',                 code:'6-103', budget:32360280.00,  expense:7982739.21,  remain:24377540.79, pctRemain:75.33, pctPerBudget:3.21  },
+  { no:6,  desc:'CONVEYOR',                                   code:'6-104', budget:51080670.00,  expense:12696456.04, remain:38384213.96, pctRemain:75.14, pctPerBudget:5.11  },
+  { no:7,  desc:'AUXILIARY CV EQUIPMENT',                     code:'6-105', budget:9617497.00,   expense:3207117.50,  remain:6410379.50,  pctRemain:66.65, pctPerBudget:1.29  },
+  { no:8,  desc:'SERVICE CV EQUIPMENT',                       code:'6-106', budget:6261952.00,   expense:2473655.00,  remain:3788297.00,  pctRemain:60.50, pctPerBudget:1.00  },
+  { no:9,  desc:'HYDRAULIC HOSE AND FITTING',                 code:'6-227', budget:436000.00,    expense:0.00,        remain:436000.00,   pctRemain:100.00, pctPerBudget:0.00 },
+  { no:10, desc:'GENERAL CONSUME MATERIAL CV',                code:'6-111', budget:2180000.00,   expense:2445390.64,  remain:-265390.64,  pctRemain:-12.17, pctPerBudget:0.98 },
+  { no:11, desc:'SERVICE SPREADER',                           code:'7-101', budget:200000.00,    expense:0.00,        remain:200000.00,   pctRemain:100.00, pctPerBudget:0.00 },
+  { no:12, desc:'SERVICE BUCKET WHEEL EXCVATOR, BELT WAGON, HOPPER', code:'7-102', budget:1200000.00, expense:0.00, remain:1200000.00, pctRemain:100.00, pctPerBudget:0.00 },
+  { no:13, desc:'SERVICE CRUSHER 5500 TPH, 1500 TPH',         code:'7-103', budget:200000.00,    expense:0.00,        remain:200000.00,   pctRemain:100.00, pctPerBudget:0.00 },
+  { no:14, desc:'SERVICE CONVEYOR',                           code:'7-104', budget:1500000.00,   expense:80124.00,    remain:1419876.00,  pctRemain:94.66, pctPerBudget:0.03  },
+  { no:15, desc:'GENERAL EXPENSE CV',                         code:'9-111', budget:4001336.59,   expense:166988.00,   remain:3834348.59,  pctRemain:95.83, pctPerBudget:0.07  },
+];
+
+async function loadBGSheet() {
+  const statusEl = document.getElementById('bg-load-status');
+  let data = null;
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${BG_GID}`;
+    const res = await fetch(url);
+    if (res.ok) {
+      const text = await res.text();
+      const { headers, rows } = parseCSV(text);
+      // Map columns dynamically
+      const hLc = headers.map(h=>h.toLowerCase().trim());
+      const col = (kws) => { for(let i=0;i<hLc.length;i++) if(kws.some(k=>hLc[i].includes(k))) return headers[i]; return null; };
+      const noCol      = col(['no.','no','#','ลำดับ']);
+      const descCol    = col(['description','รายละเอียด','desc','ชื่อ']);
+      const codeCol    = col(['code','รหัส']);
+      const budgetCol  = col(['budget','งบ']);
+      const expenseCol = col(['ro expense','expense','ค่าใช้จ่าย','ro exp']);
+      const remainCol  = col(['remain','คงเหลือ']);
+      const pctRCol    = col(['% remain','%remain','pct remain','remain%']);
+      const pctPBCol   = col(['% per','per budget','%per']);
+      const parsed = rows.filter(r=>{
+        const d=descCol?(r[descCol]||''):'';
+        return d && !d.toLowerCase().includes('total') && !d.match(/^\d+$/) && d.trim()!=='';
+      }).map((r,i)=>({
+        no:       noCol?(parseInt(r[noCol])||i+1):i+1,
+        desc:     descCol?(r[descCol]||'').trim():'',
+        code:     codeCol?(r[codeCol]||'').trim():'',
+        budget:   budgetCol?parseFloat((r[budgetCol]||'0').replace(/,/g,'')):0,
+        expense:  expenseCol?parseFloat((r[expenseCol]||'0').replace(/,/g,'')):0,
+        remain:   remainCol?parseFloat((r[remainCol]||'0').replace(/,/g,'')):0,
+        pctRemain:pctRCol?parseFloat((r[pctRCol]||'0').replace(/[%,]/g,'')):0,
+        pctPerBudget:pctPBCol?parseFloat((r[pctPBCol]||'0').replace(/[%,]/g,'')):0,
+      })).filter(r=>r.desc);
+      if (parsed.length > 0) {
+        data = parsed;
+        statusEl.textContent = `โหลดสำเร็จ · ${parsed.length} หมวด (Live จาก Google Sheets)`;
+      }
+    }
+  } catch(e) { /* fall through to fallback */ }
+
+  if (!data) {
+    data = BG_FALLBACK;
+    statusEl.textContent = 'ใช้ข้อมูล Snapshot (ไม่สามารถดึง Live ได้ — ตรวจสอบสิทธิ์ Sheet)';
+  }
+
+  renderBGTable(data);
+  renderBGCharts(data);
+}
+
+function fmtBG(n) {
+  if(n===null||n===undefined) return '—';
+  return Math.round(n).toLocaleString();
+}
+function fmtPct(n) {
+  if(n===null||n===undefined) return '—';
+  return n.toFixed(2)+'%';
+}
+function pctColor(pct) {
+  if (pct <= 0)   return '#A32D2D'; // over budget — red
+  if (pct <= 30)  return '#BA7517'; // low remain — amber
+  if (pct <= 70)  return '#378ADD'; // mid — blue
+  return '#1D9E75';                 // high remain — green
+}
+
+function renderBGTable(data) {
+  const totalBudget  = data.reduce((a,r)=>a+r.budget,0);
+  const totalExpense = data.reduce((a,r)=>a+r.expense,0);
+  const totalRemain  = data.reduce((a,r)=>a+r.remain,0);
+  const totalPctR    = totalBudget>0 ? (totalRemain/totalBudget*100) : 0;
+
+  // Totals bar
+  document.getElementById('bg-totals').innerHTML = [
+    {label:'งบประมาณรวม',value:fmtBG(totalBudget),color:'var(--amber)'},
+    {label:'ใช้ไปแล้ว',value:fmtBG(totalExpense),color:'var(--blue)'},
+    {label:'คงเหลือ',value:fmtBG(totalRemain),color:totalRemain>=0?'var(--green)':'var(--red)'},
+    {label:'% คงเหลือรวม',value:fmtPct(totalPctR),color:pctColor(totalPctR)},
+  ].map(t=>`<div style="text-align:right">
+    <div style="font-size:10px;color:var(--text-tertiary);margin-bottom:2px;text-transform:uppercase;letter-spacing:.04em">${t.label}</div>
+    <div style="font-size:17px;font-weight:600;color:${t.color}">฿${t.value}</div>
+  </div>`).join('');
+
+  const tbody = document.getElementById('bg-tbody');
+  tbody.innerHTML = data.map(r => {
+    const col = pctColor(r.pctRemain);
+    const negRemain = r.remain < 0;
+    return `<tr>
+      <td style="padding:8px 10px;border-bottom:0.5px solid var(--border);color:var(--text-tertiary);font-size:11px;white-space:nowrap">${r.no}</td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid var(--border);font-weight:500;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(r.desc)}">${esc(r.desc)}</td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid var(--border);text-align:center;"><span class="pill pill-gray" style="font-size:11px">${r.code}</span></td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid var(--border);text-align:right;font-size:12px">฿${fmtBG(r.budget)}</td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid var(--border);text-align:right;font-size:12px;color:var(--blue)">฿${fmtBG(r.expense)}</td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid var(--border);text-align:right;font-size:12px;font-weight:500;color:${negRemain?'var(--red)':'var(--green)'}">฿${fmtBG(r.remain)}</td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid var(--border);text-align:right;">
+        <span style="font-size:12px;font-weight:600;color:${col}">${fmtPct(r.pctRemain)}</span>
+        <div style="height:4px;border-radius:99px;background:var(--bg-secondary);overflow:hidden;margin-top:4px;width:64px;margin-left:auto">
+          <div style="height:100%;border-radius:99px;background:${col};width:${Math.max(0,Math.min(100,r.pctRemain))}%"></div>
+        </div>
+      </td>
+      <td style="padding:8px 10px;border-bottom:0.5px solid var(--border);text-align:right;font-size:12px;color:var(--text-secondary)">${fmtPct(r.pctPerBudget)}</td>
+    </tr>`;
+  }).join('') + `<tr style="background:var(--bg-secondary)">
+    <td colspan="3" style="padding:8px 10px;font-weight:600;font-size:12px;border-top:0.5px solid var(--border-md)">Total</td>
+    <td style="padding:8px 10px;text-align:right;font-weight:600;font-size:12px;border-top:0.5px solid var(--border-md)">฿${fmtBG(totalBudget)}</td>
+    <td style="padding:8px 10px;text-align:right;font-weight:600;font-size:12px;color:var(--blue);border-top:0.5px solid var(--border-md)">฿${fmtBG(totalExpense)}</td>
+    <td style="padding:8px 10px;text-align:right;font-weight:600;font-size:12px;color:${totalRemain>=0?'var(--green)':'var(--red)'};border-top:0.5px solid var(--border-md)">฿${fmtBG(totalRemain)}</td>
+    <td style="padding:8px 10px;text-align:right;font-weight:600;font-size:12px;color:${pctColor(totalPctR)};border-top:0.5px solid var(--border-md)">${fmtPct(totalPctR)}</td>
+    <td style="padding:8px 10px;text-align:right;font-size:12px;border-top:0.5px solid var(--border-md)">100%</td>
+  </tr>`;
+}
+
+function renderBGCharts(data) {
+  const labels   = data.map(r => r.code);
+  const budgets  = data.map(r => Math.round(r.budget));
+  const expenses = data.map(r => Math.round(r.expense));
+  const remains  = data.map(r => Math.round(Math.max(0, r.remain)));
+  const pctArr   = data.map(r => parseFloat(r.pctRemain.toFixed(2)));
+
+  // Chart 1: Stacked bar — Budget (total) = Expense + Remain
+  if(chartBGBar) chartBGBar.destroy();
+  chartBGBar = new Chart(document.getElementById('chart-bg-bar'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label:'RO Expense', data:expenses, backgroundColor:'#378ADD', borderRadius:3, stack:'total' },
+        { label:'Remain',     data:remains,  backgroundColor:'rgba(29,158,117,0.35)', borderRadius:3, stack:'total' },
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend:{ display:false },
+        tooltip:{
+          callbacks:{
+            afterBody: (items) => {
+              const i = items[0].dataIndex;
+              return [`Budget: ฿${budgets[i].toLocaleString()}`, `% Used: ${(100-pctArr[i]).toFixed(2)}%`];
+            }
+          }
+        }
+      },
+      scales: {
+        x:{ stacked:true, ticks:{ font:{size:10}, maxRotation:45, autoSkip:false }, grid:{display:false} },
+        y:{ stacked:true, beginAtZero:true, ticks:{ font:{size:10}, callback: v=>'฿'+Math.round(v/1e6)+'M' } }
+      }
+    }
+  });
+
+  // Chart 2: Horizontal bar — % Remain per budget item
+  const barColors = pctArr.map(p => pctColor(p));
+  if(chartBGRemain) chartBGRemain.destroy();
+  chartBGRemain = new Chart(document.getElementById('chart-bg-remain'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label:'% Remain',
+        data: pctArr,
+        backgroundColor: barColors,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ display:false },
+        tooltip:{ callbacks:{ label: ctx => `${ctx.parsed.x.toFixed(2)}% คงเหลือ` } }
+      },
+      scales:{
+        x:{
+          beginAtZero:true, max:110,
+          ticks:{ font:{size:10}, callback: v=>v+'%' },
+          grid:{ color:'rgba(0,0,0,0.06)' }
+        },
+        y:{ ticks:{ font:{size:11} }, grid:{display:false} }
+      }
+    }
+  });
+}
+
 loadAllData();
+loadBGSheet();
 </script>
 </body>
 </html>
