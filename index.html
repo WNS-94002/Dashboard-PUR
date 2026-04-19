@@ -193,28 +193,11 @@
     <p class="load-status" id="load-status">กำลังเริ่มต้นโหลดข้อมูล...</p>
   </div>
 
-  <!-- Metrics -->
-  <div class="metrics">
-    <div class="metric">
-      <div class="metric-label">RO ทั้งหมด</div>
-      <div class="metric-value" id="m-ro">—</div>
-      <div class="metric-sub">หมายเลข RO ไม่ซ้ำ</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">รายการย่อยรวม</div>
-      <div class="metric-value c-blue" id="m-total">—</div>
-      <div class="metric-sub">ทุกบรรทัด</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">สถานะ GRPO</div>
-      <div class="metric-value c-green" id="m-grpo">—</div>
-      <div class="metric-sub" id="m-grpo-pct">จาก RO ทั้งหมด</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">สถานะ Archived</div>
-      <div class="metric-value c-purple" id="m-archived">—</div>
-      <div class="metric-sub" id="m-archived-pct">จาก RO ทั้งหมด</div>
-    </div>
+  <!-- Metrics hidden — values shown in RO Budget chart summary instead -->
+  <div style="display:none">
+    <span id="m-ro"></span><span id="m-total"></span>
+    <span id="m-grpo"></span><span id="m-grpo-pct"></span>
+    <span id="m-archived"></span><span id="m-archived-pct"></span>
   </div>
 
   <!-- Value Summary -->
@@ -269,11 +252,17 @@
 
   <!-- Charts Row: RO by Budget (full width) -->
   <div class="card chart-full">
-    <div class="card-title">จำนวน RO ตาม Budget</div>
-    <div class="legend">
-      <span><span class="lbox" style="background:#378ADD"></span>RO ทั้งหมด</span>
-      <span><span class="lbox" style="background:#1D9E75"></span>GRPO</span>
-      <span><span class="lbox" style="background:#534AB7"></span>Archived</span>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px;">
+      <div>
+        <div class="card-title" style="margin-bottom:6px;">จำนวน RO ตาม Budget</div>
+        <div class="legend">
+          <span><span class="lbox" style="background:#378ADD"></span>RO ทั้งหมด</span>
+          <span><span class="lbox" style="background:#1D9E75"></span>PO (GRPO)</span>
+          <span><span class="lbox" style="background:#534AB7"></span>ส่งของ (Archived)</span>
+        </div>
+      </div>
+      <!-- Summary pills -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;" id="ro-summary-pills"></div>
     </div>
     <div style="position:relative;width:100%;height:260px;"><canvas id="chart-budget"></canvas></div>
   </div>
@@ -802,12 +791,32 @@ function updateMetrics(ro){
   const total=data.length;
   const grpo =data.filter(r=>r._state==='GRPO').length;
   const arch =data.filter(r=>r._state==='Archived').length;
+  // keep hidden elements in sync (used by nothing now but avoids null errors)
   document.getElementById('m-ro').textContent      =total.toLocaleString();
   document.getElementById('m-total').textContent   =allData.length.toLocaleString();
   document.getElementById('m-grpo').textContent    =grpo.toLocaleString();
   document.getElementById('m-archived').textContent=arch.toLocaleString();
   document.getElementById('m-grpo-pct').textContent    =total>0?`${Math.round(grpo/total*100)}% จาก RO ทั้งหมด`:'จาก RO ทั้งหมด';
   document.getElementById('m-archived-pct').textContent=total>0?`${Math.round(arch/total*100)}% จาก RO ทั้งหมด`:'จาก RO ทั้งหมด';
+  // summary pills in the RO Budget chart header
+  renderROSummaryPills(total, grpo, arch);
+}
+
+function renderROSummaryPills(total, grpo, arch) {
+  const el = document.getElementById('ro-summary-pills');
+  if (!el) return;
+  const pctGrpo = total>0 ? Math.round(grpo/total*100) : 0;
+  const pctArch = total>0 ? Math.round(arch/total*100) : 0;
+  const pills = [
+    { label:'RO ทั้งหมด', value:total.toLocaleString(),  bg:'#E6F1FB', tc:'#185FA5', bc:'#B5D4F4' },
+    { label:'PO (GRPO)',  value:`${grpo.toLocaleString()} (${pctGrpo}%)`, bg:'#EAF3DE', tc:'#3B6D11', bc:'#C0DD97' },
+    { label:'ส่งของ (Archived)', value:`${arch.toLocaleString()} (${pctArch}%)`, bg:'#EEEDFE', tc:'#3C3489', bc:'#CECBF6' },
+  ];
+  el.innerHTML = pills.map(p => `
+    <div style="background:${p.bg};border:0.5px solid ${p.bc};border-radius:var(--radius-md);padding:8px 14px;min-width:140px;">
+      <div style="font-size:10px;color:${p.tc};text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;font-weight:500">${p.label}</div>
+      <div style="font-size:18px;font-weight:700;color:${p.tc}">${p.value}</div>
+    </div>`).join('');
 }
 
 // ════════════════════════════════════════════════════════════
@@ -902,7 +911,7 @@ function renderVendorChart(filterGid){
   document.getElementById('vendor-total-badge').textContent=`${entries.length} Vendor ทั้งหมด`;
 
   // Dynamic height: 36px per bar
-  const h=Math.max(280, display.length*38+60);
+  const h=Math.max(200, display.length*26+50);
   const wrap=document.getElementById('vendor-chart-wrap');
   wrap.style.height=h+'px';
 
