@@ -524,9 +524,16 @@ function parsePODate(raw) {
   const p3=s.match(/^(\d{1,2})[\/\-](\d{4})$/);
   if (!d&&p3) d=new Date(parseInt(p3[2]),parseInt(p3[1])-1,1);
   if (!d||isNaN(d.getTime())) return null;
-  let year=d.getFullYear(), month=d.getMonth()+1;
-  if (year===2025&&month===12){year=2026;month=1;}
-  return {year,month};
+  const year=d.getFullYear(), month=d.getMonth()+1;
+  // คงค่าแสดงผลตามจริง (ไม่เปลี่ยน 2025/12)
+  // แต่ค่าสำหรับ sort / monthly chart: Dec 2025 → Jan 2026
+  let sortYear=year, sortMonth=month;
+  if (year===2025&&month===12){sortYear=2026;sortMonth=1;}
+  return {
+    year, month,                          // แสดงผลในตาราง (ค่าจริง)
+    sortVal: sortYear*100+sortMonth,      // ใช้ sort
+    chartYear:sortYear, chartMonth:sortMonth, // ใช้กราฟ monthly
+  };
 }
 
 function getNum(row,kws){
@@ -587,7 +594,7 @@ function groupByRO(rows){
         _key:key,_ro:r._ro,_roName:r._roName,_hasRO:r._hasRO,
         _gid:r._gid,_sheet:r._sheet,_label:r._label,_group:r._group,
         _state:r._state,_stateRaw:r._stateRaw,
-        _total:0,_vendor:r._vendor,_poDate:r._poDate,_poNum:r._poNum,_items:[],
+        _total:0,_vendor:r._vendor,_poDate:r._poDate,_poDateRaw:r._poDateRaw,_poNum:r._poNum,_items:[],
       });
     }
     const g=map.get(key);
@@ -595,7 +602,7 @@ function groupByRO(rows){
     g._items.push(r);
     if(!g._vendor&&r._vendor) g._vendor=r._vendor;
     if(!g._roName&&r._roName) g._roName=r._roName;
-    if(!g._poDate&&r._poDate) g._poDate=r._poDate;
+    if(!g._poDate&&r._poDate){g._poDate=r._poDate;g._poDateRaw=r._poDateRaw;}
     if(!g._poNum&&r._poNum)   g._poNum=r._poNum;
     if((RANK[r._state]||0)>(RANK[g._state]||0)){g._state=r._state;g._stateRaw=r._stateRaw;}
   }
@@ -807,8 +814,8 @@ function renderMonthlyChart(filterGid){
   const src=filterGid?allData.filter(r=>r._gid===filterGid):allData;
   for(const r of src){
     if(!r._poDate) continue;
-    const {year,month}=r._poDate;
-    if(year===2026&&month>=1&&month<=12) monthly[month-1]+=(r._total||0);
+    const {chartYear,chartMonth}=r._poDate;
+    if(chartYear===2026&&chartMonth>=1&&chartMonth<=12) monthly[chartMonth-1]+=(r._total||0);
   }
   const rounded=monthly.map(v=>Math.round(v));
   if(chartMonthly) chartMonthly.destroy();
@@ -922,15 +929,30 @@ function thCls(key) {
   return `sortable sort-${sortDir}`;
 }
 
-// Compare values for sort — nulls/empty always last
+// Compare values for sort — nulls/empty always last regardless of direction
+// Note: caller multiplies by dir (-1/+1), but null-last must be dir-independent
+// So we return raw comparison; null handling done before multiplying by dir in callers
 function cmp(a, b) {
   const empty = v => v === null || v === undefined || v === '' || (typeof v === 'number' && isNaN(v));
   if (empty(a) && empty(b)) return 0;
-  if (empty(a)) return 1;
-  if (empty(b)) return -1;
+  if (empty(a)) return 1;   // null always last
+  if (empty(b)) return -1;  // null always last
+  if (typeof a === 'number' && typeof b === 'number') return a - b;
   if (typeof a === 'string' && typeof b === 'string')
     return a.localeCompare(b, 'th', { sensitivity: 'base' });
   return a < b ? -1 : a > b ? 1 : 0;
+}
+
+// cmp with null-always-last regardless of sort direction
+function cmpNullLast(a, b, dir) {
+  const empty = v => v === null || v === undefined || v === '' || (typeof v === 'number' && isNaN(v));
+  if (empty(a) && empty(b)) return 0;
+  if (empty(a)) return 1;   // null always at bottom
+  if (empty(b)) return -1;
+  if (typeof a === 'number' && typeof b === 'number') return (a - b) * dir;
+  if (typeof a === 'string' && typeof b === 'string')
+    return a.localeCompare(b, 'th', { sensitivity: 'base' }) * dir;
+  return (a < b ? -1 : a > b ? 1 : 0) * dir;
 }
 
 function applySortGrouped(data) {
@@ -940,13 +962,13 @@ function applySortGrouped(data) {
     switch (sortKey) {
       case '_sheet':    va = a._sheet;   vb = b._sheet;   break;
       case '_roName':   va = (a._roName||a._ro).toLowerCase(); vb = (b._roName||b._ro).toLowerCase(); break;
-      case '_poDate':   va = a._poDate ? a._poDate.year*100+a._poDate.month : null; vb = b._poDate ? b._poDate.year*100+b._poDate.month : null; break;
+      case '_poDate':   va = a._poDate ? a._poDate.sortVal : null; vb = b._poDate ? b._poDate.sortVal : null; break;
       case '_total':    va = a._total||0; vb = b._total||0; break;
       case '_vendor':   va = (a._vendor||'').toLowerCase(); vb = (b._vendor||'').toLowerCase(); break;
       case '_state':    va = a._stateRaw||a._state; vb = b._stateRaw||b._state; break;
       default:          va = a._total||0; vb = b._total||0;
     }
-    return cmp(va, vb) * dir;
+    return cmpNullLast(va, vb, dir);
   });
 }
 
@@ -966,7 +988,7 @@ function applySortFlat(data) {
       case '_state':  va = a._stateRaw||a._state; vb = b._stateRaw||b._state; break;
       default:        va = a._total||0; vb = b._total||0;
     }
-    return cmp(va, vb) * dir;
+    return cmpNullLast(va, vb, dir);
   });
 }
 
@@ -1016,7 +1038,7 @@ function renderTable(){
           <button class="ro-link" onclick="openModal('${escAttr(g._gid+'||'+g._ro)}')">${esc(g._roName||g._ro)}</button>
           ${!g._hasRO?'<span style="font-size:10px;color:var(--text-tertiary);margin-left:4px">(auto)</span>':''}
         </td>
-        <td style="font-size:12px;color:var(--text-secondary)">${g._poDate?`${g._poDate.year}/${String(g._poDate.month).padStart(2,'0')}`:'—'}</td>
+        <td style="font-size:12px;color:var(--text-secondary)">${g._poDateRaw||'—'}</td>
         <td style="text-align:right;font-weight:600;font-size:14px">${fmt(g._total)}</td>
         <td style="font-size:12px;color:var(--text-secondary);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(g._vendor)}">${esc(g._vendor)||'—'}</td>
         <td>${sPill(g._state,g._stateRaw)}</td>
@@ -1089,7 +1111,7 @@ function openModal(key){
   document.getElementById('modal-subtitle').innerHTML=
     `<span class="pill pill-gray" style="font-size:11px">${g._sheet} — ${g._label}</span>`+
     ` ${sPill(g._state,g._stateRaw)}`+
-    (g._poDate?` <span style="font-size:12px;color:var(--text-secondary)">PO Date: ${g._poDate.year}/${String(g._poDate.month).padStart(2,'0')}</span>`:'')  +
+    (g._poDateRaw?` <span style="font-size:12px;color:var(--text-secondary)">PO Date: ${esc(g._poDateRaw)}</span>`:'')  +
     (g._poNum?` <span style="font-size:12px;color:var(--text-secondary)">PO#: <strong>${esc(g._poNum)}</strong></span>`:'')  +
     (g._vendor?` <span style="font-size:12px;color:var(--text-secondary)">ร้านค้า: <strong>${esc(g._vendor)}</strong></span>`:'');
   const rowsHtml=g._items.map(item=>`
