@@ -125,6 +125,15 @@
   .table-note { font-size:12px; color:var(--text-tertiary); font-style:italic; margin-top:8px; }
   .mono { font-family:'SF Mono','Fira Mono',Consolas,monospace; font-size:12px; }
 
+  /* Sortable column headers */
+  thead th.sortable { cursor:pointer; user-select:none; }
+  thead th.sortable:hover { background:color-mix(in srgb,var(--blue) 10%,var(--bg-secondary)); color:var(--text-primary); }
+  thead th.sort-asc  { color:var(--blue) !important; }
+  thead th.sort-desc { color:var(--blue) !important; }
+  .sort-icon { display:inline-block; margin-left:4px; font-size:10px; opacity:0.45; vertical-align:middle; transition:opacity .15s; }
+  th.sortable:hover .sort-icon { opacity:0.8; }
+  th.sort-asc  .sort-icon, th.sort-desc .sort-icon { opacity:1; }
+
   .prog-item { margin-bottom:14px; }
   .prog-header { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
   .prog-label { color:var(--text-primary); font-weight:500; }
@@ -885,6 +894,83 @@ function renderVendorChart(filterGid){
 }
 
 // ════════════════════════════════════════════════════════════
+//  TABLE SORT STATE
+// ════════════════════════════════════════════════════════════
+// sortKey: field key string, sortDir: 'desc'|'asc'
+let sortKey = '_total';   // default: มูลค่ารวม
+let sortDir = 'desc';     // default: มากสุด → น้อยสุด
+
+function setSort(key) {
+  if (sortKey === key) {
+    sortDir = sortDir === 'desc' ? 'asc' : 'desc';
+  } else {
+    sortKey = key;
+    sortDir = 'desc';
+  }
+  renderTable();
+}
+
+function sortIcon(key) {
+  if (sortKey !== key) return `<span class="sort-icon">↕</span>`;
+  return sortDir === 'desc'
+    ? `<span class="sort-icon">↓</span>`
+    : `<span class="sort-icon">↑</span>`;
+}
+
+function thCls(key) {
+  if (sortKey !== key) return 'sortable';
+  return `sortable sort-${sortDir}`;
+}
+
+// Compare values for sort — nulls/empty always last
+function cmp(a, b) {
+  const empty = v => v === null || v === undefined || v === '' || (typeof v === 'number' && isNaN(v));
+  if (empty(a) && empty(b)) return 0;
+  if (empty(a)) return 1;
+  if (empty(b)) return -1;
+  if (typeof a === 'string' && typeof b === 'string')
+    return a.localeCompare(b, 'th', { sensitivity: 'base' });
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+
+function applySortGrouped(data) {
+  const dir = sortDir === 'desc' ? -1 : 1;
+  return [...data].sort((a, b) => {
+    let va, vb;
+    switch (sortKey) {
+      case '_sheet':    va = a._sheet;   vb = b._sheet;   break;
+      case '_roName':   va = (a._roName||a._ro).toLowerCase(); vb = (b._roName||b._ro).toLowerCase(); break;
+      case '_poDate':   va = a._poDate ? a._poDate.year*100+a._poDate.month : null; vb = b._poDate ? b._poDate.year*100+b._poDate.month : null; break;
+      case '_total':    va = a._total||0; vb = b._total||0; break;
+      case '_vendor':   va = (a._vendor||'').toLowerCase(); vb = (b._vendor||'').toLowerCase(); break;
+      case '_state':    va = a._stateRaw||a._state; vb = b._stateRaw||b._state; break;
+      default:          va = a._total||0; vb = b._total||0;
+    }
+    return cmp(va, vb) * dir;
+  });
+}
+
+function applySortFlat(data) {
+  const dir = sortDir === 'desc' ? -1 : 1;
+  return [...data].sort((a, b) => {
+    let va, vb;
+    switch (sortKey) {
+      case '_sheet':  va = a._sheet;  vb = b._sheet;  break;
+      case '_roName': va = (a._roName||a._ro).toLowerCase(); vb = (b._roName||b._ro).toLowerCase(); break;
+      case '_code':   va = (a._code||'').toLowerCase(); vb = (b._code||'').toLowerCase(); break;
+      case '_desc':   va = (a._desc||a._name||'').toLowerCase(); vb = (b._desc||b._name||'').toLowerCase(); break;
+      case '_qty':    va = a._qty||0;   vb = b._qty||0;   break;
+      case '_price':  va = a._price||0; vb = b._price||0; break;
+      case '_total':  va = a._total||0; vb = b._total||0; break;
+      case '_vendor': va = (a._vendor||'').toLowerCase(); vb = (b._vendor||'').toLowerCase(); break;
+      case '_state':  va = a._stateRaw||a._state; vb = b._stateRaw||b._state; break;
+      default:        va = a._total||0; vb = b._total||0;
+    }
+    return cmp(va, vb) * dir;
+  });
+}
+
+// ════════════════════════════════════════════════════════════
 //  TABLE
 // ════════════════════════════════════════════════════════════
 function renderTable(){
@@ -897,11 +983,19 @@ function renderTable(){
     :'ปิด — แสดงทุกบรรทัดแยกกัน';
 
   if(isGrouped){
+    // Reset sort key if it's a flat-only column
+    if(['_code','_desc','_qty','_price'].includes(sortKey)){ sortKey='_total'; sortDir='desc'; }
+
     document.getElementById('thead-row').innerHTML=`<tr>
-      <th style="width:40px">#</th><th>Budget</th><th>RO Name</th>
-      <th>PO Date</th><th style="text-align:right">มูลค่ารวม (฿)</th>
-      <th>ร้านค้า / Vendor</th><th>State</th>
+      <th style="width:40px">#</th>
+      <th class="${thCls('_sheet')}"    onclick="setSort('_sheet')"   >Budget${sortIcon('_sheet')}</th>
+      <th class="${thCls('_roName')}"   onclick="setSort('_roName')"  >RO Name${sortIcon('_roName')}</th>
+      <th class="${thCls('_poDate')}"   onclick="setSort('_poDate')"  >PO Date${sortIcon('_poDate')}</th>
+      <th class="${thCls('_total')}"    onclick="setSort('_total')"   style="text-align:right">มูลค่ารวม (฿)${sortIcon('_total')}</th>
+      <th class="${thCls('_vendor')}"   onclick="setSort('_vendor')"  >ร้านค้า / Vendor${sortIcon('_vendor')}</th>
+      <th class="${thCls('_state')}"    onclick="setSort('_state')"   >State${sortIcon('_state')}</th>
     </tr>`;
+
     let data=roGroups;
     if(budgetF) data=data.filter(r=>r._gid===budgetF);
     if(statusF) data=data.filter(r=>r._state===statusF);
@@ -911,6 +1005,7 @@ function renderTable(){
       (r._vendor||'').toLowerCase().includes(searchF)||
       r._items.some(i=>(i._desc||i._name||'').toLowerCase().includes(searchF)||(i._code||'').toLowerCase().includes(searchF))
     );
+    data = applySortGrouped(data);
     const show=data.slice(0,500);
     document.getElementById('row-count').textContent=`${show.length.toLocaleString()} RO (จาก ${data.length.toLocaleString()})`;
     document.getElementById('table-body').innerHTML=show.map((g,idx)=>`
@@ -927,13 +1022,25 @@ function renderTable(){
         <td>${sPill(g._state,g._stateRaw)}</td>
       </tr>`).join('')||noData(7);
     document.getElementById('table-note').textContent=data.length>500?`* แสดง 500 RO แรก จากทั้งหมด ${data.length.toLocaleString()} RO`:'';
+
   } else {
+    // Reset sort key if it's grouped-only column
+    if(['_poDate'].includes(sortKey)){ sortKey='_total'; sortDir='desc'; }
+
     document.getElementById('thead-row').innerHTML=`<tr>
-      <th>#</th><th>Budget</th><th>RO Name</th><th>รหัส</th>
-      <th>Description</th><th style="text-align:right">จำนวน</th><th>หน่วย</th>
-      <th style="text-align:right">ราคา/หน่วย</th><th style="text-align:right">มูลค่ารวม</th>
-      <th>ร้านค้า</th><th>State</th>
+      <th>#</th>
+      <th class="${thCls('_sheet')}"  onclick="setSort('_sheet')" >Budget${sortIcon('_sheet')}</th>
+      <th class="${thCls('_roName')}" onclick="setSort('_roName')">RO Name${sortIcon('_roName')}</th>
+      <th class="${thCls('_code')}"   onclick="setSort('_code')"  >รหัส${sortIcon('_code')}</th>
+      <th class="${thCls('_desc')}"   onclick="setSort('_desc')"  >Description${sortIcon('_desc')}</th>
+      <th class="${thCls('_qty')}"    onclick="setSort('_qty')"   style="text-align:right">จำนวน${sortIcon('_qty')}</th>
+      <th>หน่วย</th>
+      <th class="${thCls('_price')}"  onclick="setSort('_price')" style="text-align:right">ราคา/หน่วย${sortIcon('_price')}</th>
+      <th class="${thCls('_total')}"  onclick="setSort('_total')" style="text-align:right">มูลค่ารวม${sortIcon('_total')}</th>
+      <th class="${thCls('_vendor')}" onclick="setSort('_vendor')">ร้านค้า${sortIcon('_vendor')}</th>
+      <th class="${thCls('_state')}"  onclick="setSort('_state')" >State${sortIcon('_state')}</th>
     </tr>`;
+
     let data=allData;
     if(budgetF) data=data.filter(r=>r._gid===budgetF);
     if(statusF) data=data.filter(r=>r._state===statusF);
@@ -943,6 +1050,7 @@ function renderTable(){
       (r._desc||r._name||'').toLowerCase().includes(searchF)||
       (r._code||'').toLowerCase().includes(searchF)
     );
+    data = applySortFlat(data);
     const show=data.slice(0,300);
     document.getElementById('row-count').textContent=`${show.length.toLocaleString()} บรรทัด (จาก ${data.length.toLocaleString()})`;
     document.getElementById('table-body').innerHTML=show.length
