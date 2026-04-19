@@ -929,26 +929,19 @@ function thCls(key) {
   return `sortable sort-${sortDir}`;
 }
 
-// Compare values for sort — nulls/empty always last regardless of direction
-// Note: caller multiplies by dir (-1/+1), but null-last must be dir-independent
-// So we return raw comparison; null handling done before multiplying by dir in callers
-function cmp(a, b) {
-  const empty = v => v === null || v === undefined || v === '' || (typeof v === 'number' && isNaN(v));
-  if (empty(a) && empty(b)) return 0;
-  if (empty(a)) return 1;   // null always last
-  if (empty(b)) return -1;  // null always last
-  if (typeof a === 'number' && typeof b === 'number') return a - b;
-  if (typeof a === 'string' && typeof b === 'string')
-    return a.localeCompare(b, 'th', { sensitivity: 'base' });
-  return a < b ? -1 : a > b ? 1 : 0;
-}
-
-// cmp with null-always-last regardless of sort direction
+// cmpNullLast — null/empty values always go to the BOTTOM of the table,
+// regardless of whether sort direction is asc or desc.
+// Strategy: handle null BEFORE applying dir, so +1 (push to end) is never negated.
 function cmpNullLast(a, b, dir) {
   const empty = v => v === null || v === undefined || v === '' || (typeof v === 'number' && isNaN(v));
-  if (empty(a) && empty(b)) return 0;
-  if (empty(a)) return 1;   // null always at bottom
-  if (empty(b)) return -1;
+  const ea = empty(a), eb = empty(b);
+  // Both null → equal
+  if (ea && eb) return 0;
+  // a is null → always sink to bottom (return +1 regardless of dir)
+  if (ea) return 1;
+  // b is null → always sink to bottom (return -1 regardless of dir)
+  if (eb) return -1;
+  // Neither null → normal comparison × direction
   if (typeof a === 'number' && typeof b === 'number') return (a - b) * dir;
   if (typeof a === 'string' && typeof b === 'string')
     return a.localeCompare(b, 'th', { sensitivity: 'base' }) * dir;
