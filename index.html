@@ -515,24 +515,25 @@ function parsePODate(raw) {
   if (p1) {
     let [,a,b,c]=p1;
     const yr=c.length===2?2000+parseInt(c):parseInt(c);
-    if (parseInt(a)>12)       d=new Date(yr,parseInt(b)-1,parseInt(a));
-    else if (parseInt(b)>12)  d=new Date(yr,parseInt(a)-1,parseInt(b));
-    else                      d=new Date(yr,parseInt(b)-1,parseInt(a));
+    // Thai convention: D/M/YYYY → day=a, month=b
+    // Exception: if a>12 definitely day; if b>12 definitely day is b (MM/DD)
+    if (parseInt(a)>12)      d=new Date(yr,parseInt(b)-1,parseInt(a));  // a=day
+    else if (parseInt(b)>12) d=new Date(yr,parseInt(a)-1,parseInt(b));  // b=day
+    else                     d=new Date(yr,parseInt(b)-1,parseInt(a));  // assume DD/MM/YYYY (Thai)
   }
   const p2=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
   if (!d&&p2) d=new Date(parseInt(p2[1]),parseInt(p2[2])-1,parseInt(p2[3]));
   const p3=s.match(/^(\d{1,2})[\/\-](\d{4})$/);
   if (!d&&p3) d=new Date(parseInt(p3[2]),parseInt(p3[1])-1,1);
   if (!d||isNaN(d.getTime())) return null;
-  const year=d.getFullYear(), month=d.getMonth()+1;
-  // คงค่าแสดงผลตามจริง (ไม่เปลี่ยน 2025/12)
-  // แต่ค่าสำหรับ sort / monthly chart: Dec 2025 → Jan 2026
+  const year=d.getFullYear(), month=d.getMonth()+1, day=d.getDate();
+  // Dec 2025 → sort/chart as Jan 2026, but display stays as-is
   let sortYear=year, sortMonth=month;
   if (year===2025&&month===12){sortYear=2026;sortMonth=1;}
   return {
-    year, month,                          // แสดงผลในตาราง (ค่าจริง)
-    sortVal: sortYear*100+sortMonth,      // ใช้ sort
-    chartYear:sortYear, chartMonth:sortMonth, // ใช้กราฟ monthly
+    year, month, day,                                         // แสดงผล (ค่าจริง)
+    sortVal: sortYear*10000 + sortMonth*100 + day,            // ใช้ sort (year+month+day)
+    chartYear:sortYear, chartMonth:sortMonth,                 // ใช้กราฟ monthly
   };
 }
 
@@ -602,7 +603,12 @@ function groupByRO(rows){
     g._items.push(r);
     if(!g._vendor&&r._vendor) g._vendor=r._vendor;
     if(!g._roName&&r._roName) g._roName=r._roName;
-    if(!g._poDate&&r._poDate){g._poDate=r._poDate;g._poDateRaw=r._poDateRaw;}
+    // เก็บ PO Date ล่าสุด (sortVal มากสุด) เพื่อให้ sort ตรง
+    if(r._poDate){
+      if(!g._poDate || r._poDate.sortVal > g._poDate.sortVal){
+        g._poDate=r._poDate; g._poDateRaw=r._poDateRaw;
+      }
+    }
     if(!g._poNum&&r._poNum)   g._poNum=r._poNum;
     if((RANK[r._state]||0)>(RANK[g._state]||0)){g._state=r._state;g._stateRaw=r._stateRaw;}
   }
